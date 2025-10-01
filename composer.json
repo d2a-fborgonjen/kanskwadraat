@@ -1,0 +1,21 @@
+{
+    "autoload": {
+        "psr-4": {
+            "Coachview\\Admin\\": "Admin/",
+            "Coachview\\Api\\": "Api/",
+            "Coachview\\Presentation\\": "Presentation/",
+            "Coachview\\Forms\\": "Forms/",
+            "Coachview\\Cron\\": "Cron/",
+            "Coachview\\Sync\\": "Sync/"
+        },
+        "files": [
+            "functions.php",
+            "Presentation/Utils.php",
+            "Sync/Utils.php"
+        ]
+    },
+    "require": {
+        "illuminate/collections": "^12.11",
+        "ext-json": "*"
+    }
+}

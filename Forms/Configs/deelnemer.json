@@ -1,0 +1,142 @@
+{
+    "title": "Deelnemer",
+    "items": [
+        {
+            "fields": [
+                {
+                    "field": "deelnemer[0][voornaam]",
+                    "label": "Voornaam",
+                    "type": "text",
+                    "required": true
+                },
+                {
+                    "field": "deelnemer[0][tussenvoegsel]",
+                    "label": "Tussenvoegsel",
+                    "type": "text",
+                    "optional": true
+                },
+                {
+                    "field": "deelnemer[0][achternaam]",
+                    "label": "Achternaam",
+                    "type": "text",
+                    "required": true
+                }
+            ]
+        },
+        {
+            "field": "deelnemer[0][geboorteDatum]",
+            "label": "Geboortedatum",
+            "type": "date",
+            "required": true,
+            "placeholder": "dd/mm/jjjj"
+        },
+        {
+            "fields": [
+                {
+                    "field": "deelnemer[0][emailadres]",
+                    "label": "E-mailadres",
+                    "type": "email",
+                    "required": true
+                },
+                {
+                    "field": "deelnemer[0][telefoonnummer]",
+                    "label": "Telefoonnummer",
+                    "type": "text",
+                    "required": true,
+                    "placeholder": "06-12345678"
+                }
+            ]
+        },
+        {
+            "fields": [
+                {
+                    "field": "deelnemer[0][vrijeveldenPersoon][VrijveldFunctie]",
+                    "label": "Functie",
+                    "type": "text",
+                    "required": true,
+                    "rules": {
+                        "excludeType": "in_company",
+                        "excludeForm": "contactPersonForm"
+                    }
+                },
+                {
+                    "field": "deelnemer[0][vrijeveldenPersoon][VrijeveldBedrijfsnaam]",
+                    "label": "Bedrijfsnaam",
+                    "type": "text",
+                    "required": true,
+                    "rules": {
+                        "excludeType": "in_company",
+                        "excludeForm": "contactPersonForm"
+                    }
+                }
+            ]
+        },
+        {
+            "field": "deelnemer[0][vrijeveldenPersoon][Vooropleiding]",
+            "label": "Vooropleiding",
+            "type": "text",
+            "rules": {
+                "excludeType": "in_company",
+                "excludeForm": "contactPersonForm"
+            }
+        },
+        {
+            "field": "deelnemer[0][vrijeveldenPersoon][VrijeveldWerkzaamoplocatie]",
+            "label": "Werkzaam op locatie",
+            "type": "text",
+            "required": true,
+            "rules": {
+                "onlyForType": "in_company"
+            }
+        },
+        {
+            "field": "deelnemer[0][vrijeveldenPersoon][VrijveldWerkzaaminregio]",
+            "label": "Werkzaam op locatie",
+            "type": "text",
+            "required": true,
+            "rules": {
+                "onlyForType": "in_company"
+            }
+        },
+        {
+            "field": "deelnemer[0][vrijeveldenPersoon][VrijveldLeidinggevende]",
+            "label": "Naam leidinggevende",
+            "type": "text",
+            "required": true,
+            "rules": {
+                "onlyForType": "in_company",
+                "excludeForm": "partouForm"
+            }
+        },
+        {
+            "field": "deelnemer[0][vrijeveldenPersoon][VrijveldLeidinggevendMail]",
+            "label": "E-mailadres leidinggevende",
+            "type": "text",
+            "required": true,
+            "rules": {
+                "onlyForType": "in_company",
+                "excludeForm": "partouForm"
+            }
+        },
+        {
+            "field": "deelnemer[0][vrijeveldenPersoon][VrijveldSoortmedewerker]",
+            "label": "Medewerker in dienst of nieuwe medewerker",
+            "type": "radio",
+            "options": [
+                {
+                    "value": "Medewerker in dienst",
+                    "label": "Medewerker in dienst"
+                },
+                {
+                    "value": "Nieuwe medewerker",
+                    "label": "Nieuwe medewerker"
+                }
+            ],
+            "required": true,
+            "rules": {
+                "onlyForType": "in_company",
+                "excludeForm": "partouForm"
+            }
+        }
+    ]
+}

@@ -1,0 +1,62 @@
+{
+    "title": "Factuurgegevens",
+    "rules": {
+        "excludeType": "in_company",
+        "excludeForm": "contactPersonForm"
+    },
+    "items": [
+        {
+            "fields": [
+                {
+                    "field": "bedrijf[naam]",
+                    "label": "Bedrijfsnaam",
+                    "type": "text"
+                },
+                {
+                    "field": "referentieNrKlant",
+                    "label": "Referentie",
+                    "type": "text"
+                }
+            ]
+        },
+        {
+            "field": "debiteur[emailadresAnders]",
+            "label": "E-mailadres factuur",
+            "placeholder": "Hier wordt de factuur naartoe gestuurd",
+            "type": "email",
+            "required": true
+        },
+        {
+            "field": "deelnemer[0][factuurAdres][adres1]",
+            "label": "Straat en huisnummer",
+            "type": "text"
+        },
+        {
+            "fields": [
+                {
+                    "field": "deelnemer[0][factuurAdres][postcode]",
+                    "label": "Postcode",
+                    "type": "text",
+                    "required": true
+                },
+                {
+                    "field": "deelnemer[0][factuurAdres][plaats]",
+                    "label": "Plaats",
+                    "type": "text",
+                    "required": true
+                }
+            ]
+        },
+        {
+            "field": "opmerking",
+            "label": "Opmerkingen / Dieetwensen",
+            "type": "textarea",
+            "placeholder": "Eventuele opmerkingen of dieetwensen"
+        },
+        {
+            "field": "deelnemer[0][optInOut]",
+            "label": "Ik wil mij aanmelden voor de nieuwsbrief",
+            "type": "checkbox"
+        }
+    ]
+}
