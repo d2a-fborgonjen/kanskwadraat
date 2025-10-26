@@ -16,6 +16,7 @@
     },
     "require": {
         "illuminate/collections": "^12.11",
-        "ext-json": "*"
+        "ext-json": "*",
+        "twig/twig": "^3.0"
     }
 }

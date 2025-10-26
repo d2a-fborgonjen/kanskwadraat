@@ -1,48 +1,23 @@
-<?php get_header(); ?>
+{{ header|raw }}
 
 <div class="coachview-search">
+    <!-- Search Bar -->
     <div class="coachview-search__bar">
         <input type="text" class="coachview-search__input" placeholder="Search products…">
     </div>
 
+    <!-- Main Content -->
     <div class="coachview-search__content">
-
+        <!-- Sidebar -->
         <aside class="coachview-search__sidebar">
             <h3 class="coachview-search__sidebar-title">Categories</h3>
-            <?php
-            $parent_cats = get_terms([
-                'taxonomy' => 'product_cat',
-                'hide_empty' => false,
-                'parent' => 0
-            ]);
-
-            foreach ($parent_cats as $parent) {
-                echo '<div class="coachview-search__category-parent"><strong>' . esc_html($parent->name) . '</strong></div>';
-
-                $child_cats = get_terms([
-                    'taxonomy' => 'product_cat',
-                    'hide_empty' => false,
-                    'parent' => $parent->term_id
-                ]);
-
-                if ($child_cats) {
-                    echo '<div class="coachview-search__category-children">';
-                    foreach ($child_cats as $child) {
-                        echo '<label class="coachview-search__category-label">
-                          <input type="checkbox" value="' . esc_attr($child->term_id) . '"> 
-                          <span>' . esc_html($child->name) . '</span>
-                        </label>';
-                    }
-                    echo '</div>';
-                }
-            }
-            ?>
+            {{ category_list|raw }}
         </aside>
 
+        <!-- Results Area -->
         <section class="coachview-search__results">
             <div class="coachview-search__spinner"></div>
         </section>
-
     </div>
 </div>
 
@@ -60,7 +35,7 @@
         data.append('search', search.value);
         categories.forEach(c => data.append('categories[]', c));
 
-        fetch('<?php echo admin_url('admin-ajax.php'); ?>', {
+        fetch('{{ ajax_url }}', {
             method: 'POST',
             body: data
         })
@@ -76,4 +51,4 @@
     fetchProducts();
 </script>
 
-<?php get_footer(); ?>
+{{ footer|raw }}

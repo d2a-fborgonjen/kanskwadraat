@@ -1,0 +1,16 @@
+{% for parent in parent_categories %}
+<div class="coachview-search__category-parent">
+    <strong>{{ parent.name }}</strong>
+</div>
+
+{% if parent.child_categories %}
+<div class="coachview-search__category-children">
+    {% for child in parent.child_categories %}
+    <label class="coachview-search__category-label">
+        <input type="checkbox" value="{{ child.term_id }}"> 
+        <span>{{ child.name }}</span>
+    </label>
+    {% endfor %}
+</div>
+{% endif %}
+{% endfor %}

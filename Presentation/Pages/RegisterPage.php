@@ -1,5 +1,5 @@
 <?php
-namespace Coachview\Presentation\Templates;
+namespace Coachview\Presentation\Pages;
 
 
 class RegisterPage
