@@ -60,8 +60,8 @@ class Training {
         public string   $name,
         public string   $status,                // e.g. 'TeStarten', 'Definitief'
         public string   $start_day,             // e.g. 'Vrijdag'
-        public DateTime $start_date,            // e.g. '2025-06-06T09:30:00'
-        public DateTime $end_date,              // e.g. '2025-12-12T17:00:00'
+        public string   $start_date,            // e.g. '2025-06-06T09:30:00'
+        public string   $end_date,              // e.g. '2025-12-12T17:00:00'
         public float    $total_study_hours,     // e.g. 52.5
         public int      $total_days,            // e.g. 5
         public int      $num_seats_taken,       // e.g. 0
@@ -75,7 +75,7 @@ class Training {
 
     public static function from_array(array $data, Collection $components): self {
 //        error_log("Training::from_array called with data: ");
-//        error_log(print_r($data, true));
+        error_log(print_r($data, true));
 
         $locations = $components->pluck('location')->unique()->toArray();
         $total_days = $components->pluck('date')->unique()->count();
@@ -85,8 +85,8 @@ class Training {
             name: $data['naam'],
             status: $data['opleidingStatusId'],
             start_day: $data['startDag'],
-            start_date: DateTime::createFromFormat("Y-m-d\TH:i:s", $data['startDatum']),
-            end_date: DateTime::createFromFormat("Y-m-d\TH:i:s", $data['eindDatum']),
+            start_date: $data['startDatum'], // DateTime::createFromFormat("Y-m-d\TH:i:s", $data['startDatum']),
+            end_date: $data['eindDatum'], // DateTime::createFromFormat("Y-m-d\TH:i:s", $data['eindDatum']),
             total_study_hours: $data['totaalStudiebelasting'] ?? 0.0,
             total_days: $total_days ?? 0,
             num_seats_taken: $data['aantalPlaatsenBezet'] ?? 0,

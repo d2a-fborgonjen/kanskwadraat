@@ -76,8 +76,8 @@ class OrderForm
         if ($training) {
             $location = collect(get_post_meta($training->get_id(), 'location', true))->first() ?? 'Onbekend';
             $startDate = get_post_meta($training->get_id(), 'start_date', true);
-            $day = date_i18n('l', $startDate->getTimestamp());
-            $date = date_i18n('j F', $startDate->getTimestamp());
+            $day = date_i18n('l', strtotime($startDate));
+            $date = date_i18n('j F', strtotime($startDate));
 
             $header .= "<h3>$day $date - $location</h3>";
         }

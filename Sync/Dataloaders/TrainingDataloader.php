@@ -10,6 +10,7 @@ use Coachview\Sync\Models\TrainingTypeComponent;
 use Illuminate\Support\Collection;
 use Coachview\Sync\Models\TrainingType;
 use Exception;
+use function Coachview\Sync\log_cv_exception;
 
 class TrainingDataloader
 {
@@ -17,9 +18,11 @@ class TrainingDataloader
         $query = (new QueryBuilder())
             ->where('publicatieWebsite', 'true')
             ->where('inactief', 'false')
+            ->where('code', 'PC-KLAS')
             ->includeFreeFields()
             ->includeExtraFields()
             ->includeDirectRelations()
+            ->order_by('audittrail.aangemaaktdatumtijd', 'desc')
             ->take($take)
             ->build();
         try {
@@ -42,7 +45,7 @@ class TrainingDataloader
             }
             return collect($result);
         } catch (Exception $e) {
-            error_log("Error loading training types: " . $e->getMessage());
+            log_cv_exception('Load[TrainingTypes]', $e);
             return collect();
         }
     }
@@ -73,8 +76,7 @@ class TrainingDataloader
     public static function __load_trainings(string $training_type_id): Collection {
         $query = (new QueryBuilder())
             ->where('opleidingssoortId', $training_type_id)
-            // TODO: Uncomment this line on production
-//            ->where('publicatie', 'true')
+            ->where('publicatie', 'true')
             ->where('opleidingStatusId', 'TeStarten,Definitief')
             ->where('startDatum', date('d-m-Y'), '>=')
             ->take(100)
@@ -94,7 +96,7 @@ class TrainingDataloader
     {
         $query = (new QueryBuilder())
             ->where('OpleidingId', $training_id)
-//            ->where('publicatie', 'true')
+            ->where('publicatie', 'true')
             ->order_by('datumTijdVan')
             ->includeFreeFields()
             ->includeDirectRelations()

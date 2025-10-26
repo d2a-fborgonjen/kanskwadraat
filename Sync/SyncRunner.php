@@ -3,11 +3,14 @@
 namespace Coachview\Sync;
 
 
+use mysql_xdevapi\Exception;
+
 class SyncRunner
 {
     public static function run(): void
     {
         SyncRunner::onSynchronizationStart();
+        CategorySync::run();
         TrainingSync::run();
         SyncRunner::onSynchronizationFinished();
     }
@@ -16,6 +19,7 @@ class SyncRunner
     {
         update_option('coachview_sync_running', true);
         update_option('coachview_sync_started', current_time('mysql'));
+        update_option('coachview_sync_error', null);
         update_option('coachview_sync_finished', null);
         error_log('Coachview sync started at ' . current_time('mysql'));
     }

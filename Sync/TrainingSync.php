@@ -20,7 +20,7 @@ class TrainingSync {
     public static function run(): void
     {
         TrainingSync::report_progress(0, 1);
-        $take = get_option('training_import_limit', 15);
+        $take = get_option('training_import_limit', 1);
         $training_types = TrainingDataloader::load_training_types($take, [TrainingSync::class, 'report_progress']);
         $training_types->each(function(TrainingType $training_type, $idx) {
             try {
@@ -41,7 +41,7 @@ class TrainingSync {
                 }
                 TrainingSync::__save_product_categories($product, $training_type);
             } catch (Exception $e) {
-                error_log("Error saving training type " . $training_type->code . ": " . $e->getMessage());
+                log_cv_exception("Save[TrainingType::" . $training_type->code . "]", $e);
             }
         });
     }
@@ -73,42 +73,28 @@ class TrainingSync {
     }
 
     private static function __save_product_categories(WC_Product $product, TrainingType $training_type): void {
-        $location_term_id = TrainingSync::__ensure_term_exists('Locations', null, 'product_cat');
-
-        collect($training_type->get_locations())->each(function($location) use ($location_term_id, $product) {
-            $term_id = TrainingSync::__ensure_term_exists($location, $location_term_id, 'product_cat');
-            if ($term_id) {
-                wp_set_object_terms($product->get_id(), $term_id, 'product_cat', true);
-            }
-        });
-
-//
-//
-//        TrainingSync::__ensure_terms_exist($training_type->get_locations(), 'product_cat', 'locations');
-////        wp_set_object_terms( $product->get_id(), TrainingSync::__ensure_terms_exist($training_type->locations, 'locations'), 'cv_locations' );
-////        wp_set_object_terms( $product->get_id(), TrainingSync::__ensure_terms_exist($training_type->categories, 'cv_categories'), 'cv_categories' );
-    }
-
-    private static function __ensure_terms_exist(array $terms, string $taxonomy, ?string $parent): array {
-        $term_ids = [];
-
-        foreach ($terms as $term_name) {
-            $term = term_exists($term_name, $taxonomy);
-            error_log($term_name . ' --- ' . print_r($term, true));
-            if ($term && (is_array($term) && $term['taxonomy'] !== $taxonomy)) {
-                $term = wp_insert_term($term_name, $taxonomy);
-            }
-//            if (!$term || (is_array($term) && $term['taxonomy'] !== $taxonomy)) {
-//                $term = wp_insert_term($term_name, $taxonomy);
-//            }
-
-            if (!is_wp_error($term)) {
-                $term_ids[] = is_array($term) ? $term['term_id'] : $term;
+        $product_cat_ids = [];
+        $location_category_id = get_or_create_category('Locatie');
+        if ($location_category_id !== null) {
+            foreach ($training_type->get_locations() as $location) {
+                $product_cat_ids[] = get_or_create_category($location, $location_category_id);
             }
         }
 
-        return $term_ids;
+        $training_type_category_id = get_or_create_category('Lesvorm');
+        if ($training_type_category_id !== null) {
+            $product_cat_ids[] = get_or_create_category($training_type->get_course_format()->value, $training_type_category_id);
+        }
+
+        foreach($training_type->categories as $category) {
+            $term = get_term_by('name', $category, 'product_cat');
+            if ($term) {
+                $product_cat_ids[] = $term->term_id;
+            }
+        }
+        wp_set_object_terms($product->get_id(), $product_cat_ids, 'product_cat', false);
     }
+
 
     public static function __save_single_product(TrainingType $training_type): WC_Product_Simple
     {
@@ -148,6 +134,7 @@ class TrainingSync {
         $product->update_meta_data('training_duration', $training_type->num_half_days);
         $product->update_meta_data('num_locations', count($training_type->get_locations()));
         $product->update_meta_data('locations', $training_type->get_locations());
+        $product->update_meta_data('start_date', $training_type->trainings->pluck('start_date')->min());
         // one of: elearning, klassikaal, blended
         $product->update_meta_data('training_type_category', $training_type->get_course_format()->value);
         // one of: default, elearning, list
@@ -159,6 +146,8 @@ class TrainingSync {
             $product->set_status('draft');
             $product->add_meta_data('coachview_id', $training_type->id, true);
         }
+
+        $product->set_status('publish');
     }
 
 
@@ -174,17 +163,23 @@ class TrainingSync {
             $variation->set_attributes(['training_code' => $training->code]);
             $variation->set_sku($training->code);
             $variation->set_regular_price($product->get_regular_price());
+            $variation->set_manage_stock(true);
             $variation->set_stock_quantity($training->num_seats_available);
 
             $variation->update_meta_data('coachview_id', $training->id);
-            $variation->update_meta_data('location',  $training->components->pluck('city')->first());
-            $variation->update_meta_data('address', $training->components->pluck('address')->first());
-            $variation->update_meta_data('zipcode', $training->components->pluck('zipcode')->first());
-            $variation->update_meta_data('city', $training->components->pluck('city')->first());
+            $variation->update_meta_data('location',  firstNonEmpty($training->components->pluck('city')));
+            $variation->update_meta_data('address', firstNonEmpty($training->components->pluck('address')));
+            $variation->update_meta_data('zipcode', firstNonEmpty($training->components->pluck('zipcode')));
+            $variation->update_meta_data('city', firstNonEmpty($training->components->pluck('city')));
+            $variation->update_meta_data('start_day', $training->start_day);
             $variation->update_meta_data('start_date', $training->start_date);
             $variation->update_meta_data('end_date', $training->end_date);
             $variation->update_meta_data('total_study_hours', $training->total_study_hours);
             $variation->update_meta_data('total_days', $training->total_days);
+            $variation->update_meta_data('num_seats_taken', $training->num_seats_taken);
+            $variation->update_meta_data('num_seats_available', $training->num_seats_available);
+            $variation->update_meta_data('min_seats', $training->min_seats);
+            $variation->update_meta_data('max_seats', $training->max_seats);
             $variation->save();
 
             return $variation;

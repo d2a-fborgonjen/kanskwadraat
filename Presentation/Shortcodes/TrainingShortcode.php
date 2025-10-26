@@ -39,13 +39,11 @@ class TrainingShortcode {
         $price = wc_price($variation->get_price());
         $location = collect(get_post_meta($variation_id, 'location', true))->first() ?? 'Onbekend';
         $startDate = get_post_meta($variation_id, 'start_date', true);
-        $day = date_i18n('l', $startDate->getTimestamp());
-        $date = date_i18n('j F', $startDate->getTimestamp());
+        error_log(strtotime($startDate));
+        $day = date_i18n('l', strtotime($startDate));
+        $date = date_i18n('j F', strtotime($startDate));
 
-        error_log(print_r($startDate, true));
-
-        $order_page = get_page_by_path('aanmelden');
-        $link = get_permalink($order_page->ID) . '?vid=' . $variation_id;
+        $link = home_url('/aanmelden/') . '?vid=' . $variation_id;
 
         ?>
         <div class="training-info e-con-full e-flex e-con e-child" data-element_type="container" data-training-id="<?= $training_id ?>">

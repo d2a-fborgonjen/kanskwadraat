@@ -16,7 +16,6 @@ class Sync {
     {
         header('Content-Type: application/json');
         echo json_encode(['success' => true, 'message' => 'Sync started']);
-
         ignore_user_abort(true);
         flush();
         if (function_exists('fastcgi_finish_request')) {
@@ -28,11 +27,18 @@ class Sync {
 
     public function __get_sync_progress(): void
     {
-        wp_send_json_success([
-            'num_processed' =>  get_option('coachview_sync_num_processed', 0),
-            'running' =>  get_option('coachview_sync_running'),
-            'started' =>  get_option('coachview_sync_started'),
-            'finished' =>  get_option('coachview_sync_finished'),
-        ]);
+        $error_messages = get_option('coachview_sync_error');
+        if ($error_messages) {
+            wp_send_json_error([
+                'error_log' =>  $error_messages
+            ]);
+        } else {
+            wp_send_json_success([
+                'num_processed' => get_option('coachview_sync_num_processed', 0),
+                'running' => get_option('coachview_sync_running'),
+                'started' => get_option('coachview_sync_started'),
+                'finished' => get_option('coachview_sync_finished'),
+            ]);
+        }
     }
 }

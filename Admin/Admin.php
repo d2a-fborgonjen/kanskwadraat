@@ -34,6 +34,7 @@ class Admin
             $formatted_date = date_i18n(get_option('date_format') . ' om ' . get_option('time_format'), strtotime($last_sync));
             echo '<div id="sync-status" class="updated"><p>Laatste synchronisatie ' . esc_html($formatted_date) . '</p></div>';
         }
+
         ?>
         <div class="wrap">
             <h1>Coachview</h1>
@@ -57,12 +58,14 @@ class Admin
                     <td>Opleidingssoorten</td>
                     <td><?php echo esc_html($counts['trainingType']); ?></td>
                 </tr>
-<!--                <tr>-->
-<!--                    <td>Opleidingen</td>-->
-<!--                    <td>--><?php //echo esc_html($counts['training']); ?><!--</td>-->
-<!--                </tr>-->
+                <tr>
+                    <td>Opleidingen</td>
+                    <td><?php echo esc_html($counts['training']); ?></td>
+                </tr>
                 </tbody>
             </table>
+
+            <div id="sync-error-log"><pre></pre></div>
         </div>
         <?php
     }

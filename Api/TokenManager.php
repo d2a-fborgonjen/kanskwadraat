@@ -1,6 +1,8 @@
 <?php
 namespace Coachview\Api;
 
+use function Coachview\Sync\log_cv_exception;
+
 class TokenManager {
     private static ?TokenManager $instance = null;
 
@@ -36,7 +38,7 @@ class TokenManager {
 //        error_log('Coachview token request: ' . print_r($response, true));
 
         if (is_wp_error($response)) {
-            error_log('Coachview token request failed: ' . $response->get_error_message());
+            log_cv_exception('Request[token]', new Exception($response->get_error_message()));
             return null;
         }
 

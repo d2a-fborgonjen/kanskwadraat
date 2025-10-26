@@ -12,7 +12,8 @@ use Coachview\Admin\Settings;
 use Coachview\Cron\Cron;
 use Coachview\Forms\FormProcessor;
 use Coachview\Forms\OrderForm;
-use Coachview\Presentation\Categories;
+use Coachview\Presentation\Templates\ProductSearchPage;
+use Coachview\Presentation\Templates\RegisterPage;
 use Coachview\Presentation\Hooks\TrainingHooks;
 use Coachview\Presentation\Hooks\TrainingTypeHooks;
 use Coachview\Presentation\Shortcodes\TrainingShortcode;
@@ -27,7 +28,8 @@ add_action('plugins_loaded', function () {
     new ProductMeta();
 
     // Customize wordpress / woocommerce
-    new Categories();
+    new ProductSearchPage();
+    new RegisterPage();
     new TrainingShortcode();
     new TrainingTypeCTAShortcode();
     new TrainingHooks();
@@ -37,4 +39,12 @@ add_action('plugins_loaded', function () {
     new Sync();
     new OrderForm();
     new FormProcessor();
+});
+
+register_activation_hook(__FILE__, function() {
+    $psp = new ProductSearchPage();
+    $psp->add_rewrite_rule();
+    $rp = new RegisterPage();
+    $rp->add_rewrite_rule();
+    flush_rewrite_rules();
 });

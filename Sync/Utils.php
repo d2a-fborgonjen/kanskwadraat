@@ -76,3 +76,37 @@ function minutes_to_time_string(int $minutes): string
 
     return sprintf('%d uur', $hours);
 }
+
+function get_or_create_category(string $name, int $parentId = 0): ?int
+{
+    $term = get_term_by('name', $name, 'product_cat');
+    if ($term) {
+        error_log("Category '$name' exists (ID {$term->term_id})");
+        return $term->term_id;
+    }
+
+    $insert = wp_insert_term($name, 'product_cat', ['parent' => $parentId]);
+    if (is_wp_error($insert)) {
+        error_log("Error creating '$name': " . $insert->get_error_message());
+        return null;
+    }
+
+    $id = (int) $insert['term_id'];
+    error_log("Created category '$name' (ID $id, parent $parentId)");
+    return $id;
+}
+
+function log_cv_exception($action, $exception) {
+    $error_msg = $action . ': ' . $exception->getMessage() . "\n" . $exception->getTraceAsString();
+    error_log($error_msg);
+
+    $error_log = get_option('coachview_sync_error', '');
+    $date = date('Y-m-d H:i:s');
+    $error_log = $error_log . "[$date] $error_msg\n";
+    update_option('coachview_sync_error', $error_log);
+}
+
+// Helper method to find the first non-empty value in a collection
+function firstNonEmpty($collection) {
+    return $collection->first(fn($value) => !empty($value));
+}

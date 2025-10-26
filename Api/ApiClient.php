@@ -34,6 +34,14 @@ class ApiClient {
         return self::$instance;
     }
 
+    public static function category_groups(): ApiEndpoint {
+        return ApiClient::instance()->create_endpoint('/v1/Opleidingssoortcategoriegroepen');
+    }
+
+    public static function categories(): ApiEndpoint {
+        return ApiClient::instance()->create_endpoint('/v1/Opleidingssoortcategorieen');
+    }
+
     public static function training_types(): ApiEndpoint {
         return ApiClient::instance()->create_endpoint('/v1/Opleidingssoorten');
     }

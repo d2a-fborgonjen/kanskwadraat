@@ -20,6 +20,7 @@ class TrainingType {
     ) {
          error_log("TrainingType::__construct called with id: {$this->id}, code: {$this->code}, name: {$this->name}");
          error_log("Locations: " . implode(', ', $this->get_locations()));
+         error_log("Categories: " . implode(', ', $this->categories));
          error_log("Course Format: " . $this->get_course_format()->value);
     }
 
