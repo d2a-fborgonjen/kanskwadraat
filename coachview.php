@@ -11,7 +11,6 @@ use Coachview\Admin\ProductMeta;
 use Coachview\Admin\Settings;
 use Coachview\Cron\Cron;
 use Coachview\Forms\FormProcessor;
-use Coachview\Forms\OrderForm;
 use Coachview\Presentation\Pages\ProductSearchPage;
 use Coachview\Presentation\Pages\RegisterPage;
 use Coachview\Presentation\Hooks\TrainingHooks;
@@ -37,7 +36,6 @@ add_action('plugins_loaded', function () {
 
     new Cron();
     new Sync();
-    new OrderForm();
     new FormProcessor();
 });
 

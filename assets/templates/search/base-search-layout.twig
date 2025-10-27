@@ -1,0 +1,24 @@
+{{ header|raw }}
+
+<div class="coachview-search">
+    <!-- Search Bar -->
+    <div class="coachview-search__bar">
+        <input type="text" class="coachview-search__input" placeholder="Search products…">
+    </div>
+
+    <!-- Main Content -->
+    <div class="coachview-search__content">
+        <!-- Sidebar -->
+        <aside class="coachview-search__sidebar">
+            <h3 class="coachview-search__sidebar-title">Categories</h3>
+            {{ category_list|raw }}
+        </aside>
+
+        <!-- Results Area -->
+        <section class="coachview-search__results">
+            <div class="coachview-search__spinner"></div>
+        </section>
+    </div>
+</div>
+
+{{ footer|raw }}

@@ -74,8 +74,8 @@ class Training {
     }
 
     public static function from_array(array $data, Collection $components): self {
-//        error_log("Training::from_array called with data: ");
-        error_log(print_r($data, true));
+        // error_log("Training::from_array called with data: ");
+        // error_log(print_r($data, true));
 
         $locations = $components->pluck('location')->unique()->toArray();
         $total_days = $components->pluck('date')->unique()->count();

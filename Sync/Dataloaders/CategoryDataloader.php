@@ -21,7 +21,6 @@ class CategoryDataloader
         try {
             $rawData = collect(ApiClient::categories()->get($query));
 
-            error_log("Loaded " . $rawData->count() . " categories");
             return $rawData->groupBy('opleidingssoortcategoriegroep.naam')
                 ->map(fn($items) => $items->pluck('naam')->all())
                 ->toArray();

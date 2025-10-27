@@ -39,7 +39,6 @@ class TrainingShortcode {
         $price = wc_price($variation->get_price());
         $location = collect(get_post_meta($variation_id, 'location', true))->first() ?? 'Onbekend';
         $startDate = get_post_meta($variation_id, 'start_date', true);
-        error_log(strtotime($startDate));
         $day = date_i18n('l', strtotime($startDate));
         $date = date_i18n('j F', strtotime($startDate));
 
