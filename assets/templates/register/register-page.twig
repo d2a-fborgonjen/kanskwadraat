@@ -1,20 +1,22 @@
 {{ header|raw }}
 
-<div class="coachview-register">
-    <h1>Aanmelden!</h1>
-    
-    <div class="elementor-widget-form">
-        {{ form_header|raw }}
-        
-        <form class="coachview-form" method="post" action="{{ form_action }}">
-            {{ hidden_inputs|raw }}
+<div class="register-page">
+    <div class="register-page__container">
+        <div class="register-page__form">
+            {{ form_header|raw }}
             
-            {% for section in form_sections %}
-                {{ section|raw }}
-            {% endfor %}
-            
-            <button type="submit" class="elementor-button">Verzenden</button>
-        </form>
+            <form class="register-form" method="post" action="{{ form_action }}">
+                {{ hidden_inputs|raw }}
+                
+                {% for section in form_sections %}
+                    {{ section|raw }}
+                {% endfor %}
+                
+                <div class="register-form__actions">
+                    <button type="submit" class="register-form__submit">Verzenden</button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 

@@ -1,0 +1,41 @@
+.training {
+    background: #fff;
+    border-radius: 10px;
+    width: 100%;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    padding: 1.5rem;
+    display: flex;
+}
+
+.training-left,
+.training-right {
+    flex-basis: 50%;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+}
+
+.training-right {
+    justify-content: space-between;
+}
+
+.training__show-planning {
+    background: none;
+    border: 0;
+    text-decoration: none;
+}
+
+.training__register {
+    background: #c8f012;
+    color: black;
+    border: none;
+    border-radius: 30px;
+    padding: 1rem 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-transform: uppercase;
+}
+.training__register:hover {
+    background: #aacb14;
+    color: #030303;
+}

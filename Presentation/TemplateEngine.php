@@ -1,5 +1,5 @@
 <?php
-namespace Coachview\Presentation\Pages;
+namespace Coachview\Presentation;
 
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
@@ -11,13 +11,10 @@ class TemplateEngine
     
     public function __construct()
     {
-        $searchTemplateDir = plugin_dir_path(__FILE__) . '../../assets/templates/search/';
-        $registerTemplateDir = plugin_dir_path(__FILE__) . '../../assets/templates/register/';
-        
-        // Initialize Twig with multiple template directories
         $loader = new FilesystemLoader([
-            'search' => $searchTemplateDir,
-            'register' => $registerTemplateDir
+            'search' =>  plugin_dir_path(__FILE__) . '../assets/templates/search/',
+            'register' =>  plugin_dir_path(__FILE__) . '../assets/templates/register/',
+            'training' =>  plugin_dir_path(__FILE__) . '../assets/templates/training/',
         ]);
         
         $this->twig = new Environment($loader, [
@@ -25,8 +22,7 @@ class TemplateEngine
             'debug' => true,  // Set to false in production
             'auto_reload' => true,
         ]);
-        
-        // Add WordPress-specific functions
+
         $this->twig->addFunction(new TwigFunction('esc_html', 'esc_html'));
         $this->twig->addFunction(new TwigFunction('esc_url', 'esc_url'));
         $this->twig->addFunction(new TwigFunction('wp_kses_post', 'wp_kses_post'));

@@ -11,11 +11,11 @@ use Coachview\Admin\ProductMeta;
 use Coachview\Admin\Settings;
 use Coachview\Cron\Cron;
 use Coachview\Forms\FormProcessor;
-use Coachview\Presentation\Pages\ProductSearchPage;
-use Coachview\Presentation\Pages\RegisterPage;
 use Coachview\Presentation\Hooks\TrainingHooks;
 use Coachview\Presentation\Hooks\TrainingTypeHooks;
-use Coachview\Presentation\Shortcodes\TrainingShortcode;
+use Coachview\Presentation\Pages\ProductSearchPage;
+use Coachview\Presentation\Pages\RegisterPage;
+use Coachview\Presentation\Shortcodes\TrainingStartDates;
 use Coachview\Presentation\Shortcodes\TrainingTypeCTAShortcode;
 use Coachview\Sync\Hooks\Sync;
 
@@ -29,7 +29,8 @@ add_action('plugins_loaded', function () {
     // Customize wordpress / woocommerce
     new ProductSearchPage();
     new RegisterPage();
-    new TrainingShortcode();
+    new TrainingStartDates();
+//    new TrainingShortcode();
     new TrainingTypeCTAShortcode();
     new TrainingHooks();
     new TrainingTypeHooks();

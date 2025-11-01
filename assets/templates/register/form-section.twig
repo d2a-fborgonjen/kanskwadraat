@@ -1,0 +1,13 @@
+<section class="form-section">
+    <h2 class="form-section__title">{{ title }}</h2>
+    
+    {% if description %}
+        <p class="form-section__description">{{ description }}</p>
+    {% endif %}
+    
+    <div class="form-section__content">
+        {% for item in items %}
+            {{ item | raw }}
+        {% endfor %}
+    </div>
+</section>

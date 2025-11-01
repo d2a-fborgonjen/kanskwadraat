@@ -2,6 +2,7 @@
 namespace Coachview\Presentation\Pages;
 
 use Coachview\Forms\Models\FormSection;
+use Coachview\Presentation\TemplateEngine;
 use WC_Product;
 use WC_Product_Simple;
 use WC_Product_Variable;
@@ -29,27 +30,25 @@ class RegisterPage
 
     public function template_redirect(): void {
         if (get_query_var('register')) {
-            echo $this->renderRegisterPage();
+            echo $this->render_register_page();
             exit;
         }
     }
 
-    private function renderRegisterPage(): string
+    private function render_register_page(): string
     {
-        [$training_type, $training] = $this->resolveTraining();
+        [$training_type, $training] = $this->resolve_training();
         if (!$training_type) {
             return '<p>' . esc_html__('Ongeldige training.', 'coachview') . '</p>';
         }
-
-        wp_enqueue_style('coachview-forms', plugin_dir_url(__FILE__) . '../../assets/css/coachview-forms.css');
-        return $this->renderForm($training_type, $training);
+        wp_enqueue_style('coachview-forms', plugin_dir_url(__FILE__) . '../../assets/css/register.css');
+        return $this->render_form($training_type, $training);
     }
 
-    private function renderForm(WC_Product $training_type, ?WC_Product_Variation $training): string
+    private function render_form(WC_Product $training_type, ?WC_Product_Variation $training): string
     {
         $form_type = get_post_meta($training_type->get_id(), 'form_type', true) ?? 'default';
         $registration_type = get_registration_type($training_type);
-
         $participant_header = get_post_meta(get_the_ID(), 'participant_header', true) ?? null;
         $contact_person_header = get_post_meta(get_the_ID(), 'contact_person_header', true) ?? null;
 
@@ -70,16 +69,16 @@ class RegisterPage
         $data = [
             'header' => $this->captureHeader(),
             'footer' => $this->captureFooter(),
-            'form_header' => $this->renderFormHeader($training_type, $training),
+            'form_header' => $this->render_form_header($training_type, $training),
             'form_action' => esc_url(admin_url('admin-post.php')),
-            'hidden_inputs' => $this->renderHiddenInputs($training_type, $training),
+            'hidden_inputs' => $this->render_hidden_inputs($training_type, $training),
             'form_sections' => $rendered_sections
         ];
         
         return $this->templateEngine->render('register-page', $data);
     }
 
-    private function resolveTraining(): array
+    private function resolve_training(): array
     {
         if (isset($_GET['vid'])) {
             $training = new WC_Product_Variation((int) $_GET['vid']);
@@ -95,7 +94,7 @@ class RegisterPage
         return [null, null];
     }
 
-    public function renderFormHeader($training_type, $training = null)
+    public function render_form_header($training_type, $training = null)
     {
         $data = [
             'training_type_title' => $training_type->get_title()
@@ -116,7 +115,7 @@ class RegisterPage
         return $this->templateEngine->render('form-header', $data);
     }
 
-    public function renderHiddenInputs($training_type, $training = null)
+    public function render_hidden_inputs($training_type, $training = null)
     {
         $hidden_form_data = [
             '_coachview_wpnonce' => wp_create_nonce('coachview_order_form'),

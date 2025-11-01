@@ -1,0 +1,24 @@
+
+<div class="training-type" data-id="{{ product_id }}">
+    {% for variation in variations %}
+        <div class="training" data-training-id="{{ variation.id }}">
+          <div class="training-left">
+
+            <p class="training__date">{{ variation.date }}</p>
+
+            <p class="training__price">{{ variation.price | raw }}</p>
+
+            <p class="training__location">{{ variation.location }}</p>
+            </div>
+
+          <div class="training-right">
+              <a href="#show-planning" class="training__show-planning">
+                Toon planning
+              </a>
+              <a href="{{ variation.link }}" class="training__register">
+                {{ variation.is_in_stock ? 'Inschrijven' : 'Wachtlijst' }}
+              </a>
+            </div>
+        </div>
+    {% endfor %}
+</div>

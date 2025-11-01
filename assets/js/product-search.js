@@ -11,15 +11,15 @@ jQuery(document).ready(function($) {
         }).get();
 
         $.ajax({
-            url: '/wp-admin/admin-ajax.php',
+            url: '/wp-json/coachview/v1/products/filter',
             method: 'POST',
-            data: {
-                action: 'filter_products',
+            contentType: 'application/json',
+            data: JSON.stringify({
                 search: $search.val(),
-                'categories[]': categories
-            },
-            success: function(html) {
-                $results.html('<div class="coachview-search__spinner"></div>' + html);
+                categories: categories
+            }),
+            success: function(response) {
+                $results.html('<div class="coachview-search__spinner"></div>' + response);
                 $spinner.hide();
             }
         });

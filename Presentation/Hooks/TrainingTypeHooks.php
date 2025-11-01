@@ -10,7 +10,7 @@ class TrainingTypeHooks {
         remove_action( 'woocommerce_single_product_summary', 'woocommerce_template_single_add_to_cart', 30 );
 
         add_action('woocommerce_single_product_summary', [$this, 'render_training_type_details'], 25);
-        add_action('woocommerce_after_single_product_summary', [$this, 'render_training_type_details_after_description'], 5);
+        add_action('woocommerce_after_single_product', [$this, 'render_training_type_details_after_description'], 5);
     }
 
     public function render_training_type_details(): void
@@ -31,9 +31,8 @@ class TrainingTypeHooks {
         if (!$product) {
             return;
         }
-
         $atts = ['id' => $product->get_id()];
-        $shortcode = '[cv_training_details id="' . $atts['id'] . '"]';
+        $shortcode = '[cv_training_start_dates id="' . $atts['id'] . '"]';
         echo do_shortcode($shortcode);
     }
 

@@ -3,6 +3,7 @@
 namespace Coachview\Forms\Models;
 
 use Coachview\Presentation\Enums\RegistrationType;
+use Coachview\Presentation\TemplateEngine;
 
 class FormSection extends FormElement {
 
@@ -18,16 +19,22 @@ class FormSection extends FormElement {
         if (!$this->canShow($form_type, $registration_type)) {
             return '';
         }
-        $output = "<h2>" . $this->title . "</h2>";
-        $output .= "<section class='form-section'>";
-        if ($this->description) {
-            $output .= "<p>{$this->description}</p>";
-        }
+        
+        $templateEngine = new TemplateEngine();
+        
+        // Prepare items with their render methods
+        $renderedItems = [];
         foreach ($this->items as $item) {
-            $output .= $item->render($form_type, $registration_type);
+            $renderedItems[] = $item->render($form_type, $registration_type);
         }
-        $output .= "</section>";
-        return $output;
+        
+        $data = [
+            'title' => $this->title,
+            'description' => $this->description,
+            'items' => $renderedItems
+        ];
+        
+        return $templateEngine->render('form-section', $data);
     }
 
     public function with_title(?string $title): self {
