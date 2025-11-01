@@ -12,32 +12,39 @@ class RegisterPage
 {
     private $templateEngine;
 
-    function __construct()
-    {
-        $this->templateEngine = new TemplateEngine();
-        
-        add_filter('query_vars', function ($vars) {
-            $vars[] = 'register';
-            return $vars;
-        });
-
+    public function __construct() {
+        add_shortcode('cv_register_form', [$this, 'apply_register_form_shortcode']);
+        add_filter('query_vars', [$this, 'parse_query_vars']);
         add_action('template_redirect', [$this, 'template_redirect']);
+    }
+
+    public function parse_query_vars($vars): array {
+        $vars[] = 'register';
+        return $vars;
     }
 
     public function add_rewrite_rule() {
         add_rewrite_rule('^aanmelden/?$', 'index.php?register=1', 'top');
     }
 
+    public function apply_register_form_shortcode($atts): string
+    {
+        $atts = shortcode_atts(['vid' => null, 'pid' => null], $atts, 'cv_register_form');
+        return $this->render_register_page($atts['vid'], $atts['pid']);
+    }
+
+
     public function template_redirect(): void {
         if (get_query_var('register')) {
-            echo $this->render_register_page();
+            echo $this->render_register_page($_GET['vid'], $_GET['pid']);
             exit;
         }
     }
 
-    private function render_register_page(): string
+    private function render_register_page(mixed $vid, mixed $pid): string
     {
-        [$training_type, $training] = $this->resolve_training();
+        $this->templateEngine = new TemplateEngine();
+        [$training_type, $training] = $this->resolve_training($vid, $pid);
         if (!$training_type) {
             return '<p>' . esc_html__('Ongeldige training.', 'coachview') . '</p>';
         }
@@ -78,16 +85,16 @@ class RegisterPage
         return $this->templateEngine->render('register-page', $data);
     }
 
-    private function resolve_training(): array
+    private function resolve_training(mixed $vid, mixed $pid): array
     {
-        if (isset($_GET['vid'])) {
-            $training = new WC_Product_Variation((int) $_GET['vid']);
+        if ($vid) {
+            $training = new WC_Product_Variation((int)$vid);
             $training_type = new WC_Product_Variable($training->get_parent_id());
             return [$training_type, $training];
         }
 
-        if (isset($_GET['pid'])) {
-            $training_type = new WC_Product_Simple((int) $_GET['pid']);
+        if ($pid) {
+            $training_type = new WC_Product_Simple((int)$pid);
             return [$training_type, null];
         }
 
