@@ -10,15 +10,22 @@ class ProductSearchPage
 
     function __construct()
     {
-        $this->templateEngine = new TemplateEngine();
-        
         add_filter('query_vars', [$this, 'add_query_vars']);
+        add_action('init', [$this, 'add_rewrite_rule']);
         add_action('template_redirect', [$this, 'template_redirect']);
         add_action('rest_api_init', [$this, 'register_rest_routes']);
     }
 
     public function add_rewrite_rule() {
+        error_log('Adding rewrite rule for product search page');
         add_rewrite_rule('^zoek/?$', 'index.php?product_search_page=1', 'top');
+    }
+
+    public function template_redirect() {
+        if (get_query_var('product_search_page')) {
+            echo $this->renderSearchPage();
+            exit;
+        }
     }
 
     public function add_query_vars($vars) {
@@ -48,17 +55,11 @@ class ProductSearchPage
         ]);
     }
 
-    public function template_redirect() {
-        if (get_query_var('product_search_page')) {
-            echo $this->renderSearchPage();
-            exit;
-        }
-    }
-
     private function renderSearchPage(): string {
         wp_enqueue_style('coachview-search-css', plugin_dir_url(__FILE__) . '../../assets/css/product-search.css');
         wp_enqueue_script('coachview-search-js', plugin_dir_url(__FILE__) . '../../assets/js/product-search.js', array('jquery'), null, true);
 
+        $this->templateEngine = new TemplateEngine();
         $data = [
             'category_list' => $this->renderCategorySidebar(),
             'header' => $this->captureHeader(),
@@ -165,6 +166,7 @@ class ProductSearchPage
         $products = wc_get_products($args);
         $html = '';
 
+        $this->templateEngine = new TemplateEngine();
         foreach ($products as $product) {
             $html .= $this->renderProductCard($product);
         }

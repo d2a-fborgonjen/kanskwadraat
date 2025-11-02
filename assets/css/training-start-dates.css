@@ -1,14 +1,34 @@
+:root {
+    --start-dates-gap: 12px;
+    --start-dates-bg-color: #002250;
+    --start-dates-header-text-color: #002250;
+    --start-dates-icon-width: 20px;
+    --start-dates-icon-to-txt-gap: 12px;
+}
+
+.training-type {
+    display: flex;
+    flex-direction: column;
+    gap: var(--start-dates-gap);
+    background: var(--start-dates-bg-color);
+    padding: 16px;
+}
+
 .training {
     background: #fff;
     border-radius: 10px;
     width: 100%;
     box-shadow: 0 2px 8px rgba(0,0,0,0.08);
     padding: 1.5rem;
-    display: flex;
 }
 
-.training-left,
-.training-right {
+.training__header {
+    display: flex;
+    color: var(--start-dates-header-text-color);
+}
+
+.training__header-left,
+.training__header-right {
     flex-basis: 50%;
     display: flex;
     align-items: center;
@@ -25,17 +45,81 @@
     text-decoration: none;
 }
 
+.training__date,
+.training__price,
+.training__location,
+.training__show-planning {
+    color: inherit;
+    flex-basis: 25%;
+    font-weight: 600;
+    display: flex;
+    gap: var(--start-dates-icon-to-txt-gap);
+    align-items: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.training__icon {
+     width: var(--start-dates-icon-width);
+}
+
+/** Show planning buttons **/
+a.training__show-planning {
+    flex-basis: 50%;
+}
+
+a.training__show-planning:hover {
+    text-decoration: underline;
+}
+
+.training__show-planning-icon {
+    transform-origin: center;
+    transition: transform 0.3s ease;
+    width: 16px;
+}
+
+.training.opened .training__show-planning-icon {
+    transform: rotate(180deg);
+}
+
 .training__register {
     background: #c8f012;
     color: black;
     border: none;
     border-radius: 30px;
-    padding: 1rem 1rem;
+    padding: 1rem 1.5rem;
     font-weight: 600;
     cursor: pointer;
     text-transform: uppercase;
+    display: flex;
 }
 .training__register:hover {
     background: #aacb14;
     color: #030303;
+}
+
+.training__planning {
+    display: none;
+}
+
+.training__planning h3 {
+    font-size: 18px;
+    font-weight: bold;
+    margin: 0;
+}
+.training__planning-lessons {
+    margin-bottom: 12px;
+}
+.training__planning-lessons li div {
+    display: flex;
+}
+.training__planning-lessons li div > span {
+    flex-basis: 25%;
+}
+.training__planning-lessons li div > span.training__planning-lessons-description {
+    flex-basis: 40%;
+}
+
+.flex-grow {
+    flex-grow: 1;
 }

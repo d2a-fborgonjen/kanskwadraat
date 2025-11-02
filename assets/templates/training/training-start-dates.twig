@@ -1,24 +1,80 @@
-
 <div class="training-type" data-id="{{ product_id }}">
     {% for variation in variations %}
-        <div class="training" data-training-id="{{ variation.id }}">
-          <div class="training-left">
+    <div class="training" data-training-id="{{ variation.id }}">
+        <div class="training__header">
+            <div class="training__header-left">
 
-            <p class="training__date">{{ variation.date }}</p>
+                <div class="training__date">
+                    <img class="training__icon" src="{{ assets_url }}img/icon_calendar.png" alt="Datum"/>
+                    {{ variation.date }}
+                </div>
 
-            <p class="training__price">{{ variation.price | raw }}</p>
+                <div class="training__price">
+                    <img class="training__icon" src="{{ assets_url }}img/icon_price.png" alt="Datum"/>
+                    {{ variation.price | raw }}
+                </div>
 
-            <p class="training__location">{{ variation.location }}</p>
+                <div class="training__location">
+                    <img class="training__icon" src="{{ assets_url }}img/icon_location.png" alt="Datum"/>
+                    {{ variation.location }}
+                </div>
             </div>
 
-          <div class="training-right">
-              <a href="#show-planning" class="training__show-planning">
-                Toon planning
-              </a>
-              <a href="{{ variation.link }}" class="training__register">
-                {{ variation.is_in_stock ? 'Inschrijven' : 'Wachtlijst' }}
-              </a>
+            <div class="training__header-right">
+                <a href="#show-planning" class="training__show-planning">
+                    <img class="training__icon" src="{{ assets_url }}img/icon_calendar.png" alt="Datum"/>
+                    <span>
+                        Toon planning
+                        <img class="training__show-planning-icon" src="{{ assets_url }}img/icon_caret_down.svg"></span>
+                    </span>
+                </a>
+                <span class="flex-grow"></span>
+                <a href="{{ variation.link }}" class="training__register">
+                    {{ variation.is_in_stock ? 'Inschrijven' : 'Wachtlijst' }}
+                    <img src="{{ assets_url }}img/icon_caret_right.svg">
+                </a>
             </div>
         </div>
+
+        <div class="training__planning">
+            <h3>Lesdagen en planning</h3>
+            <ul class="training__planning-lessons">
+                {% for entry in variation.planning %}
+                <li>
+                    <div>
+                        <span class="training__planning-lessons-description">{{ entry.name }}</span>
+                        <span class="training__planning-lessons-date">{{ entry.formatted_date }}</span>
+                        <span class="training__planning-lessons-time">{{ entry.time }} uur</span>
+                        <span class="training__planning-lessons-city">{{ entry.city }}</span>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+            <h3>Locatiegegevens</h3>
+            <p class="training__planning-location-details">
+                {{ variation.location }}<br/>
+                {{ variation.address }}<br/>
+                {{ variation.zipcode }} {{ variation.city }}<br/>
+            </p>
+        </div>
+    </div>
     {% endfor %}
 </div>
+
+<script>
+    // Click '.training__show-planning' should toggle the visibility of the corresponding '.training__planning' div
+    // Also add the class 'opened' to the '.training' div when opened
+    // use Jquery
+
+    jQuery(document).ready(function ($) {
+        $('.training__show-planning').on('click', function (e) {
+            e.preventDefault();
+            var $training = $(this).closest('.training');
+            var $planning = $training.find('.training__planning');
+
+            $planning.slideToggle(300, function () {
+                $training.toggleClass('opened', $planning.is(':visible'));
+            });
+        });
+    });
+</script>

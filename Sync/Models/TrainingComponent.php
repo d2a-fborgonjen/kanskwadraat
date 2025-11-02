@@ -149,13 +149,13 @@ class TrainingComponent {
         public string       $name,
         public CourseFormat $course_format,   // e.g. 'Klassikaal', 'E-learning'
         public int          $sequence_number, // e.g. 7
-        public string       $location,        // e.g. 'Utrecht'
+        public string       $location,        // e.g. 'Maximus Brouwerij' or 'Online'
         public ?string      $address,         // e.g. 'Kalverstraat 2a'
         public ?string      $zipcode,         // e.g. '1234 AB'
         public ?string      $city,            // e.g. 'Amsterdam'
         public ?string      $date,            // e.g. '2025-06-06'
         public ?string      $start_time,      // e.g. '09:30:00'
-        public ?string      $end_time,        // e.g. '17:00:00'
+        public ?string      $end_time,        // e.g. '17:00:00',
     ) {
     }
 

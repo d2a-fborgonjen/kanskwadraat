@@ -26,11 +26,10 @@ add_action('plugins_loaded', function () {
     new ProductList();
     new ProductMeta();
 
-    // Customize wordpress / woocommerce
+    // Presentation
     new ProductSearchPage();
     new RegisterPage();
     new TrainingStartDates();
-//    new TrainingShortcode();
     new TrainingTypeCTAShortcode();
     new TrainingHooks();
     new TrainingTypeHooks();
@@ -41,9 +40,7 @@ add_action('plugins_loaded', function () {
 });
 
 register_activation_hook(__FILE__, function() {
-    $psp = new ProductSearchPage();
-    $psp->add_rewrite_rule();
-    $rp = new RegisterPage();
-    $rp->add_rewrite_rule();
+    (new ProductSearchPage())->add_rewrite_rule();
+    (new RegisterPage())->add_rewrite_rule();
     flush_rewrite_rules();
 });

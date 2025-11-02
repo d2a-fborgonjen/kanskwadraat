@@ -167,10 +167,11 @@ class TrainingSync {
             $variation->set_stock_quantity($training->num_seats_available);
 
             $variation->update_meta_data('coachview_id', $training->id);
-            $variation->update_meta_data('location',  firstNonEmpty($training->components->pluck('city')));
+            $variation->update_meta_data('location',  firstNonEmpty($training->components->pluck('location')));
             $variation->update_meta_data('address', firstNonEmpty($training->components->pluck('address')));
             $variation->update_meta_data('zipcode', firstNonEmpty($training->components->pluck('zipcode')));
             $variation->update_meta_data('city', firstNonEmpty($training->components->pluck('city')));
+            $variation->update_meta_data('planning', json_encode($training->components));
             $variation->update_meta_data('start_day', $training->start_day);
             $variation->update_meta_data('start_date', $training->start_date);
             $variation->update_meta_data('end_date', $training->end_date);

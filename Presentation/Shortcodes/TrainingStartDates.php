@@ -2,7 +2,9 @@
 
 namespace Coachview\Presentation\Shortcodes;
 
+use Coachview\Presentation\Enums\CourseFormat;
 use Coachview\Presentation\TemplateEngine;
+use WC_Product_Variation;
 
 /**
  * Lists the available trainings (product variations) for the given training type (product)
@@ -33,7 +35,8 @@ class TrainingStartDates
         // Prepare data for template
         $template_data = [
             'product_id' => $product->get_id(),
-            'variations' => $this->prepare_variations_data($variations)
+            'variations' => $this->prepare_variations_data($variations),
+            'assets_url' => plugin_dir_url(__FILE__) . '../../assets/'
         ];
 
         $template_engine = new TemplateEngine();
@@ -55,9 +58,45 @@ class TrainingStartDates
                 'date' => $date,
                 'link' => $link,
                 'is_in_stock' => $variation->is_in_stock(),
-                'price' => wc_price($variation->get_price())
+                'price' => wc_price($variation->get_price()),
+                'location' => get_post_meta($variation_id, 'location', true),
+                'address' => get_post_meta($variation_id, 'address', true),
+                'zipcode' => get_post_meta($variation_id, 'zipcode', true),
+                'city' => get_post_meta($variation_id, 'city', true),
+                'planning' => $this->prepare_planning_data($variation)
             ];
         }
         return $prepared_variations;
     }
+
+    private function prepare_planning_data(WC_Product_Variation $variation): array
+    {
+        $planningJson = get_post_meta($variation->get_id(), 'planning', true);
+        $planningEvents = json_decode($planningJson, true) ?? [];
+
+        $first_date = collect($planningEvents)->pluck('date')->filter()->sort()->first();
+        return array_map(function($event) use ($first_date) {
+            $entry = [];
+            $entry['course_format'] = $event['course_format'];
+            $entry['name'] = $event['name'];
+            $entry['city'] = $event['city'];
+
+            if (!empty($event['start_time'])) {
+                $entry['time'] = date_i18n('H:i', strtotime($event['start_time']));
+                if (!empty($event['end_time'])) {
+                    $entry['time'] .= ' - ' . date_i18n('H:i', strtotime($event['end_time']));
+                }
+            }
+
+            if (!empty($event['date'])) {
+                $entry['formatted_date'] = date_i18n('D. j M. Y', strtotime($event['date']));
+            } else if ($event['course_format'] == CourseFormat::E_LEARNING->value && !empty($first_date)) {
+                $elearning_date = date('Y-m-d', strtotime($first_date . ' -1 day'));;
+                $entry['formatted_date'] = date_i18n('D. j M. Y', strtotime($elearning_date));
+                $entry['time'] = '23:00';
+            }
+            return $entry;
+        }, $planningEvents);
+    }
+
 }
