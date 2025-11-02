@@ -4,7 +4,7 @@ namespace Coachview\Presentation\Pages;
 use Coachview\Presentation\TemplateEngine;
 use WP_REST_Response;
 
-class ProductSearchPage
+class TrainingTypeSearchPage
 {
     private $templateEngine;
 
@@ -17,19 +17,18 @@ class ProductSearchPage
     }
 
     public function add_rewrite_rule() {
-        error_log('Adding rewrite rule for product search page');
-        add_rewrite_rule('^zoek/?$', 'index.php?product_search_page=1', 'top');
+        add_rewrite_rule('^zoek\-opleidingen/?$', 'index.php?training_type_search=1', 'top');
     }
 
     public function template_redirect() {
-        if (get_query_var('product_search_page')) {
+        if (get_query_var('training_type_search')) {
             echo $this->renderSearchPage();
             exit;
         }
     }
 
     public function add_query_vars($vars) {
-        $vars[] = 'product_search_page';
+        $vars[] = 'training_type_search';
         return $vars;
     }
 
@@ -56,8 +55,10 @@ class ProductSearchPage
     }
 
     private function renderSearchPage(): string {
-        wp_enqueue_style('coachview-search-css', plugin_dir_url(__FILE__) . '../../assets/css/product-search.css');
-        wp_enqueue_script('coachview-search-js', plugin_dir_url(__FILE__) . '../../assets/js/product-search.js', array('jquery'), null, true);
+        wp_enqueue_style('coachview-common', plugin_dir_url(__FILE__) . '../../assets/css/common.css');
+        wp_enqueue_style('coachview-search', plugin_dir_url(__FILE__) . '../../assets/css/training-type-search.css');
+        wp_enqueue_style('coachview-search-items', plugin_dir_url(__FILE__) . '../../assets/css/training-type-search-item.css');
+        wp_enqueue_script('coachview-search', plugin_dir_url(__FILE__) . '../../assets/js/training-type-search.js', array('jquery'), null, true);
 
         $this->templateEngine = new TemplateEngine();
         $data = [
@@ -110,8 +111,9 @@ class ProductSearchPage
                     'name' => $child->name
                 ];
             }
-            
-            $categories[] = $category;
+            if (!empty($category['child_categories'])) {
+                $categories[] = $category;
+            }
         }
         
         return $this->templateEngine->render('category-sidebar', ['parent_categories' => $categories]);

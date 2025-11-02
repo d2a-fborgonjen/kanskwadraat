@@ -16,7 +16,7 @@
 
                 <div class="training__location">
                     <img class="training__icon" src="{{ assets_url }}img/icon_location.png" alt="Datum"/>
-                    {{ variation.location }}
+                    {{ variation.city }}
                 </div>
             </div>
 
@@ -29,7 +29,7 @@
                     </span>
                 </a>
                 <span class="flex-grow"></span>
-                <a href="{{ variation.link }}" class="training__register">
+                <a href="{{ variation.link }}" class="button-primary training__register">
                     {{ variation.is_in_stock ? 'Inschrijven' : 'Wachtlijst' }}
                     <img src="{{ assets_url }}img/icon_caret_right.svg">
                 </a>
@@ -60,21 +60,3 @@
     </div>
     {% endfor %}
 </div>
-
-<script>
-    // Click '.training__show-planning' should toggle the visibility of the corresponding '.training__planning' div
-    // Also add the class 'opened' to the '.training' div when opened
-    // use Jquery
-
-    jQuery(document).ready(function ($) {
-        $('.training__show-planning').on('click', function (e) {
-            e.preventDefault();
-            var $training = $(this).closest('.training');
-            var $planning = $training.find('.training__planning');
-
-            $planning.slideToggle(300, function () {
-                $training.toggleClass('opened', $planning.is(':visible'));
-            });
-        });
-    });
-</script>

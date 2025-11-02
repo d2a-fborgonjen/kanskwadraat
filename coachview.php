@@ -13,9 +13,9 @@ use Coachview\Cron\Cron;
 use Coachview\Forms\FormProcessor;
 use Coachview\Presentation\Hooks\TrainingHooks;
 use Coachview\Presentation\Hooks\TrainingTypeHooks;
-use Coachview\Presentation\Pages\ProductSearchPage;
+use Coachview\Presentation\Pages\TrainingTypeSearchPage;
 use Coachview\Presentation\Pages\RegisterPage;
-use Coachview\Presentation\Shortcodes\TrainingStartDates;
+use Coachview\Presentation\Shortcodes\TrainingTypeStartDates;
 use Coachview\Presentation\Shortcodes\TrainingTypeCTAShortcode;
 use Coachview\Sync\Hooks\Sync;
 
@@ -27,9 +27,9 @@ add_action('plugins_loaded', function () {
     new ProductMeta();
 
     // Presentation
-    new ProductSearchPage();
+    new TrainingTypeSearchPage();
     new RegisterPage();
-    new TrainingStartDates();
+    new TrainingTypeStartDates();
     new TrainingTypeCTAShortcode();
     new TrainingHooks();
     new TrainingTypeHooks();
@@ -40,7 +40,7 @@ add_action('plugins_loaded', function () {
 });
 
 register_activation_hook(__FILE__, function() {
-    (new ProductSearchPage())->add_rewrite_rule();
+    (new TrainingTypeSearchPage())->add_rewrite_rule();
     (new RegisterPage())->add_rewrite_rule();
     flush_rewrite_rules();
 });

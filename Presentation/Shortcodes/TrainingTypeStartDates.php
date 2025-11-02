@@ -9,15 +9,15 @@ use WC_Product_Variation;
 /**
  * Lists the available trainings (product variations) for the given training type (product)
  */
-class TrainingStartDates
+class TrainingTypeStartDates
 {
     public function __construct() {
-        add_shortcode('cv_training_start_dates', [$this, 'apply_start_dates_shortcode']);
+        add_shortcode('cv_training_type_start_dates', [$this, 'apply_start_dates_shortcode']);
     }
 
     public function apply_start_dates_shortcode($atts): string
     {
-        $atts = shortcode_atts(['id' => null], $atts, 'cv_training_start_dates');
+        $atts = shortcode_atts(['id' => null], $atts, 'cv_training_type_start_dates');
         return $this->render_start_dates($atts['id']);
     }
 
@@ -30,7 +30,9 @@ class TrainingStartDates
         // TODO: Filter based on dates?
         $variations = $product->get_available_variations('products');
 
-        wp_enqueue_style('coachview-training', plugin_dir_url(__FILE__) . '../../assets/css/training-start-dates.css');
+        wp_enqueue_style('coachview-common', plugin_dir_url(__FILE__) . '../../assets/css/common.css');
+        wp_enqueue_style('coachview-training-type-start-dates', plugin_dir_url(__FILE__) . '../../assets/css/training-type-start-dates.css');
+        wp_enqueue_script('coachview-training-type-start-dates', plugin_dir_url(__FILE__) . '../../assets/js/training-type-start-dates.js');
 
         // Prepare data for template
         $template_data = [
@@ -59,9 +61,6 @@ class TrainingStartDates
                 'link' => $link,
                 'is_in_stock' => $variation->is_in_stock(),
                 'price' => wc_price($variation->get_price()),
-                'location' => get_post_meta($variation_id, 'location', true),
-                'address' => get_post_meta($variation_id, 'address', true),
-                'zipcode' => get_post_meta($variation_id, 'zipcode', true),
                 'city' => get_post_meta($variation_id, 'city', true),
                 'planning' => $this->prepare_planning_data($variation)
             ];

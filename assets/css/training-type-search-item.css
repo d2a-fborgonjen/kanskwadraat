@@ -1,0 +1,76 @@
+
+
+.coachview-search__product {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    background: #fff;
+    padding: 1rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    transition: transform 0.1s ease;
+}
+
+.coachview-search__product:hover {
+    box-shadow: 0 1px 6px rgba(0,0,0,0.1);
+}
+
+.coachview-search__product-img {
+    width: 100px;
+    height: auto;
+    border-radius: 8px;
+    flex-shrink: 0;
+}
+
+.coachview-search__product-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.coachview-search__product-title {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #222;
+}
+
+.coachview-search__product-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.25rem;
+}
+
+.coachview-search__product-price,
+.coachview-search__product-num-locations,
+.coachview-search__product-duration {
+    background: #0366d6;
+    color: #eef6ff;
+    border-radius: 20px;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.coachview-search__product-start-date {
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+    color: #555;
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+.coachview-search__product-start-date__day {
+    font-weight: 600;
+    color: #333;
+}
+.coachview-search__product-start-date__date {
+    background: #0073aa;
+    color: #fff;
+    border-radius: 12px;
+    padding: 0.2rem 0.6rem;
+    font-size: 0.85rem;
+}

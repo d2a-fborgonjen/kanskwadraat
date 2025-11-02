@@ -1,24 +1,35 @@
 {{ header|raw }}
 
 <div class="coachview-search">
-    <!-- Search Bar -->
-    <div class="coachview-search__bar">
-        <input type="text" class="coachview-search__input" placeholder="Search products…">
-    </div>
-
     <!-- Main Content -->
     <div class="coachview-search__content">
-        <!-- Sidebar -->
-        <aside class="coachview-search__sidebar">
-            <h3 class="coachview-search__sidebar-title">Categories</h3>
-            {{ category_list|raw }}
-        </aside>
+        <!-- Filter bar -->
+        <div class="coachview-search__bar">
+            <button class="coachview-search__open-filters button-primary">
+                Filters
+            </button>
+            <!--        <input type="text" class="coachview-search__input" placeholder="Search products…">-->
+        </div>
 
         <!-- Results Area -->
         <section class="coachview-search__results">
             <div class="coachview-search__spinner"></div>
         </section>
     </div>
+
+
+    <!-- Filters -->
+    <div class="coachview-search__filters-wrapper">
+        <aside class="coachview-search__filters">
+            <h3 class="coachview-search__filters-title">
+                Filters
+                <a class="coachview-search__close-filters" href="#close">x</a>
+            </h3>
+            {{ category_list|raw }}
+        </aside>
+    </div>
+
 </div>
+
 
 {{ footer|raw }}

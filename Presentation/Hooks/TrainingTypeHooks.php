@@ -32,7 +32,7 @@ class TrainingTypeHooks {
             return;
         }
         $atts = ['id' => $product->get_id()];
-        $shortcode = '[cv_training_start_dates id="' . $atts['id'] . '"]';
+        $shortcode = '[cv_training_type_start_dates id="' . $atts['id'] . '"]';
         echo do_shortcode($shortcode);
     }
 

@@ -82,21 +82,6 @@ a.training__show-planning:hover {
     transform: rotate(180deg);
 }
 
-.training__register {
-    background: #c8f012;
-    color: black;
-    border: none;
-    border-radius: 30px;
-    padding: 1rem 1.5rem;
-    font-weight: 600;
-    cursor: pointer;
-    text-transform: uppercase;
-    display: flex;
-}
-.training__register:hover {
-    background: #aacb14;
-    color: #030303;
-}
 
 .training__planning {
     display: none;

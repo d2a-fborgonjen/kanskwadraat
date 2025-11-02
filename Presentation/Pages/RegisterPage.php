@@ -16,6 +16,7 @@ class RegisterPage
         add_shortcode('cv_register_form', [$this, 'apply_register_form_shortcode']);
         add_filter('query_vars', [$this, 'parse_query_vars']);
         add_action('template_redirect', [$this, 'template_redirect']);
+        add_action('init', [$this, 'add_rewrite_rule']);
     }
 
     public function parse_query_vars($vars): array {
