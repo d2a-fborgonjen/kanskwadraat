@@ -2,7 +2,6 @@
 
 namespace Coachview\Admin;
 
-use Coachview\Sync\SyncRunner;
 use Coachview\Sync\Store\TrainingDetail;
 
 use function Coachview\Sync\get_item_count;

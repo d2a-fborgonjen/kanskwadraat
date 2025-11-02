@@ -1,15 +1,17 @@
 :root {
-    --button-primary-bg: #c8f012;
-    --button-primary-hover-bg: #d7ff60;
-    --button-primary-color: #002250;
+    --cv-color-primary: #002250;
+    --cv-color-secondary: #569aa1;
+    --cv-color-accent: #c8f012;
+
+
     --button-primary-font-size: 18px;
     --button-primary-border-radius: 2rem;
     --button-primary-padding: 1rem 1.5rem;
 }
 
 .button-primary {
-    background: var(--button-primary-bg);
-    color: var(--button-primary-color);
+    background: var(--cv-color-accent);
+    color: var(--cv-color-primary);
 
     border-radius: var(--button-primary-border-radius);
     padding: var(--button-primary-padding);
@@ -21,6 +23,5 @@
     display: flex;
 }
 .button-primary:hover {
-    background: var(--button-primary-hover-bg);
-    color: var(--button-primary-color);
+    filter: brightness(110%);
 }

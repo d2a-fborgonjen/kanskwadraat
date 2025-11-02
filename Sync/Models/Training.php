@@ -4,6 +4,7 @@ namespace Coachview\Sync\Models;
 
 use DateTime;
 use Illuminate\Support\Collection;
+use function Coachview\Sync\firstNonEmpty;
 
 /*
 
@@ -58,6 +59,7 @@ class Training {
         public string   $id,
         public string   $code,
         public string   $name,
+        public string   $city,                  // e.g. 'Utrecht'
         public string   $status,                // e.g. 'TeStarten', 'Definitief'
         public string   $start_day,             // e.g. 'Vrijdag'
         public string   $start_date,            // e.g. '2025-06-06T09:30:00'
@@ -68,7 +70,7 @@ class Training {
         public int      $num_seats_available,   // e.g. 12
         public int      $min_seats,             // e.g. 5
         public int      $max_seats,             // e.g. 12
-        public array    $locations,
+        public array    $locations,             // e,g, ['Maximus Brouwerij']
         public Collection $components
     ) {
     }
@@ -78,11 +80,14 @@ class Training {
         // error_log(print_r($data, true));
 
         $locations = $components->pluck('location')->unique()->toArray();
+        $city = firstNonEmpty($components->pluck('city'));
         $total_days = $components->pluck('date')->unique()->count();
+
         return new self(
             id: $data['id'],
             code: $data['code'],
             name: $data['naam'],
+            city: $city,
             status: $data['opleidingStatusId'],
             start_day: $data['startDag'],
             start_date: $data['startDatum'], // DateTime::createFromFormat("Y-m-d\TH:i:s", $data['startDatum']),

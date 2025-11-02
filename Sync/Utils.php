@@ -107,6 +107,6 @@ function log_cv_exception($action, $exception) {
 }
 
 // Helper method to find the first non-empty value in a collection
-function firstNonEmpty($collection) {
-    return $collection->first(fn($value) => !empty($value));
+function firstNonEmpty($array_or_collection) {
+    return collect($array_or_collection)->first(fn($value) => !empty($value));
 }

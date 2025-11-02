@@ -132,8 +132,9 @@ class TrainingSync {
         $product->set_sku($training_type->code);
         $product->set_regular_price($training_type->price);
         $product->update_meta_data('training_duration', $training_type->num_half_days);
-        $product->update_meta_data('num_locations', count($training_type->get_locations()));
         $product->update_meta_data('locations', $training_type->get_locations());
+        $product->update_meta_data('num_locations', count($training_type->get_locations()));
+        $product->update_meta_data('cities', $training_type->get_cities());
         $product->update_meta_data('start_date', $training_type->trainings->pluck('start_date')->min());
         // one of: elearning, klassikaal, blended
         $product->update_meta_data('training_type_category', $training_type->get_course_format()->value);

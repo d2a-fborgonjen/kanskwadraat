@@ -4,6 +4,7 @@ namespace Coachview\Sync\Models;
 
 use Coachview\Presentation\Enums\CourseFormat;
 use DateTime;
+use function Coachview\Sync\firstNonEmpty;
 
 /*
 [0] => Array(
@@ -149,7 +150,7 @@ class TrainingComponent {
         public string       $name,
         public CourseFormat $course_format,   // e.g. 'Klassikaal', 'E-learning'
         public int          $sequence_number, // e.g. 7
-        public string       $location,        // e.g. 'Maximus Brouwerij' or 'Online'
+        public ?string      $location,        // e.g. 'Maximus Brouwerij'
         public ?string      $address,         // e.g. 'Kalverstraat 2a'
         public ?string      $zipcode,         // e.g. '1234 AB'
         public ?string      $city,            // e.g. 'Amsterdam'
@@ -160,8 +161,8 @@ class TrainingComponent {
     }
 
     public static function from_array(array $data): self {
-//        error_log("TrainingComponent::from_array called with data: ");
-//        error_log(print_r($data, true));
+        error_log("TrainingComponent::from_array called with data: ");
+        error_log(print_r($data, true));
 
         $collection_data = collect([$data]);
         return new self(
@@ -170,10 +171,10 @@ class TrainingComponent {
             name: $data['naam'],
             course_format: CourseFormat::fromString($data['lesvormId'] ?? 'elearning'),
             sequence_number: intval($data['volgnummer'] ?? 0),
-            location: $collection_data->pluck('locatie.bedrijf.naam')->first() ?? 'Online',
-            address: $collection_data->pluck('locatie.bedrijf.bezoekadres.adres1')->first(),
-            zipcode: $collection_data->pluck('locatie.bedrijf.bezoekadres.postcode')->first(),
-            city: $collection_data->pluck('locatie.bedrijf.bezoekadres.plaats')->first(),
+            location: firstNonEmpty($collection_data->pluck('locatie.bedrijf.naam')),
+            address: firstNonEmpty($collection_data->pluck('locatie.bedrijf.bezoekadres.adres1')),
+            zipcode: firstNonEmpty($collection_data->pluck('locatie.bedrijf.bezoekadres.postcode')),
+            city: firstNonEmpty($collection_data->pluck('locatie.bedrijf.bezoekadres.plaats')),
             date: $data['datum'],
             start_time: $data['tijdVan'],
             end_time: $data['tijdTot']);

@@ -61,7 +61,10 @@ class TrainingTypeStartDates
                 'link' => $link,
                 'is_in_stock' => $variation->is_in_stock(),
                 'price' => wc_price($variation->get_price()),
+                'location' => get_post_meta($variation_id, 'location', true),
                 'city' => get_post_meta($variation_id, 'city', true),
+                'address' => get_post_meta($variation_id, 'address', true),
+                'zipcode' => get_post_meta($variation_id, 'zipcode', true),
                 'planning' => $this->prepare_planning_data($variation)
             ];
         }
@@ -78,7 +81,6 @@ class TrainingTypeStartDates
             $entry = [];
             $entry['course_format'] = $event['course_format'];
             $entry['name'] = $event['name'];
-            $entry['city'] = $event['city'];
 
             if (!empty($event['start_time'])) {
                 $entry['time'] = date_i18n('H:i', strtotime($event['start_time']));

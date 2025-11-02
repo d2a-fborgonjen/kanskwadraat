@@ -14,22 +14,7 @@ class TrainingTypeSearchPage
         add_action('init', [$this, 'add_rewrite_rule']);
         add_action('template_redirect', [$this, 'template_redirect']);
         add_action('rest_api_init', [$this, 'register_rest_routes']);
-    }
-
-    public function add_rewrite_rule() {
-        add_rewrite_rule('^zoek\-opleidingen/?$', 'index.php?training_type_search=1', 'top');
-    }
-
-    public function template_redirect() {
-        if (get_query_var('training_type_search')) {
-            echo $this->renderSearchPage();
-            exit;
-        }
-    }
-
-    public function add_query_vars($vars) {
-        $vars[] = 'training_type_search';
-        return $vars;
+        add_shortcode('cv_training_type_search', [$this, 'training_type_search_shortcode']);
     }
 
     public function register_rest_routes() {
@@ -54,7 +39,7 @@ class TrainingTypeSearchPage
         ]);
     }
 
-    private function renderSearchPage(): string {
+    private function render_search_page($include_header_and_footer = true): string {
         wp_enqueue_style('coachview-common', plugin_dir_url(__FILE__) . '../../assets/css/common.css');
         wp_enqueue_style('coachview-search', plugin_dir_url(__FILE__) . '../../assets/css/training-type-search.css');
         wp_enqueue_style('coachview-search-items', plugin_dir_url(__FILE__) . '../../assets/css/training-type-search-item.css');
@@ -63,24 +48,10 @@ class TrainingTypeSearchPage
         $this->templateEngine = new TemplateEngine();
         $data = [
             'category_list' => $this->renderCategorySidebar(),
-            'header' => $this->captureHeader(),
-            'footer' => $this->captureFooter()
+            'header' => $include_header_and_footer ? $this->capture_header() : '',
+            'footer' => $include_header_and_footer ? $this->capture_footer() : ''
         ];
         return $this->templateEngine->render('base-search-layout', $data);
-    }
-
-    private function captureHeader()
-    {
-        ob_start();
-        get_header();
-        return ob_get_clean();
-    }
-
-    private function captureFooter()
-    {
-        ob_start();
-        get_footer();
-        return ob_get_clean();
     }
 
     private function renderCategorySidebar()
@@ -119,11 +90,13 @@ class TrainingTypeSearchPage
         return $this->templateEngine->render('category-sidebar', ['parent_categories' => $categories]);
     }
 
-    private function renderProductCard($product)
+    private function render_training_type($product)
     {
         $num_locations = get_post_meta($product->get_id(), 'num_locations', true);
         $startDate = get_post_meta($product->get_id(), 'start_date', true);
         $duration = get_post_meta($product->get_id(), 'training_duration', true);
+        $cities = get_post_meta($product->get_id(), 'cities', true);
+        $training_type_category = get_post_meta($product->get_id(), 'training_type_category', true);
         $product_url = get_permalink($product->get_id());
         
         // Get product image URL properly
@@ -132,19 +105,21 @@ class TrainingTypeSearchPage
         if ($image_id) {
             $image_url = wp_get_attachment_image_url($image_id, 'woocommerce_thumbnail');
         }
-        
+
         $data = [
-            'product' => $product,
-            'product_image_url' => $image_url ?: wc_placeholder_img_src('woocommerce_thumbnail'),
-            'product_name' => $product->get_name(),
-            'product_url' => $product_url,
-            'product_price' => $product->get_price() > 0 ? $product->get_price_html() : '',
+            'image_url' => $image_url ?: wc_placeholder_img_src('woocommerce_thumbnail'),
+            'name' => $product->get_name(),
+            'description' => $product->get_description(),
+            'training_url' => $product_url,
+            'training_type_category' => $training_type_category,
+            'cities' => $cities,
+            'product_price' => $product->get_price() > 0 ? $product->get_price() : '',
             'num_locations' => $num_locations > 0 ? $num_locations : null,
             'duration' => $duration ?: null,
             'start_date_day' => $startDate ? date_i18n('l', $startDate) : null,
-            'start_date_formatted' => $startDate ? date_i18n('j F', $startDate) : null
+            'start_date_formatted' => $startDate ? date_i18n('j F', $startDate) : null,
+            'assets_url' => plugin_dir_url(__FILE__) . '../../assets/',
         ];
-        
         return $this->templateEngine->render('product-card', $data);
     }
 
@@ -170,11 +145,43 @@ class TrainingTypeSearchPage
 
         $this->templateEngine = new TemplateEngine();
         foreach ($products as $product) {
-            $html .= $this->renderProductCard($product);
+            $html .= $this->render_training_type($product);
         }
 
         return new WP_REST_Response($html, 200);
     }
 
+    public function training_type_search_shortcode(): string {
+        return $this->render_search_page(false);
+    }
 
+    public function add_rewrite_rule() {
+        add_rewrite_rule('^zoek\-opleidingen/?$', 'index.php?training_type_search=1', 'top');
+    }
+
+    public function template_redirect() {
+        if (get_query_var('training_type_search')) {
+            echo $this->render_search_page(true);
+            exit;
+        }
+    }
+
+    public function add_query_vars($vars) {
+        $vars[] = 'training_type_search';
+        return $vars;
+    }
+
+    private function capture_header()
+    {
+        ob_start();
+        get_header();
+        return ob_get_clean();
+    }
+
+    private function capture_footer()
+    {
+        ob_start();
+        get_footer();
+        return ob_get_clean();
+    }
 }
