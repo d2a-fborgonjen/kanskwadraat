@@ -1,5 +1,6 @@
 :root {
     --background-color: #edf9f9;
+    --search-panel-max-width: 1400px;
     --filter-panel-bg-color: rgba(0,0,0,0.3);
     --filter-panel-padding: 2rem;
     --filter-panel-header-color: #002352;
@@ -14,11 +15,12 @@
     flex-direction: column;
     align-items: center;
     min-height: 100%;
+    height: 100%;
 }
 
 .coachview-search__content {
     width: 100%;
-    max-width: 1400px;
+    max-width: var(--search-panel-max-width);
     position: relative;
     display: flex;
     flex-direction: column;
@@ -37,7 +39,6 @@
     border-radius: 5px;
     font-size: 1rem;
 }
-
 
 .coachview-search__filters-wrapper {
     display: none;

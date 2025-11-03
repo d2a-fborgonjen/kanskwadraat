@@ -1,25 +1,36 @@
+:root {
+    --card-radius: 12px;
+    --card-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    --card-shadow-hover: 0 4px 12px rgba(0,0,0,0.12);
+    --card-bg: #FFF;
 
-a.training-card {
-    background: #FFF;
-    border-radius: 12px;
+    --font-size-category: 0.75rem;
+    --font-size-title: 1rem;
+    --font-size-description: 0.875rem;
+    --font-size-footer: 0.875rem;
+}
+
+.training-card {
+    background: var(--card-bg);
+    border-radius: var(--card-radius);
     overflow: hidden;
-    font-family: "Inter", sans-serif;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    box-shadow: var(--card-shadow);
     text-decoration: none !important;
+    transition: box-shadow 0.2s ease;
 }
 
 .training-card:hover {
-    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+    box-shadow: var(--card-shadow-hover);
 }
 
-.training-card-image {
+.training-card__image {
     width: 100%;
     padding-top: 65%;
     overflow: hidden;
     position: relative;
 }
 
-.training-card-image img {
+.training-card__image-img {
     position: absolute;
     top: 0;
     left: 0;
@@ -28,7 +39,7 @@ a.training-card {
     object-fit: cover;
 }
 
-.image-overlay {
+.training-card__image-overlay {
     position: absolute;
     bottom: 0;
     left: 0;
@@ -37,49 +48,49 @@ a.training-card {
     background: radial-gradient(
             ellipse at center top,
             transparent 50%,
-            #FFF 51%
+            var(--card-bg) 51%
     );
-    transform: translateX(-19%) translateY(25%)
+    transform: translateX(-19%) translateY(25%);
 }
 
-.card-content {
+.training-card__content {
     padding: 1rem 1.25rem;
 }
 
-.card-category {
+.training-card__category {
     color: var(--cv-color-teal-dark);
-    font-size: 0.75rem;
+    font-size: var(--font-size-category);
     text-transform: uppercase;
     font-weight: 600;
     margin-bottom: 0.25rem;
 }
 
-.card-title {
+.training-card__title {
     color: var(--cv-color-blue-dark);
-    font-size: 1rem;
+    font-size: var(--font-size-title);
     font-weight: 700;
     margin: 0.25rem 0 0.5rem;
 }
 
-.card-text {
+.training-card__description {
     color: var(--cv-color-blue-dark);
-    font-size: 0.875rem;
+    font-size: var(--font-size-description);
     line-height: 1.4;
     margin-bottom: 1rem;
 }
 
-.card-footer {
+.training-card__footer {
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    font-size: 0.875rem;
-    color: #002b45;
+    font-size: var(--font-size-footer);
+    color: var(--cv-color-blue-dark);
     border-top: 1px solid var(--cv-color-teal-light);
     padding-top: 0.75rem;
     gap: .5rem;
 }
 
-.metadata {
+.training-card__metadata {
     display: flex;
     align-items: center;
     gap: 0.25rem;
@@ -87,7 +98,7 @@ a.training-card {
     min-width: 80px;
 }
 
-.metadata span {
+.training-card__metadata-text {
     display: inline-block;
     color: var(--cv-color-teal-dark);
     max-width: 100%;
@@ -96,6 +107,6 @@ a.training-card {
     white-space: nowrap;
 }
 
-.metadata img {
-    width: 20px;
+.training-card__metadata-icon {
+    height: 20px;
 }

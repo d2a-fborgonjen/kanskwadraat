@@ -1,0 +1,29 @@
+<a href="{{ training_url }}" class="training-card" aria-label="{{ product_name }}" aria-description="{{ description }}">
+    <div class="training-card__image">
+        <img src="{{ image_url }}" alt="{{ product_name }}" class="training-card__image-img">
+        <div class="training-card__image-overlay"></div>
+    </div>
+    <div class="training-card__content">
+        <p class="training-card__category">{{ training_type_category }}</p>
+        <h3 class="training-card__title">{{ name }}</h3>
+        <p class="training-card__description">
+            {{ description }}
+        </p>
+        <div class="training-card__footer">
+            <div class="training-card__metadata">
+                <img src="{{assets_url}}img/icon_location.png" class="training-card__metadata-icon" />
+                <span>{{ cities|join(', ') }}</span>
+            </div>
+            {% if duration %}
+            <div class="training-card__metadata">
+                <img src="{{assets_url}}img/icon_time.png" class="training-card__metadata-icon" />
+                <span>{{ duration }}</span>
+            </div>
+            {% endif %}
+            <div class="training-card__metadata">
+                <img src="{{assets_url}}img/icon_price.png" class="training-card__metadata-icon" />
+                <span>{{ product_price|number_format(2, '.', ',') }}</span>
+            </div>
+        </div>
+    </div>
+</a>

@@ -101,10 +101,7 @@ class TrainingTypeSearchPage
         
         // Get product image URL properly
         $image_id = $product->get_image_id();
-        $image_url = '';
-        if ($image_id) {
-            $image_url = wp_get_attachment_image_url($image_id, 'woocommerce_thumbnail');
-        }
+        $image_url = $image_id ?  wp_get_attachment_image_url($image_id, 'woocommerce_thumbnail') : '';
 
         $data = [
             'image_url' => $image_url ?: wc_placeholder_img_src('woocommerce_thumbnail'),
@@ -120,7 +117,7 @@ class TrainingTypeSearchPage
             'start_date_formatted' => $startDate ? date_i18n('j F', $startDate) : null,
             'assets_url' => plugin_dir_url(__FILE__) . '../../assets/',
         ];
-        return $this->templateEngine->render('product-card', $data);
+        return $this->templateEngine->render('training-type-search-item', $data);
     }
 
 
