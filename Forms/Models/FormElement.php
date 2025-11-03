@@ -2,7 +2,7 @@
 
 namespace Coachview\Forms\Models;
 
-use Coachview\Presentation\Enums\RegistrationType;
+use Coachview\Sync\Models\Enums\RegistrationType;
 
 abstract class FormElement {
 

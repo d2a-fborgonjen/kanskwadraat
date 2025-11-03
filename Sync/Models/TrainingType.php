@@ -2,7 +2,7 @@
 namespace Coachview\Sync\Models;
 
 use Illuminate\Support\Collection;
-use Coachview\Presentation\Enums\CourseFormat;
+use Coachview\Sync\Models\Enums\CourseFormat;
 
 class TrainingType {
     public function __construct(

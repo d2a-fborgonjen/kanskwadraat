@@ -11,12 +11,12 @@ use Coachview\Admin\ProductMeta;
 use Coachview\Admin\Settings;
 use Coachview\Cron\Cron;
 use Coachview\Forms\FormProcessor;
+use Coachview\Presentation\Components\TrainingTypeCTA;
+use Coachview\Presentation\Components\TrainingTypeStartDates;
 use Coachview\Presentation\Hooks\TrainingHooks;
 use Coachview\Presentation\Hooks\TrainingTypeHooks;
-use Coachview\Presentation\Pages\TrainingTypeSearchPage;
 use Coachview\Presentation\Pages\RegisterPage;
-use Coachview\Presentation\Shortcodes\TrainingTypeStartDates;
-use Coachview\Presentation\Shortcodes\TrainingTypeCTAShortcode;
+use Coachview\Presentation\Pages\TrainingTypeSearchPage;
 use Coachview\Sync\Hooks\Sync;
 
 add_action('plugins_loaded', function () {
@@ -30,7 +30,7 @@ add_action('plugins_loaded', function () {
     new TrainingTypeSearchPage();
     new RegisterPage();
     new TrainingTypeStartDates();
-    new TrainingTypeCTAShortcode();
+    new TrainingTypeCTA();
     new TrainingHooks();
     new TrainingTypeHooks();
 

@@ -2,7 +2,7 @@
 
 namespace Coachview\Sync\Models;
 
-use Coachview\Presentation\Enums\CourseFormat;
+use Coachview\Sync\Models\Enums\CourseFormat;
 use DateTime;
 use function Coachview\Sync\firstNonEmpty;
 

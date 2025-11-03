@@ -1,5 +1,6 @@
 {
     "title": "Pedagogisch medewerker die je gaat coachen",
+    "id": "contactperson",
     "rules": {
         "onlyForForm": "contactPersonForm"
     },

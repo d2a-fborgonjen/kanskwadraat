@@ -61,6 +61,8 @@ class RegisterPage
         $participant_header = get_post_meta(get_the_ID(), 'participant_header', true) ?? null;
         $contact_person_header = get_post_meta(get_the_ID(), 'contact_person_header', true) ?? null;
 
+
+
         $form_sections = [
             FormSection::load('deelnemer.json')->with_title($participant_header),
             FormSection::load('contactpersoon.json')->with_title($contact_person_header),

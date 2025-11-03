@@ -1,5 +1,6 @@
 {
     "title": "Factuurgegevens",
+    "id": "invoiceDetails",
     "rules": {
         "excludeType": "in_company",
         "excludeForm": "contactPersonForm"

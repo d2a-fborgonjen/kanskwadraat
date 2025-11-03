@@ -1,14 +1,13 @@
 <?php
 
-namespace Coachview\Presentation\Shortcodes;
+namespace Coachview\Presentation\Components;
 
-use Coachview\Presentation\Enums\RegistrationType;
+use Coachview\Sync\Models\Enums\RegistrationType;
 use function Coachview\Presentation\create_link_button;
-
 /**
  * Shortcode to display Call to Action (CTA)
  */
-class TrainingTypeCTAShortcode {
+class TrainingTypeCTA {
     public function __construct() {
         add_shortcode('cv_training_call_to_action', [$this, 'render_cta_button']);
     }

@@ -2,7 +2,7 @@
 
 namespace Coachview\Forms\Models;
 
-use Coachview\Presentation\Enums\RegistrationType;
+use Coachview\Sync\Models\Enums\RegistrationType;
 use Coachview\Presentation\TemplateEngine;
 
 class FormSection extends FormElement {
@@ -46,7 +46,7 @@ class FormSection extends FormElement {
 
     public static function load(string $filename): ?FormSection
     {
-        $file_path = __DIR__ . '/../Configs/' . $filename;
+        $file_path = plugin_dir_path(__FILE__) . '../../assets/forms/' . $filename;
         if (!file_exists($file_path)) {
             return null;
         }

@@ -1,8 +1,8 @@
 <?php
 
-namespace Coachview\Presentation\Shortcodes;
+namespace Coachview\Presentation\Components;
 
-use Coachview\Presentation\Enums\CourseFormat;
+use Coachview\Sync\Models\Enums\CourseFormat;
 use Coachview\Presentation\TemplateEngine;
 use WC_Product_Variation;
 
