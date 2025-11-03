@@ -1,8 +1,7 @@
 <?php
 
-namespace Coachview\Forms\Models;
+namespace Coachview\Models;
 
-use Coachview\Sync\Models\Enums\RegistrationType;
 use Coachview\Presentation\TemplateEngine;
 
 class FormGroup extends FormElement

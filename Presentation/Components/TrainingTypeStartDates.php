@@ -2,7 +2,7 @@
 
 namespace Coachview\Presentation\Components;
 
-use Coachview\Sync\Models\Enums\CourseFormat;
+use Coachview\Models\CourseFormat;
 use Coachview\Presentation\TemplateEngine;
 use WC_Product_Variation;
 

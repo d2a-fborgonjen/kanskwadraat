@@ -2,8 +2,9 @@
 
 namespace Coachview\Presentation\Components;
 
-use Coachview\Sync\Models\Enums\RegistrationType;
+use Coachview\Models\RegistrationType;
 use function Coachview\Presentation\create_link_button;
+
 /**
  * Shortcode to display Call to Action (CTA)
  */

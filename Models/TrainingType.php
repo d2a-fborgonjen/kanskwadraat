@@ -1,8 +1,7 @@
 <?php
-namespace Coachview\Sync\Models;
+namespace Coachview\Models;
 
 use Illuminate\Support\Collection;
-use Coachview\Sync\Models\Enums\CourseFormat;
 
 class TrainingType {
     public function __construct(

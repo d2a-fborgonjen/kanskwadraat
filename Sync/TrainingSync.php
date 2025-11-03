@@ -2,17 +2,16 @@
 
 namespace Coachview\Sync;
 
+use Coachview\Models\Training;
+use Coachview\Models\TrainingType;
 use Coachview\Sync\Dataloaders\TrainingDataloader;
-use Coachview\Sync\Models\Training;
-use Coachview\Sync\Models\TrainingType;
 use Illuminate\Support\Collection;
-
 use SimplePie\Exception;
 use WC_Product;
-use WC_Product_Variable;
-use WC_Product_Simple;
-use WC_Product_Variation;
 use WC_Product_Attribute;
+use WC_Product_Simple;
+use WC_Product_Variable;
+use WC_Product_Variation;
 
 
 class TrainingSync {

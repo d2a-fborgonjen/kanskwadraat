@@ -2,6 +2,8 @@
 /*
 Plugin Name: Coachview
 Description: Koppeling met Coachview API
+Version: 1.0.0
+Author: Frank Borgonjen
 */
 require_once __DIR__ . '/vendor/autoload.php';
 

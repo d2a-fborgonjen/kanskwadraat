@@ -4,12 +4,12 @@ namespace Coachview\Sync\Dataloaders;
 
 use Coachview\Api\ApiClient;
 use Coachview\Api\QueryBuilder;
-use Coachview\Sync\Models\Training;
-use Coachview\Sync\Models\TrainingComponent;
-use Coachview\Sync\Models\TrainingTypeComponent;
-use Illuminate\Support\Collection;
-use Coachview\Sync\Models\TrainingType;
+use Coachview\Models\Training;
+use Coachview\Models\TrainingComponent;
+use Coachview\Models\TrainingType;
+use Coachview\Models\TrainingTypeComponent;
 use Exception;
+use Illuminate\Support\Collection;
 use function Coachview\Sync\log_cv_exception;
 
 class TrainingDataloader

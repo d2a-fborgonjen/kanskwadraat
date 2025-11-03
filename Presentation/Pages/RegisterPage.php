@@ -1,7 +1,7 @@
 <?php
 namespace Coachview\Presentation\Pages;
 
-use Coachview\Forms\Models\FormSection;
+use Coachview\Models\FormSection;
 use Coachview\Presentation\TemplateEngine;
 use WC_Product;
 use WC_Product_Simple;

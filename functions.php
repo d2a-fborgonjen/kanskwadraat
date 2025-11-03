@@ -2,7 +2,7 @@
 
 use Automattic\WooCommerce\Enums\ProductStatus;
 use Coachview\Api\TokenManager;
-use Coachview\Sync\Models\Enums\RegistrationType;
+use Coachview\Models\RegistrationType;
 
 function coachview_test_mode_enabled(): bool {
     return get_option('coachview_api_mode', 'test') === 'test';

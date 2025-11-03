@@ -3,6 +3,7 @@
         "psr-4": {
             "Coachview\\Admin\\": "Admin/",
             "Coachview\\Api\\": "Api/",
+            "Coachview\\Models\\": "Models/",
             "Coachview\\Presentation\\": "Presentation/",
             "Coachview\\Forms\\": "Forms/",
             "Coachview\\Cron\\": "Cron/",

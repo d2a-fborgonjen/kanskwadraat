@@ -1,9 +1,7 @@
 <?php
 
-namespace Coachview\Sync\Models;
+namespace Coachview\Models;
 
-use Coachview\Sync\Models\Enums\CourseFormat;
-use DateTime;
 use function Coachview\Sync\firstNonEmpty;
 
 /*

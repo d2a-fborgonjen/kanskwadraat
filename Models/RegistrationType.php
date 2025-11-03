@@ -1,6 +1,6 @@
 <?php
 
-namespace Coachview\Sync\Models\Enums;
+namespace Coachview\Models;
 
 enum RegistrationType: string
 {

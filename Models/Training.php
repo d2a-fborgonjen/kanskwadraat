@@ -1,8 +1,7 @@
 <?php
 
-namespace Coachview\Sync\Models;
+namespace Coachview\Models;
 
-use DateTime;
 use Illuminate\Support\Collection;
 use function Coachview\Sync\firstNonEmpty;
 
