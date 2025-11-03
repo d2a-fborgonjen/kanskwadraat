@@ -1,10 +1,11 @@
 <?php
 
-namespace Coachview\Forms;
+namespace Coachview\Presentation\Hooks;
 
 use WP_Http;
 
-class FormProcessor {
+
+class RegisterHooks {
 
     public function __construct() {
         add_action('admin_post_coachview_training_form', [$this, 'process']);
