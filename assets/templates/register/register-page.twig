@@ -7,14 +7,38 @@
             
             <form class="register-form" method="post" action="{{ form_action }}">
                 {{ hidden_inputs|raw }}
-                
-                {% for section in form_sections %}
-                    {{ section|raw }}
-                {% endfor %}
-                
-                <div class="register-form__actions">
-                    <button type="submit" class="register-form__submit">Verzenden</button>
+
+                <div class="form-section-wrapper">
+
+                    <div class="form-section__step-1">
+                        <div class="form-section-participant">
+                            {{ form_sections['participant']|raw }}
+                        </div>
+
+                        {% if show_additional_participants %}
+                            <div class="form-section-contactperson">
+                                {{ form_sections['contactperson']|raw }}
+                            </div>
+                        {% endif %}
+
+                        <div class="register-form__actions">
+                            <button class="register-form__next">Volgende</button>
+                        </div>
+                    </div>
+
+                    <div class="form-section__step-2">
+                        <div class="form-section-invoice-details">
+                            {{ form_sections['invoice-details']|raw }}
+                        </div>
+
+                        <div class="register-form__actions">
+                            <button class="register-form__previous">Vorige</button>
+
+                            <button type="submit" class="register-form__submit">Verzenden</button>
+                        </div>
+                    </div>
                 </div>
+
             </form>
         </div>
     </div>

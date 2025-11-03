@@ -62,7 +62,6 @@ class RegisterPage
         $contact_person_header = get_post_meta(get_the_ID(), 'contact_person_header', true) ?? null;
 
 
-
         $form_sections = [
             FormSection::load('deelnemer.json')->with_title($participant_header),
             FormSection::load('contactpersoon.json')->with_title($contact_person_header),
@@ -73,7 +72,7 @@ class RegisterPage
         $rendered_sections = [];
         foreach ($form_sections as $section) {
             if ($section->canShow($form_type, $registration_type)) {
-                $rendered_sections[] = $section->render($form_type, $registration_type);
+                $rendered_sections[$section->id] = $section->render($form_type, $registration_type);
             }
         }
         

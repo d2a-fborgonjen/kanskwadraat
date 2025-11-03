@@ -7,6 +7,7 @@ use Coachview\Presentation\TemplateEngine;
 class FormSection extends FormElement {
 
     public function __construct(
+        public string $id,
         public string $title,
         public string $description = '',
         public array $items = [],
@@ -52,6 +53,7 @@ class FormSection extends FormElement {
         $file_contents = file_get_contents($file_path);
         $json_data = collect(json_decode($file_contents, true) ?? []);
 
+        $id = $json_data->get('id');
         $title = $json_data->get('title');
         $description = $json_data->get('description', '');
         $rules = $json_data->get('rules', []);
@@ -60,6 +62,7 @@ class FormSection extends FormElement {
                 return FormSection::to_section_item($field_data);
             });
         return new FormSection(
+            id: $id,
             title: $title,
             description: $description,
             items: $items->toArray(),
