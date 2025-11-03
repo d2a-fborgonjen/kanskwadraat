@@ -49,7 +49,8 @@ class RegisterPage
         if (!$training_type) {
             return '<p>' . esc_html__('Ongeldige training.', 'coachview') . '</p>';
         }
-        wp_enqueue_style('coachview-forms', plugin_dir_url(__FILE__) . '../../assets/css/register.css');
+        wp_enqueue_style('coachview-common', plugin_dir_url(__FILE__) . '../../assets/css/common.css');
+        wp_enqueue_style('coachview-register', plugin_dir_url(__FILE__) . '../../assets/css/register.css');
         return $this->render_form($training_type, $training);
     }
 

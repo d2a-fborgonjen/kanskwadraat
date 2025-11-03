@@ -1,62 +1,69 @@
-<div class="training-type" data-id="{{ product_id }}">
-    {% for variation in variations %}
-    <div class="training" data-training-id="{{ variation.id }}">
-        <div class="training__header">
-            <div class="training__header-left">
+<a id="training-start-dates"></a>
+<div class="training-start-dates" data-id="{{ product_id }}">
+    <div class="training-type">
+        {% for variation in variations %}
+        <div class="training" data-training-id="{{ variation.id }}">
+            <div class="training__header">
+                <div class="training__header-left">
 
-                <div class="training__date">
-                    <img class="training__icon" src="{{ assets_url }}img/icon_calendar.png" alt="Datum"/>
-                    {{ variation.date }}
-                </div>
-
-                <div class="training__price">
-                    <img class="training__icon" src="{{ assets_url }}img/icon_price.png" alt="Datum"/>
-                    {{ variation.price | raw }}
-                </div>
-
-                <div class="training__location">
-                    <img class="training__icon" src="{{ assets_url }}img/icon_location.png" alt="Datum"/>
-                    {{ variation.city }}
-                </div>
-            </div>
-
-            <div class="training__header-right">
-                <a href="#show-planning" class="training__show-planning">
-                    <img class="training__icon" src="{{ assets_url }}img/icon_calendar.png" alt="Datum"/>
-                    <span>
-                        Toon planning
-                        <img class="training__show-planning-icon" src="{{ assets_url }}img/icon_caret_down.svg"></span>
-                    </span>
-                </a>
-                <span class="flex-grow"></span>
-                <a href="{{ variation.link }}" class="button-primary training__register">
-                    {{ variation.is_in_stock ? 'Inschrijven' : 'Wachtlijst' }}
-                    <img src="{{ assets_url }}img/icon_caret_right.svg">
-                </a>
-            </div>
-        </div>
-
-        <div class="training__planning">
-            <h3>Lesdagen en planning</h3>
-            <ul class="training__planning-lessons">
-                {% for entry in variation.planning %}
-                <li>
-                    <div>
-                        <span class="training__planning-lessons-description">{{ entry.name }}</span>
-                        <span class="training__planning-lessons-date">{{ entry.formatted_date }}</span>
-                        <span class="training__planning-lessons-time">{{ entry.time }} uur</span>
-                        <span class="training__planning-lessons-city">{{ entry.city }}</span>
+                    <div class="training__date">
+                        <img class="training__icon" src="{{ assets_url }}img/icon_calendar.png" alt="Datum"/>
+                        {{ variation.date }}
                     </div>
-                </li>
-                {% endfor %}
-            </ul>
-            <h3>Locatiegegevens</h3>
-            <p class="training__planning-location-details">
-                {{ variation.location }}<br/>
-                {{ variation.address }}<br/>
-                {{ variation.zipcode }} {{ variation.city }}<br/>
-            </p>
+
+                    <div class="training__price">
+                        <img class="training__icon" src="{{ assets_url }}img/icon_price.png" alt="Datum"/>
+                        {{ variation.price | raw }}
+                    </div>
+
+                    <div class="training__location">
+                        <img class="training__icon" src="{{ assets_url }}img/icon_location.png" alt="Datum"/>
+                        {{ variation.city }}
+                    </div>
+                </div>
+
+                <div class="training__header-right">
+                    <a href="#show-planning" class="training__show-planning">
+                        <img class="training__icon" src="{{ assets_url }}img/icon_calendar.png" alt="Datum"/>
+                        <span>
+                            Toon planning
+                            <img class="training__show-planning-icon" src="{{ assets_url }}img/icon_caret_down.svg"></span>
+                        </span>
+                    </a>
+                    <span class="flex-grow"></span>
+                    <a href="{{ variation.link }}" class="button-primary training__register">
+                        {{ variation.is_in_stock ? 'Inschrijven' : 'Wachtlijst' }}
+                        <img src="{{ assets_url }}img/icon_caret_right.svg">
+                    </a>
+                </div>
+            </div>
+
+            <div class="training__planning">
+                <h3>Lesdagen en planning</h3>
+                <ul class="training__planning-lessons">
+                    {% for entry in variation.planning %}
+                    <li>
+                        <div>
+                            <span class="training__planning-lessons-description">{{ entry.name }}</span>
+                            <span class="training__planning-lessons-date">{{ entry.formatted_date }}</span>
+                            <span class="training__planning-lessons-time">{{ entry.time }} uur</span>
+                            <span class="training__planning-lessons-city">{{ entry.city }}</span>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+                <h3>Locatiegegevens</h3>
+                <p class="training__planning-location-details">
+                    {% if variation.location %}
+                        {{ variation.location }}<br/>
+                    {% endif %}
+                    {% if variation.address %}
+                        {{ variation.address }}<br/>
+                    {% endif %}
+                    {{ variation.zipcode }} {{ variation.city }}
+                </p>
+            </div>
         </div>
+        {% endfor %}
     </div>
-    {% endfor %}
 </div>

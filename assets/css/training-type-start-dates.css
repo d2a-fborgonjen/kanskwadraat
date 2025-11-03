@@ -1,17 +1,24 @@
 :root {
     --start-dates-gap: 12px;
-    --start-dates-bg-color: #002250;
-    --start-dates-header-text-color: #002250;
     --start-dates-icon-width: 20px;
     --start-dates-icon-to-txt-gap: 12px;
 }
 
+.training-start-dates {
+    display: flex;
+    background: var(--cv-color-blue-dark);
+    justify-content: center;
+    padding: 2em;
+}
+
 .training-type {
+    flex-grow: 1;
+    max-width: 1200px;
     display: flex;
     flex-direction: column;
     gap: var(--start-dates-gap);
-    background: var(--start-dates-bg-color);
     padding: 16px;
+    box-sizing: border-box;
 }
 
 .training {
@@ -24,7 +31,7 @@
 
 .training__header {
     display: flex;
-    color: var(--start-dates-header-text-color);
+    color: var(--cv-color-blue-dark);
 }
 
 .training__header-left,
@@ -49,9 +56,10 @@
 .training__price,
 .training__location,
 .training__show-planning {
+    font-size: var(--wp--preset--font-size--medium);
     color: inherit;
     flex-basis: 25%;
-    font-weight: 600;
+    font-weight: 400;
     display: flex;
     gap: var(--start-dates-icon-to-txt-gap);
     align-items: center;
@@ -82,18 +90,22 @@ a.training__show-planning:hover {
     transform: rotate(180deg);
 }
 
-
 .training__planning {
     display: none;
+    border-top: 1px solid var(--cv-color-teal-light);
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+    color: var(--cv-color-blue-dark);
+    font-size: var(--wp--preset--font-size--small);
 }
 
 .training__planning h3 {
-    font-size: 18px;
+    font-size: var(--wp--preset--font-size--medium);
     font-weight: bold;
-    margin: 0;
+    margin: 0.5rem 0;
 }
 .training__planning-lessons {
-    margin-bottom: 12px;
+    margin: 0 0 .5rem 0;
 }
 .training__planning-lessons li div {
     display: flex;

@@ -31,7 +31,7 @@ class TrainingTypeCTAShortcode {
             if ($registration_type === RegistrationType::ENLIST) {
                 return create_link_button('Aanmelden wachtlijst', $register_link, 'lg');
             } else {
-                return create_link_button('Bekijk startdata', '#startdata', 'lg');
+                return create_link_button('Bekijk startdata', '#training-start-dates', 'lg');
             }
         } else {
             return create_link_button('Aanmelden', $register_link, 'lg');

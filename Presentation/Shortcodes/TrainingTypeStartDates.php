@@ -32,7 +32,7 @@ class TrainingTypeStartDates
 
         wp_enqueue_style('coachview-common', plugin_dir_url(__FILE__) . '../../assets/css/common.css');
         wp_enqueue_style('coachview-training-type-start-dates', plugin_dir_url(__FILE__) . '../../assets/css/training-type-start-dates.css');
-        wp_enqueue_script('coachview-training-type-start-dates', plugin_dir_url(__FILE__) . '../../assets/js/training-type-start-dates.js');
+        wp_enqueue_script('coachview-training-type-start-dates', plugin_dir_url(__FILE__) . '../../assets/js/training-type-start-dates.js', array('jquery'), null, true);
 
         // Prepare data for template
         $template_data = [

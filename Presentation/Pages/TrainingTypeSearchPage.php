@@ -109,7 +109,7 @@ class TrainingTypeSearchPage
         $data = [
             'image_url' => $image_url ?: wc_placeholder_img_src('woocommerce_thumbnail'),
             'name' => $product->get_name(),
-            'description' => $product->get_description(),
+            'description' => substr($product->get_description(), 0, 100) . (strlen($product->get_description()) > 100 ? '...' : ''),
             'training_url' => $product_url,
             'training_type_category' => $training_type_category,
             'cities' => $cities,
