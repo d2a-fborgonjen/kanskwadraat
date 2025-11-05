@@ -28,6 +28,9 @@ class Settings {
         register_setting('coachview_sync_settings', 'coachview_test_secret');
         register_setting('coachview_sync_settings', 'training_import_limit');
         register_setting('coachview_sync_settings', 'coachview_order_success_redirect_url');
+
+        // Regenerate API token on settings save
+        coachview_api_token(true);
     }
 
     public function settings_page() {

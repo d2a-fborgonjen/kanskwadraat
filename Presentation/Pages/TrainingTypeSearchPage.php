@@ -40,10 +40,10 @@ class TrainingTypeSearchPage
     }
 
     private function render_search_page($include_header_and_footer = true): string {
-        wp_enqueue_style('coachview-common', plugin_dir_url(__FILE__) . '../../assets/css/common.css');
-        wp_enqueue_style('coachview-search', plugin_dir_url(__FILE__) . '../../assets/css/training-type-search.css');
-        wp_enqueue_style('coachview-search-items', plugin_dir_url(__FILE__) . '../../assets/css/training-type-search-item.css');
-        wp_enqueue_script('coachview-search', plugin_dir_url(__FILE__) . '../../assets/js/training-type-search.js', array('jquery'), null, true);
+        wp_enqueue_style('coachview-common', cv_assets_url('css/common.css'));
+        wp_enqueue_style('coachview-search', cv_assets_url('css/training-type-search.css'));
+        wp_enqueue_style('coachview-search-items', cv_assets_url('css/training-type-search-item.css'));
+        wp_enqueue_script('coachview-search', cv_assets_url('js/training-type-search.js'), array('jquery'), null, true);
 
         $this->templateEngine = new TemplateEngine();
         $data = [
@@ -115,7 +115,7 @@ class TrainingTypeSearchPage
             'duration' => $duration ?: null,
             'start_date_day' => $startDate ? date_i18n('l', $startDate) : null,
             'start_date_formatted' => $startDate ? date_i18n('j F', $startDate) : null,
-            'assets_url' => plugin_dir_url(__FILE__) . '../../assets/',
+            'assets_url' => cv_assets_url()
         ];
         return $this->templateEngine->render('training-type-search-item', $data);
     }

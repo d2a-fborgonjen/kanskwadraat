@@ -2,44 +2,91 @@
 
 <div class="register-page">
     <div class="register-page__container">
-        <div class="register-page__form">
-            {{ form_header|raw }}
-            
-            <form class="register-form" method="post" action="{{ form_action }}">
-                {{ hidden_inputs|raw }}
+        <form class="register-page__form" method="post" action="{{ form_action }}">
+            {{ hidden_inputs|raw }}
 
-                <div class="form-section-wrapper">
+            <h2 class="form-section__current-step-title">Deelnemer(s)</h2>
 
-                    <div class="form-section__step-1">
-                        <div class="form-section-participant">
-                            {{ form_sections['participant']|raw }}
-                        </div>
+            <div class="form-section__progress">
+                <span class="form-section__progress-text">Stap 1 van 3</span>
+                <div class="form-section__progress-bar--wrapper">
+                    <div class="form-section__progress-bar"></div>
+                </div>
+            </div>
 
-                        {% if show_additional_participants %}
-                            <div class="form-section-contactperson">
-                                {{ form_sections['contactperson']|raw }}
+            <div class="form-section-wrapper">
+
+                {% for section in form_sections %}
+                <div class="form-section__step{% if loop.first %} active{% endif %}" data-label="{{section.title}}">
+
+                    {% if loop.first %}
+                    <div class="register-form__participants">
+                        <div class="register-form__participant" data-participant-index="1">
+                            <div class="register-form__participant-header-wrapper">
+                                <h3 class="register-form__participant-header">Deelnemer 1</h3>
+                                <button type="button" class="register-form__remove_participant"
+                                        title="Deelnemer verwijderen">×
+                                </button>
                             </div>
-                        {% endif %}
-
-                        <div class="register-form__actions">
-                            <button class="register-form__next">Volgende</button>
+                            <div class="register-form__participant-form">
+                                {{ section.form | raw }}
+                            </div>
                         </div>
                     </div>
+                    {% else %}
+                    {{ section.form | raw }}
+                    {% endif %}
 
-                    <div class="form-section__step-2">
-                        <div class="form-section-invoice-details">
-                            {{ form_sections['invoice-details']|raw }}
-                        </div>
-
-                        <div class="register-form__actions">
-                            <button class="register-form__previous">Vorige</button>
-
-                            <button type="submit" class="register-form__submit">Verzenden</button>
-                        </div>
+                    <div class="register-form__actions">
+                        {% if loop.first %}
+                        <button type="button" class="register-form__add_participant">Deelnemer toevoegen +</button>
+                        {% endif %}
+                        {% if not loop.first %}
+                        <button type="button" class="register-form__previous">&lt; Vorige</button>
+                        {% endif %}
+                        {% if not loop.last %}
+                        <button type="button" class="register-form__next">Volgende &gt;</button>
+                        {% endif %}
+                        {% if loop.last %}
+                        <button type="button" class="register-form__check">Controleer gegevens</button>
+                        {% endif %}
                     </div>
                 </div>
+                {% endfor %}
 
-            </form>
+
+                <div class="form-section__step register-form--summary" data-label="Controleer gegevens">
+                    <!-- summarize the form input -->
+
+                    <div class="register-form__actions">
+                        <button type="button" class="register-form__previous">&lt; Vorige</button>
+                        <button type="submit" class="register-form__submit">Verzenden</button>
+                    </div>
+                </div>
+            </div>
+
+        </form>
+
+        <div class="register-page__cart">
+            <h2 class="register-page__cart--title">
+                Mijn investering
+            </h2>
+            <div class="register-page__cart--contents">
+                <div class="register-page__cart--item" data-price="{{ price }}">
+                    <span>{{ training_type_title }}</span>
+                    {% if training %}
+                        <small>{{ training_day }} {{ training_date }} - {{ training_location }}</small>
+                    {% endif %}
+                    <small class="register-page__cart--quantity" data-quantity="1">
+                        1 deelnemer
+                    </small>
+                </div>
+
+                <div class="register-page__cart--total">
+                    <span>Totale kosten</span>
+                    <span class="register-page__cart--total-price">&euro; {{ price | number_format(2, '.', ',') }}</span>
+                </div>
+            </div>
         </div>
     </div>
 </div>

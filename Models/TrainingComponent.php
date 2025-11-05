@@ -159,8 +159,8 @@ class TrainingComponent {
     }
 
     public static function from_array(array $data): self {
-        error_log("TrainingComponent::from_array called with data: ");
-        error_log(print_r($data, true));
+//        error_log("TrainingComponent::from_array called with data: ");
+//        error_log(print_r($data, true));
 
         $collection_data = collect([$data]);
         return new self(

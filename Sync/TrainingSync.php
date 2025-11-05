@@ -2,6 +2,7 @@
 
 namespace Coachview\Sync;
 
+use Coachview\Models\CourseFormat;
 use Coachview\Models\Training;
 use Coachview\Models\TrainingType;
 use Coachview\Sync\Dataloaders\TrainingDataloader;
@@ -24,7 +25,7 @@ class TrainingSync {
         $training_types->each(function(TrainingType $training_type, $idx) {
             try {
 //                error_log(print_r($training_type, true));
-                if ($training_type->get_course_format() == 'elearning') {
+                if ($training_type->get_course_format() == CourseFormat::E_LEARNING) {
                     $product = TrainingSync::__save_single_product($training_type);
                     $product_id = $product->get_id();
                     error_log("$idx. [SAVE] Single Product [$training_type->code] WP ID [$product_id]");
@@ -36,7 +37,7 @@ class TrainingSync {
                     $product_id = $product->get_id();
                     $num_variations = $variations->count();
 
-                    error_log("$idx. [SAVE] Variable Product [$training_type->code] WP ID [$product_id] Num variations: [$num_variations]");
+                    error_log("$idx. [SAVE] Variable Product [$training_type->code] WP ID [$product_id] Num variations: [$num_variations] Price: [{$training_type->price}]");
                 }
                 TrainingSync::__save_product_categories($product, $training_type);
             } catch (Exception $e) {
@@ -98,6 +99,11 @@ class TrainingSync {
     public static function __save_single_product(TrainingType $training_type): WC_Product_Simple
     {
         $product = get_product_by_cv_id($training_type->id) ?? new WC_Product_Simple();
+        if ($product instanceof WC_Product_Variable) {
+            log_cv_exception();
+            $product->delete(true);
+            $product = new WC_Product_Simple();
+        }
         TrainingSync::__set_product_info($product, $training_type);
         $product->set_manage_stock(false);
         $product->save();
@@ -108,6 +114,7 @@ class TrainingSync {
     {
         $product = get_product_by_cv_id($training_type->id) ?? new WC_Product_Variable();
         if ($product instanceof WC_Product_Simple) {
+            $product->delete(true);
             $product = new WC_Product_Variable($product->get_id());
         }
 

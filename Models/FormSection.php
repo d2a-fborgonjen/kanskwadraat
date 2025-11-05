@@ -19,21 +19,20 @@ class FormSection extends FormElement {
         if (!$this->canShow($form_type, $registration_type)) {
             return '';
         }
-        
         $templateEngine = new TemplateEngine();
-        
+
         // Prepare items with their render methods
         $renderedItems = [];
         foreach ($this->items as $item) {
             $renderedItems[] = $item->render($form_type, $registration_type);
         }
-        
+
         $data = [
             'title' => $this->title,
             'description' => $this->description,
             'items' => $renderedItems
         ];
-        
+
         return $templateEngine->render('form-section', $data);
     }
 

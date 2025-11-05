@@ -17,12 +17,13 @@ class TrainingDataloader
     public static function load_training_types(int $take, $progress = null): Collection {
         $query = (new QueryBuilder())
             ->where('publicatieWebsite', 'true')
+            ->where('opleidingssoortStatusId', 'Definitief')
             ->where('inactief', 'false')
-            ->where('code', 'PC-KLAS')
+//            ->where('code', 'PC-KLAS')
             ->includeFreeFields()
             ->includeExtraFields()
             ->includeDirectRelations()
-            ->order_by('audittrail.aangemaaktdatumtijd', 'desc')
+            ->order_by('audittrail.gewijzigdDatumTijd', 'asc')
             ->take($take)
             ->build();
         try {

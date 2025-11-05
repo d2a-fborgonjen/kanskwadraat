@@ -2,11 +2,13 @@
     --cv-color-blue-dark: #002250;
     --cv-color-teal-dark: #569aa1;
     --cv-color-teal-light: #aaccd0;
-    --cv-color-green-light: #c8f012;
+    --cv-color-teal-lighter: #edf9f9;
+    --cv-color-green-light: #baebd4;
+    --cv-color-green-bright: #c8f012;
 
     --cv-color-primary: var(--cv-color-blue-dark);
     --cv-color-secondary: var(--cv-color-teal-dark);
-    --cv-color-accent: var(--cv-color-green-light);
+    --cv-color-accent: var(--cv-color-green-bright);
     --cv-color-tertiary: #aaccd0;
 
 
@@ -16,7 +18,7 @@
 }
 
 .button-primary {
-    background: var(--cv-color-green-light);
+    background: var(--cv-color-green-bright);
     color: var(--cv-color-blue-dark);
 
     border-radius: var(--button-primary-border-radius);
@@ -29,7 +31,7 @@
     display: flex;
 }
 .button-primary:hover {
-    background-color: var(--cv-color-green-light);
+    background-color: var(--cv-color-green-bright);
     color: var(--cv-color-blue-dark);
     filter: brightness(110%);
 }

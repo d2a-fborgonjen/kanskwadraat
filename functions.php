@@ -58,7 +58,3 @@ function cv_assets_url(string $path = ''): string {
 function cv_assets_path(string $path = ''): string {
     return plugin_dir_path(__FILE__) . 'assets/' . ltrim($path, '/');
 }
-
-error_log('Coachview functions.php loaded');
-error_log('Plugin assets URL: ' . cv_assets_url('img/test.png'));
-error_log('Plugin assets Path: ' . cv_assets_path('img/test.png'));

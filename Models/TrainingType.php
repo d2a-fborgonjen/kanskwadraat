@@ -17,24 +17,23 @@ class TrainingType {
         public Collection $trainings, /** Collection of Trainings */
         public Collection $training_type_components /** Collection of TrainingTypeComponents */
     ) {
-         error_log("TrainingType::__construct called with id: {$this->id}, code: {$this->code}, name: {$this->name}");
-         error_log("Locations: " . implode(', ', $this->get_locations()));
-         error_log("Categories: " . implode(', ', $this->categories));
-         error_log("Course Format: " . $this->get_course_format()->value);
+//         error_log("TrainingType::__construct called with id: {$this->id}, code: {$this->code}, name: {$this->name}");
+//         error_log("Locations: " . implode(', ', $this->get_locations()));
+//         error_log("Categories: " . implode(', ', $this->categories));
+//         error_log("Course Format: " . $this->get_course_format()->value);
     }
 
     public static function from_array(array $data,
                                       array $categories,
                                       Collection $trainings,
                                       Collection $training_type_components): self {
-
         return new self(
             id: $data['id'],
             code: $data['code'],
             name: $data['naam'] ?? $data['code'],
             goal: $data['doel'] ?? '',
             description: $data['omschrijvingInhoud'] ?? '',
-            price: $data['totaalBedragExclBtwGepubliceerdeVerkoopregels'] ?? $data['vanafPrijs'] ?? 0,
+            price: $data['totaalBedragExclBtwGepubliceerdeVerkoopregels'] ?? 0,
             num_components: $data['aantalOnderdelen'] ?? 0,
             num_half_days: $data['vrijvelddagdelen'] ?? '0',
             categories: $categories,

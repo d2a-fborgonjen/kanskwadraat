@@ -2,6 +2,7 @@
 namespace Coachview\Presentation\Pages;
 
 use Coachview\Models\FormSection;
+use Coachview\Models\RegistrationType;
 use Coachview\Presentation\TemplateEngine;
 use WC_Product;
 use WC_Product_Simple;
@@ -49,8 +50,9 @@ class RegisterPage
         if (!$training_type) {
             return '<p>' . esc_html__('Ongeldige training.', 'coachview') . '</p>';
         }
-        wp_enqueue_style('coachview-common', plugin_dir_url(__FILE__) . '../../assets/css/common.css');
-        wp_enqueue_style('coachview-register', plugin_dir_url(__FILE__) . '../../assets/css/register.css');
+        wp_enqueue_style('coachview-common', cv_assets_url('css/common.css'));
+        wp_enqueue_style('coachview-register', cv_assets_url('css/register.css'));
+        wp_enqueue_script('coachview-register', cv_assets_url('js/register-page.js'), ['jquery'], '1.0', true);
         return $this->render_form($training_type, $training);
     }
 
@@ -72,18 +74,40 @@ class RegisterPage
         $rendered_sections = [];
         foreach ($form_sections as $section) {
             if ($section->canShow($form_type, $registration_type)) {
-                $rendered_sections[$section->id] = $section->render($form_type, $registration_type);
+                $rendered_sections[] = [
+                    'id' => $section->id,
+                    'title' => $section->title,
+                    'description' => $section->description,
+                    'form' => $section->render($form_type, $registration_type),
+                ];
             }
         }
         
         $data = [
+            // Page structure
             'header' => $this->captureHeader(),
             'footer' => $this->captureFooter(),
-            'form_header' => $this->render_form_header($training_type, $training),
+
+            // Form contents
             'form_action' => esc_url(admin_url('admin-post.php')),
             'hidden_inputs' => $this->render_hidden_inputs($training_type, $training),
-            'form_sections' => $rendered_sections
+            'form_sections' => $rendered_sections,
+
+            // Order details
+            'training_type_title' => $training_type->get_title(),
+            'price' => $training_type->get_price(),
         ];
+
+        if ($training) {
+            $location = collect(get_post_meta($training->get_id(), 'location', true))->first() ?? 'Onbekend';
+            $startDate = get_post_meta($training->get_id(), 'start_date', true);
+            $day = date_i18n('l', strtotime($startDate));
+            $date = date_i18n('j F', strtotime($startDate));
+            $data['training'] = true;
+            $data['training_day'] = $day;
+            $data['training_date'] = $date;
+            $data['training_location'] = $location;
+        }
         
         return $this->templateEngine->render('register-page', $data);
     }
@@ -140,6 +164,28 @@ class RegisterPage
         }
         
         return $this->templateEngine->render('hidden-inputs', ['hidden_inputs' => $hidden_form_data]);
+    }
+
+    public function render_form_section(string $form_type, RegistrationType $registration_type): string {
+        if (!$this->canShow($form_type, $registration_type)) {
+            return '';
+        }
+
+        $templateEngine = new TemplateEngine();
+
+        // Prepare items with their render methods
+        $renderedItems = [];
+        foreach ($this->items as $item) {
+            $renderedItems[] = $item->render($form_type, $registration_type);
+        }
+
+        $data = [
+            'title' => $this->title,
+            'description' => $this->description,
+            'items' => $renderedItems
+        ];
+
+        return $templateEngine->render('form-section', $data);
     }
 
     public function captureHeader()
