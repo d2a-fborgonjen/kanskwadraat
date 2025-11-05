@@ -5,6 +5,7 @@
     --cv-color-teal-lighter: #edf9f9;
     --cv-color-green-light: #baebd4;
     --cv-color-green-bright: #c8f012;
+    --cv-color-grey-dark: #0f0f0f;
 
     --cv-color-primary: var(--cv-color-blue-dark);
     --cv-color-secondary: var(--cv-color-teal-dark);

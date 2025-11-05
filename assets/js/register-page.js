@@ -94,7 +94,7 @@ jQuery(document).ready(function($) {
                 scrollTop: $(firstInvalidField).offset().top - 100
             }, 300);
         }
-        
+
         return isValid;
     }
     
@@ -128,6 +128,82 @@ jQuery(document).ready(function($) {
                 currentStep = nextStepIndex;
                 updateStepTitle();
             }, 300);
+
+            console.log('Current Step after next:', currentStep, totalSteps -1);
+            if (nextStepIndex === totalSteps - 1) {
+
+                // Find and empty the Summary Details element
+                const $summaryDetails = $form.find('.register-form__summary-details');
+                $summaryDetails.empty();
+
+                // Loop over all formSections and gather inputs
+                const $formSections = $form.find('.form-section__step:not(.register-form--summary)');
+
+                $formSections.each(function() {
+
+                    $formSectionSummary = $('<div class="register-form__summary-section" />');
+
+                    const $formGroups = $(this).find('.form-section__content');
+
+                    $formGroups.each(function() {
+
+                        let sectionTitle = $(this).closest('.form-section__step').data('label');
+                        const participantWrapper = $(this).closest('.register-form__participant');
+                        if (participantWrapper.length) {
+                            sectionTitle = participantWrapper.find('.register-form__participant-header')?.text() || sectionTitle;
+                        }
+                        $formSectionSummary.append(`<h2 class="register-form__summary-section-title">
+                            ${sectionTitle}
+                        </h2>`);
+
+
+                        // Loop over all inputs in the form section
+                        $(this).find('input, select, textarea').each(function() {
+                            const $input = $(this);
+                            const label = $input.attr('aria-label') || 'Onbekend veld';
+                            const inputType = $input.data('input-type');
+                            let value = '';
+
+                            if (!label || !inputType) {
+                                return;
+                            }
+
+                            if ($input.is(':checkbox')) {
+                                value = $input.is(':checked') ? 'Ja' : 'Nee';
+                            } else if ($input.is(':radio')) {
+                                if ($input.is(':checked')) {
+                                    value = $input.val();
+                                } else {
+                                    return;
+                                }
+                            } else {
+                                value = $input.val();
+                            }
+
+                            // Format value for certain input types
+                            if (inputType === 'date' && value) {
+                                const date = new Date(value);
+                                value = date.toLocaleDateString('nl-NL', {
+                                    day: '2-digit',
+                                    month: '2-digit',
+                                    year: 'numeric'
+                                });
+                            }
+
+                            // Append to summary
+                            if (value) {
+                                $formSectionSummary.append(
+                                    `<div class="register-form__summary-item">
+                                        <span class="register-form__summary-item-label">${label}</span>
+                                        <span class="register-form__summary-item-value">${value}</span>
+                                     </div>`
+                                );
+                            }
+                        });
+                    });
+                    $summaryDetails.append($formSectionSummary);
+                });
+            }
         }
         return true;
     }

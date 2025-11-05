@@ -5,19 +5,19 @@
         {
             "fields": [
                 {
-                    "field": "deelnemer[][voornaam]",
+                    "field": "deelnemer[0][voornaam]",
                     "label": "Voornaam",
                     "type": "text",
                     "required": true
                 },
                 {
-                    "field": "deelnemer[][tussenvoegsel]",
+                    "field": "deelnemer[0][tussenvoegsel]",
                     "label": "Tussenvoegsel",
                     "type": "text",
                     "optional": true
                 },
                 {
-                    "field": "deelnemer[][achternaam]",
+                    "field": "deelnemer[0][achternaam]",
                     "label": "Achternaam",
                     "type": "text",
                     "required": true
@@ -25,7 +25,7 @@
             ]
         },
         {
-            "field": "deelnemer[][geboorteDatum]",
+            "field": "deelnemer[0][geboorteDatum]",
             "label": "Geboortedatum",
             "type": "date",
             "required": true,
@@ -34,13 +34,13 @@
         {
             "fields": [
                 {
-                    "field": "deelnemer[][emailadres]",
+                    "field": "deelnemer[0][emailadres]",
                     "label": "E-mailadres",
                     "type": "email",
                     "required": true
                 },
                 {
-                    "field": "deelnemer[][telefoonnummer]",
+                    "field": "deelnemer[0][telefoonnummer]",
                     "label": "Telefoonnummer",
                     "type": "text",
                     "required": true,
@@ -51,7 +51,7 @@
         {
             "fields": [
                 {
-                    "field": "deelnemer[][vrijeveldenPersoon][VrijveldFunctie]",
+                    "field": "deelnemer[0][vrijeveldenPersoon][VrijveldFunctie]",
                     "label": "Functie",
                     "type": "text",
                     "required": true,
@@ -61,7 +61,7 @@
                     }
                 },
                 {
-                    "field": "deelnemer[][vrijeveldenPersoon][VrijeveldBedrijfsnaam]",
+                    "field": "deelnemer[0][vrijeveldenPersoon][VrijeveldBedrijfsnaam]",
                     "label": "Bedrijfsnaam",
                     "type": "text",
                     "required": true,
@@ -73,7 +73,7 @@
             ]
         },
         {
-            "field": "deelnemer[][vrijeveldenPersoon][Vooropleiding]",
+            "field": "deelnemer[0][vrijeveldenPersoon][Vooropleiding]",
             "label": "Vooropleiding",
             "type": "text",
             "rules": {
@@ -82,7 +82,7 @@
             }
         },
         {
-            "field": "deelnemer[][vrijeveldenPersoon][VrijeveldWerkzaamoplocatie]",
+            "field": "deelnemer[0][vrijeveldenPersoon][VrijeveldWerkzaamoplocatie]",
             "label": "Werkzaam op locatie",
             "type": "text",
             "required": true,
@@ -91,7 +91,7 @@
             }
         },
         {
-            "field": "deelnemer[][vrijeveldenPersoon][VrijveldWerkzaaminregio]",
+            "field": "deelnemer[0][vrijeveldenPersoon][VrijveldWerkzaaminregio]",
             "label": "Werkzaam op locatie",
             "type": "text",
             "required": true,
@@ -100,7 +100,7 @@
             }
         },
         {
-            "field": "deelnemer[][vrijeveldenPersoon][VrijveldLeidinggevende]",
+            "field": "deelnemer[0][vrijeveldenPersoon][VrijveldLeidinggevende]",
             "label": "Naam leidinggevende",
             "type": "text",
             "required": true,
@@ -110,7 +110,7 @@
             }
         },
         {
-            "field": "deelnemer[][vrijeveldenPersoon][VrijveldLeidinggevendMail]",
+            "field": "deelnemer[0][vrijeveldenPersoon][VrijveldLeidinggevendMail]",
             "label": "E-mailadres leidinggevende",
             "type": "text",
             "required": true,
@@ -120,7 +120,7 @@
             }
         },
         {
-            "field": "deelnemer[][vrijeveldenPersoon][VrijveldSoortmedewerker]",
+            "field": "deelnemer[0][vrijeveldenPersoon][VrijveldSoortmedewerker]",
             "label": "Medewerker in dienst of nieuwe medewerker",
             "type": "radio",
             "options": [

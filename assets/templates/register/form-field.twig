@@ -1,8 +1,10 @@
 <div class="form-field form-field--{{ type }}">
-    <label for="{{ field }}">{{ placeholder }}</label>
+    <label for="{{ field }}">{{ label }}</label>
     {% if type == 'text' or type == 'number' or type == 'date' or type == 'email' %}
         <input class="form-field__input form-field__input--{{ type }}"
                placeholder="{{ placeholder }}"
+               aria-label="{{ label }}"
+               data-input-type="input"
                type="{{ type }}"
                name="{{ field }}"
                id="{{ field }}"
@@ -12,13 +14,17 @@
     {% elseif type == 'textarea' %}
         <textarea class="form-field__input form-field__input--textarea"
                   name="{{ field }}"
+                  aria-label="{{ label }}"
+                  data-input-type="textarea"
                   id="{{ field }}"
                   placeholder="{{ placeholder }}"
                   {% if required %}required{% endif %}></textarea>
     
     {% elseif type == 'select' %}
         <select class="form-field__input form-field__input--select"
-                name="{{ field }}" 
+                name="{{ field }}"
+                aria-label="{{ label }}"
+                data-input-type="select"
                 id="{{ field }}" 
                 {% if required %}required{% endif %}>
             {% for option in options %}
@@ -29,7 +35,9 @@
     {% elseif type == 'checkbox' %}
         <div class="form-field__checkbox">
             <input class="form-field__checkbox-input"
-                   type="checkbox" 
+                   type="checkbox"
+                   aria-label="{{ label }}"
+                   data-input-type="checkbox"
                    name="{{ field }}" 
                    id="{{ field }}" 
                    value="1" 
@@ -42,7 +50,9 @@
             {% for option in options %}
                 <div class="form-field__radio-item">
                     <input class="form-field__radio-input"
-                           type="radio" 
+                           type="radio"
+                           aria-label="{{ label }}"
+                           data-input-type="radio"
                            name="{{ field }}" 
                            id="{{ field }}_{{ option.value }}" 
                            value="{{ option.value }}"
