@@ -51,7 +51,6 @@ jQuery(document).ready(function($) {
         let firstInvalidField = null;
         
         // Clear previous validation errors
-        $currentStepElement.find('.form-field__error').remove();
         $currentStepElement.find('.form-field__input').removeClass('form-field__input--error');
         
         // Validate each required field in the current step
@@ -65,21 +64,6 @@ jQuery(document).ready(function($) {
                 
                 // Add error class to field
                 $field.addClass('form-field__input--error');
-                
-                // Find the form field container
-                const $formField = $field.closest('.form-field');
-                if ($formField.length) {
-                    // Get validation message
-                    let errorMessage = fieldElement.validationMessage;
-                    if (!errorMessage) {
-                        errorMessage = 'Dit veld is verplicht';
-                    }
-                    
-                    // Add error message
-                    $formField.append(
-                        `<div class="form-field__error">${errorMessage}</div>`
-                    );
-                }
                 
                 // Store first invalid field for scrolling
                 if (!firstInvalidField) {
@@ -266,7 +250,7 @@ jQuery(document).ready(function($) {
                 $header.wrap('<div class="register-form__participant-header-wrapper"></div>');
             }
             const $wrapper = $newParticipant.find('.register-form__participant-header-wrapper');
-            $wrapper.append('<button type="button" class="register-form__remove_participant" title="Deelnemer verwijderen">×</button>');
+            $wrapper.append('<button type="button" class="register-form__remove_participant cv-button" title="Deelnemer verwijderen">×</button>');
         }
         
         // Clear all input values
@@ -300,7 +284,6 @@ jQuery(document).ready(function($) {
         });
         
         // Remove any error states
-        $newParticipant.find('.form-field__error').remove();
         $newParticipant.find('.form-field__input--error').removeClass('form-field__input--error');
         
         // Append the new participant
@@ -308,6 +291,7 @@ jQuery(document).ready(function($) {
         
         // Update delete button visibility
         updateDeleteButtonsVisibility();
+        reindexParticipants();
         updatePrices();
     }
 
@@ -344,8 +328,6 @@ jQuery(document).ready(function($) {
         const totalPrice = itemPrice * numberOfParticipants;
         const formattedTotalPrice = totalPrice.toFixed(2).replace('.', ',');
 
-        console.log(itemPrice, numberOfParticipants, totalPrice, formattedTotalPrice);
-
         $itemQuantityElem.data('quantity', numberOfParticipants);
         $itemQuantityElem.text(numberOfParticipants + ' deelnemer' + (numberOfParticipants > 1 ? 's' : ''));
         $totalPrice.html('&euro; ' + formattedTotalPrice );
@@ -356,53 +338,30 @@ jQuery(document).ready(function($) {
         const $participants = $participantsContainer.find('.register-form__participant');
         
         $participants.each(function(index) {
-            const newIndex = index + 1;
             const $participant = $(this);
             
             // Update data attribute
-            $participant.attr('data-participant-index', newIndex);
+            $participant.attr('data-participant-index', index);
             
             // Update header text
-            $participant.find('.register-form__participant-header').text('Deelnemer ' + newIndex);
-            
-            // Update all IDs
-            $participant.find('[id]').each(function() {
-                const $element = $(this);
-                const oldId = $element.attr('id');
-                if (!oldId) return;
-                
-                // Extract base ID (remove old index suffix if present)
-                let baseId = oldId;
-                const idMatch = oldId.match(/^(.+?)_\d+$/);
-                if (idMatch) {
-                    baseId = idMatch[1];
-                }
-                
-                const newId = baseId + '_' + newIndex;
-                $element.attr('id', newId);
-                
-                // Update corresponding label 'for' attribute
-                $participant.find('label[for="' + oldId + '"]').each(function() {
-                    $(this).attr('for', newId);
-                });
-            });
-            
+            $participant.find('.register-form__participant-header').text('Deelnemer ' + (index + 1));
+
             // Update name attributes
             $participant.find('[name]').each(function() {
                 const $element = $(this);
                 let name = $element.attr('name');
                 if (!name) return;
-                
-                // Extract base name (remove array index if present)
-                let baseName = name;
-                const nameMatch = name.match(/^(.+?)\[\d+\]$/);
-                if (nameMatch) {
-                    baseName = nameMatch[1];
-                }
-                
-                // Only update if it was an array or if it's not already an array
-                if (nameMatch || !name.includes('[')) {
-                    $element.attr('name', baseName + '[' + newIndex + ']');
+
+                const indexedParticipantMatch = name.match(/^deelnemer\[\d+]/);
+                if (indexedParticipantMatch) {
+                    const newName = name.replace(/^deelnemer\[\d+]/, 'deelnemer[' + index + ']');
+                    $element.attr('name', newName);
+                    $element.attr('id', newName);
+
+                    const label = $element.prev('label');
+                    if (label.length) {
+                        label.attr('for', newName);
+                    }
                 }
             });
         });
@@ -454,7 +413,6 @@ jQuery(document).ready(function($) {
     $form.on('input change', '.form-field__input', function() {
         const $field = $(this);
         $field.removeClass('form-field__input--error');
-        $field.closest('.form-field').find('.form-field__error').remove();
     });
     
     // Validate on form submit (final step)

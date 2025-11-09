@@ -37,7 +37,7 @@ class Admin
         ?>
         <div class="wrap">
             <h1>Coachview</h1>
-            <button id="run-sync" class="button button-primary">
+            <button id="run-sync" class="button button-cta">
                 Synchroniseer trainingen
             </button>
             <hr>

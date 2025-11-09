@@ -30,6 +30,7 @@ class TrainingTypeStartDates
         // TODO: Filter based on dates?
         $variations = $product->get_available_variations('products');
 
+        wp_enqueue_style('coachview-font', cv_assets_url('fonts/poppins.css'));
         wp_enqueue_style('coachview-common', cv_assets_url('css/common.css'));
         wp_enqueue_style('coachview-training-type-start-dates', cv_assets_url('css/training-type-start-dates.css'));
         wp_enqueue_script('coachview-training-type-start-dates', cv_assets_url('js/training-type-start-dates.js'), array('jquery'), null, true);

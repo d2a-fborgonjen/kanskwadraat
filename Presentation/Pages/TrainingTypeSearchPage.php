@@ -40,6 +40,7 @@ class TrainingTypeSearchPage
     }
 
     private function render_search_page($include_header_and_footer = true): string {
+        wp_enqueue_style('coachview-font', cv_assets_url('fonts/poppins.css'));
         wp_enqueue_style('coachview-common', cv_assets_url('css/common.css'));
         wp_enqueue_style('coachview-search', cv_assets_url('css/training-type-search.css'));
         wp_enqueue_style('coachview-search-items', cv_assets_url('css/training-type-search-item.css'));

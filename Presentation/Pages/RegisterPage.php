@@ -50,8 +50,9 @@ class RegisterPage
         if (!$training_type) {
             return '<p>' . esc_html__('Ongeldige training.', 'coachview') . '</p>';
         }
+        wp_enqueue_style('coachview-font', cv_assets_url('fonts/poppins.css'));
         wp_enqueue_style('coachview-common', cv_assets_url('css/common.css'));
-        wp_enqueue_style('coachview-register', cv_assets_url('css/register.css'));
+        wp_enqueue_style('coachview-register', cv_assets_url('css/register-page.css'));
         wp_enqueue_script('coachview-register', cv_assets_url('js/register-page.js'), ['jquery'], '1.0', true);
         return $this->render_form($training_type, $training);
     }

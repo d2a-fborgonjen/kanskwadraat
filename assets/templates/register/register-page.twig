@@ -24,8 +24,8 @@
                         <div class="register-form__participant" data-participant-index="1">
                             <div class="register-form__participant-header-wrapper">
                                 <h3 class="register-form__participant-header">Deelnemer 1</h3>
-                                <button type="button" class="register-form__remove_participant"
-                                        title="Deelnemer verwijderen">×
+                                <button type="button" class="register-form__remove_participant cv-button"title="Deelnemer verwijderen">
+                                    ×
                                 </button>
                             </div>
                             <div class="register-form__participant-form">
@@ -39,16 +39,16 @@
 
                     <div class="register-form__actions">
                         {% if loop.first %}
-                        <button type="button" class="register-form__add_participant">Deelnemer toevoegen +</button>
+                        <button type="button" class="register-form__add_participant cv-button cv-button-outline">Deelnemer toevoegen +</button>
                         {% endif %}
                         {% if not loop.first %}
-                        <button type="button" class="register-form__previous">&lt; Vorige</button>
+                        <button type="button" class="register-form__previous cv-button">&lt; Vorige</button>
                         {% endif %}
                         {% if not loop.last %}
-                        <button type="button" class="register-form__next">Volgende &gt;</button>
+                        <button type="button" class="register-form__next cv-button">Volgende &gt;</button>
                         {% endif %}
                         {% if loop.last %}
-                        <button type="button" class="register-form__check">Controleer gegevens</button>
+                        <button type="button" class="register-form__check cv-button cv-button-outline">Controleer gegevens</button>
                         {% endif %}
                     </div>
                 </div>
@@ -62,8 +62,8 @@
                     </div>
 
                     <div class="register-form__actions">
-                        <button type="button" class="register-form__previous">&lt; Vorige</button>
-                        <button type="submit" class="register-form__submit">Verzenden</button>
+                        <button type="button" class="register-form__previous cv-button">&lt; Vorige</button>
+                        <button type="submit" class="register-form__submit cv-button cv-button-cta">Verzenden</button>
                     </div>
                 </div>
             </div>
