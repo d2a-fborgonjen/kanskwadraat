@@ -1,11 +1,14 @@
 {{ header|raw }}
 
 <div class="register-page">
+
     <div class="register-page__container">
+
+        <h2 class="register-page__title">Deelnemer(s)</h2>
+        <div class="register-page__feedback" role="alert" aria-live="polite"></div>
+
         <form class="register-page__form" method="post" action="{{ form_action }}">
             {{ hidden_inputs|raw }}
-
-            <h2 class="form-section__current-step-title">Deelnemer(s)</h2>
 
             <div class="form-section__progress">
                 <span class="form-section__progress-text">Stap 1 van 3</span>
@@ -14,6 +17,7 @@
                 </div>
             </div>
 
+            <!-- This wrapper contains the form steps. e.g. participant(s) form, invoice details and form summary -->
             <div class="form-section-wrapper">
 
                 {% for section in form_sections %}
@@ -24,7 +28,7 @@
                         <div class="register-form__participant" data-participant-index="1">
                             <div class="register-form__participant-header-wrapper">
                                 <h3 class="register-form__participant-header">Deelnemer 1</h3>
-                                <button type="button" class="register-form__remove_participant cv-button"title="Deelnemer verwijderen">
+                                <button type="button" class="register-form__remove_participant cv-button cv-button-outline"title="Deelnemer verwijderen">
                                     ×
                                 </button>
                             </div>

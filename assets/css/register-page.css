@@ -33,6 +33,39 @@
     display: flex;
     max-width: var(--cv-max-width);
     gap: var(--cv-gap-lg);
+    flex-wrap: wrap;
+}
+
+.register-page__title {
+    font-size: var(--wp--preset--font-size--x-large);
+    flex-basis: 100%;
+    margin: 0;
+}
+
+.register-page__feedback {
+    flex-basis: 100%;
+    margin: var(--cv-space-md) 0;
+    padding: var(--cv-space-md);
+    border-radius: var(--cv-radius-md);
+    display: none;
+}
+
+.register-page__feedback--info {
+    display: block;
+    background-color: var(--cv-color-teal-lighter);
+    color: var(--cv-color-blue-dark);
+}
+
+.register-page__feedback--success {
+    display: block;
+    background-color: var(--cv-color-green-light);
+    color: var(--cv-color-blue-dark);
+}
+
+.register-page__feedback--error {
+    display: block;
+    background-color: rgba(211, 47, 47, 0.1);
+    color: var(--cv-color-error);
 }
 
 .register-page__form {
@@ -47,11 +80,16 @@
     gap: var(--cv-gap-md);
 }
 
+.register-page__cart--title {
+    font-size: var(--wp--preset--font-size--large);
+    margin: 0;
+}
+
 .register-page__cart--contents {
     flex-grow: 1;
-    padding: var(--cv-space-md);
+    padding: var(--cv-space-lg);
     background-color: var(--cv-color-green-light);
-    border-radius: var(--cv-radius-lg);
+    border-radius: var(--cv-radius-md);
 }
 
 .register-page__cart--item {
@@ -95,7 +133,7 @@
 .register-form__actions {
     display: flex;
     justify-content: space-between;
-    margin-top: var(--cv-space-xl);
+    margin: var(--cv-space-xl) 0;
 }
 
 
@@ -133,6 +171,13 @@
     font-weight: var(--cv-font-weight-semibold);
     color: var(--cv-color-blue-dark);
     margin: 0;
+}
+button.register-form__remove_participant {
+    padding: 0;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    justify-content: center;
 }
 
 .register-form__participant-form {
@@ -375,5 +420,5 @@
 .register-form__summary-item-value {
     font-size: var(--wp--preset--font-size--normal);
     color: var(--cv-color-grey-darkest);
-    font-weight: var(--cv-font-weight-normal);
+    font-weight: var(--cv-font-weight-light);
 }

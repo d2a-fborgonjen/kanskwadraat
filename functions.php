@@ -58,3 +58,10 @@ function cv_assets_url(string $path = ''): string {
 function cv_assets_path(string $path = ''): string {
     return plugin_dir_path(__FILE__) . 'assets/' . ltrim($path, '/');
 }
+
+function wp_get_query_var( $key, $default = '' ) {
+    if ( isset( $_GET[ $key ] ) ) {
+        return sanitize_text_field( wp_unslash( $_GET[ $key ] ) );
+    }
+    return $default;
+}

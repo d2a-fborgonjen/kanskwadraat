@@ -14,11 +14,11 @@ use Coachview\Admin\Settings;
 use Coachview\Cron\Cron;
 use Coachview\Presentation\Components\TrainingTypeCTA;
 use Coachview\Presentation\Components\TrainingTypeStartDates;
-use Coachview\Presentation\Hooks\RegisterHooks;
 use Coachview\Presentation\Hooks\TrainingHooks;
 use Coachview\Presentation\Hooks\TrainingTypeHooks;
-use Coachview\Presentation\Pages\RegisterPage;
 use Coachview\Presentation\Pages\TrainingTypeSearchPage;
+use Coachview\Presentation\Pages\RegisterPage;
+use Coachview\Presentation\Pages\RegisterPageHandler;
 use Coachview\Sync\Hooks\Sync;
 
 add_action('plugins_loaded', function () {
@@ -31,7 +31,7 @@ add_action('plugins_loaded', function () {
     // Presentation
     new TrainingTypeSearchPage();
     new RegisterPage();
-    new RegisterHooks();
+    new RegisterPageHandler();
     new TrainingTypeStartDates();
     new TrainingTypeCTA();
     new TrainingHooks();

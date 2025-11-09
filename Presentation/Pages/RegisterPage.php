@@ -38,7 +38,7 @@ class RegisterPage
 
     public function template_redirect(): void {
         if (get_query_var('register')) {
-            echo $this->render_register_page($_GET['vid'], $_GET['pid']);
+            echo $this->render_register_page(wp_get_query_var('vid'), wp_get_query_var('pid'));
             exit;
         }
     }
@@ -53,7 +53,9 @@ class RegisterPage
         wp_enqueue_style('coachview-font', cv_assets_url('fonts/poppins.css'));
         wp_enqueue_style('coachview-common', cv_assets_url('css/common.css'));
         wp_enqueue_style('coachview-register', cv_assets_url('css/register-page.css'));
-        wp_enqueue_script('coachview-register', cv_assets_url('js/register-page.js'), ['jquery'], '1.0', true);
+        wp_enqueue_script('coachview-register-wizard', cv_assets_url('js/register-page-wizard.js'), ['jquery'], '1.0', true);
+        wp_enqueue_script('coachview-register-participants', cv_assets_url('js/register-page-participants.js'), ['jquery'], '1.0', true);
+        wp_enqueue_script('coachview-register', cv_assets_url('js/register-page.js'), ['jquery', 'coachview-register-wizard', 'coachview-register-participants'], '1.0', true);
         return $this->render_form($training_type, $training);
     }
 
