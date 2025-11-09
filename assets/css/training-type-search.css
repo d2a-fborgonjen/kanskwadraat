@@ -1,26 +1,24 @@
 :root {
     --background-color: #edf9f9;
-    --search-panel-max-width: 1400px;
     --filter-panel-bg-color: rgba(0,0,0,0.3);
-    --filter-panel-padding: 2rem;
-    --filter-panel-header-color: #002352;
-    --filter-panel-border-color: #d5e6e7;
 }
 
 
 /* Base layout */
 .coachview-search {
+    font-family: 'Poppins', sans-serif;
     background-color: var(--background-color);
     display: flex;
     flex-direction: column;
     align-items: center;
     min-height: 100vh;
     height: 100%;
+    padding: var(--cv-space-xl) 0;
 }
 
 .coachview-search__content {
     width: 100%;
-    max-width: var(--search-panel-max-width);
+    max-width: var(--cv-max-width);
     position: relative;
     display: flex;
     flex-direction: column;
@@ -47,7 +45,7 @@
     top: 0;
     width: 100vw;
     height: 100vh;
-    padding: var(--filter-panel-padding);
+    padding: var(--cv-space-xl) var(--cv-space-lg);
     background: var(--filter-panel-bg-color);
     z-index: 1;
 }
@@ -64,10 +62,10 @@
 
 .coachview-search__filters-title {
     margin-top: 0;
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: var(--filter-panel-header-color);
-    border-bottom: 1px solid var(--filter-panel-border-color);
+    font-size: var(--cv-font-size-lg);
+    font-weight: var(--cv-font-weight-semibold);
+    color: var(--cv-color-blue-dark);
+    border-bottom: 1px solid var(--cv-color-teal-light);
     padding-bottom: 0.25rem;
     display: flex;
     justify-content: space-between;
@@ -77,16 +75,16 @@
 .coachview-search__filters-title a {
     color: inherit;
     font-weight: 200;
-    font-size: 2rem;
+    font-size: var(--cv-font-size-lg);
     text-decoration: none;
 }
 
 .coachview-search__category-parent {
     margin-top: 1rem;
-    font-size: 1.2rem;
-    font-weight: 400;
-    color: var(--filter-panel-header-color);
-    border-bottom: 1px solid var(--filter-panel-border-color);
+    font-size: var(--cv-font-size-md);
+    font-weight: var(--cv-font-weight-semibold);
+    color: var(--cv-color-blue-dark);
+    border-bottom: 1px solid var(--cv-color-teal-light);
     padding-bottom: 0.25rem;
 }
 

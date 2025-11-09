@@ -1,7 +1,5 @@
 :root {
     /* Colors */
-    /*--cv-color-primary: #002352;*/
-    --cv-color-primary-hover: #003366;
     --cv-color-secondary: #DFF0F1;
     --cv-color-border: #69727d;
     --cv-color-text: #333;
@@ -128,13 +126,13 @@
     align-items: center;
     margin-bottom: var(--cv-space-sm);
     padding-bottom: var(--cv-space-xs);
-    border-bottom: var(--cv-border-width-thick) solid var(--cv-color-secondary);
+    border-bottom: var(--cv-border-width-thick) solid var(--cv-color-teal-dark);
 }
 
 .register-form__participant-header {
     font-size: var(--cv-font-size-lg);
     font-weight: var(--cv-font-weight-semibold);
-    color: var(--cv-color-primary);
+    color: var(--cv-color-blue-dark);
     margin: 0;
 }
 
@@ -369,7 +367,7 @@
 .register-form__summary-section-title {
     font-size: var(--cv-font-size-lg);
     font-weight: var(--cv-font-weight-semibold);
-    color: var(--cv-color-primary);
+    color: var(--cv-color-blue-dark);
     margin: 0 0 var(--cv-space-sm) 0;
 }
 

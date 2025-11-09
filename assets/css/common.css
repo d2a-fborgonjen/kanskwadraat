@@ -8,11 +8,6 @@
     --cv-color-grey-darkest: #0f0f0f;
     --cv-color-grey-dark: #403f3f;
 
-    --cv-color-primary: var(--cv-color-blue-dark);
-    --cv-color-secondary: var(--cv-color-teal-dark);
-    --cv-color-accent: var(--cv-color-green-bright);
-    --cv-color-tertiary: #aaccd0;
-
     /* Layout */
     --cv-gap: 1.5rem;
     --cv-gap-sm: 1rem;
@@ -25,7 +20,7 @@
     --cv-space-sm: 0.75rem;
     --cv-space-md: 1rem;
     --cv-space-lg: 1.5rem;
-    --cv-space-xl: 2rem;
+    --cv-space-xl: 2.5rem;
 
     /* Border radius */
     --cv-radius-sm: .25rem;

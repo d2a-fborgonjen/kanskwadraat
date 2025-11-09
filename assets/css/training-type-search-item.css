@@ -1,7 +1,7 @@
 :root {
     --card-radius: 12px;
     --card-shadow: 0 2px 6px rgba(0,0,0,0.08);
-    --card-shadow-hover: 0 4px 12px rgba(0,0,0,0.12);
+    --card-shadow-hover: 0 4px 15px rgba(0,0,0,0.2);
     --card-bg: #FFF;
 
     --font-size-category: 0.75rem;
@@ -67,14 +67,15 @@
 
 .training-card__title {
     color: var(--cv-color-blue-dark);
-    font-size: var(--font-size-title);
-    font-weight: 700;
+    font-size: var(--cv-font-size-sm);
+    font-weight: var(--cv-font-weight-normal);
     margin: 0.25rem 0 0.5rem;
 }
 
 .training-card__description {
     color: var(--cv-color-blue-dark);
-    font-size: var(--font-size-description);
+    font-size: var(--cv-font-size-sm);
+    font-weight: var(--cv-font-weight-light);
     line-height: 1.4;
     margin-bottom: 1rem;
 }
@@ -83,7 +84,8 @@
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    font-size: var(--font-size-footer);
+    font-size: var(--cv-font-size-sm);
+    font-weight: var(--cv-font-weight-normal);
     color: var(--cv-color-blue-dark);
     border-top: 1px solid var(--cv-color-teal-light);
     padding-top: 0.75rem;
