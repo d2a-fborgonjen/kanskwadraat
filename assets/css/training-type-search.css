@@ -52,7 +52,7 @@
 
 .coachview-search__filters {
     width: 300px;
-    height: 100%;
+    height: calc(100% - 2 * var(--cv-space-xl));
     padding: 1rem;
     background: #FFF;
     border-radius: 10px;
@@ -61,12 +61,12 @@
 }
 
 .coachview-search__filters-title {
-    margin-top: 0;
-    font-size: var(--cv-font-size-lg);
-    font-weight: var(--cv-font-weight-semibold);
+    font-size: var(--wp--preset--font-size--x-large);
+    font-weight: var(--cv-font-weight-bold);
     color: var(--cv-color-blue-dark);
     border-bottom: 1px solid var(--cv-color-teal-light);
     padding-bottom: 0.25rem;
+    margin-top: 0;
     display: flex;
     justify-content: space-between;
     align-items: baseline;
@@ -75,14 +75,14 @@
 .coachview-search__filters-title a {
     color: inherit;
     font-weight: 200;
-    font-size: var(--cv-font-size-lg);
+    font-size: var(--wp--preset--font-size--large);
     text-decoration: none;
 }
 
 .coachview-search__category-parent {
-    margin-top: 1rem;
-    font-size: var(--cv-font-size-md);
+    font-size: var(--wp--preset--font-size--medium);
     font-weight: var(--cv-font-weight-semibold);
+    margin-top: var(--cv-space-md);
     color: var(--cv-color-blue-dark);
     border-bottom: 1px solid var(--cv-color-teal-light);
     padding-bottom: 0.25rem;
@@ -95,9 +95,15 @@
 
 .coachview-search__category-label {
     display: block;
-    margin-bottom: 0.4rem;
-    font-size: 0.95rem;
+    font-size: var(--wp--preset--font-size--small);
+    margin-bottom: var(--cv-space-xs);
     cursor: pointer;
+}
+
+.coachview-search__filters-bottom {
+    display: flex;
+    justify-content: center;
+    margin-top: var(--cv-space-lg);
 }
 
 .coachview-search__results {

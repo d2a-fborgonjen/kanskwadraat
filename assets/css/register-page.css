@@ -25,7 +25,7 @@
     display: flex;
     align-items: flex-start;
     justify-content: space-around;
-    padding: var(--cv-gap-lg) 0;
+    padding: var(--cv-space-xl) 0;
 }
 
 .register-page__container {
@@ -33,7 +33,6 @@
     display: flex;
     max-width: var(--cv-max-width);
     gap: var(--cv-gap-lg);
-    padding: 0 2px;
 }
 
 .register-page__form {
@@ -61,12 +60,12 @@
     gap: var(--cv-space-xs);
 }
 .register-page__cart--item span {
-    font-size: var(--cv-font-size-md);
+    font-size: var(--wp--preset--font-size--medium);
     color: var(--cv-color-blue-dark);
 }
 
 .register-page__cart--item small {
-    font-size: var(--cv-font-size-sm);
+    font-size: var(--wp--preset--font-size--small);
     color: var(--cv-color-blue-dark);
 }
 .register-page__cart--total {
@@ -74,7 +73,7 @@
     justify-content: space-between;
     color: var(--cv-color-blue-dark);
     font-weight: var(--cv-font-weight-semibold);
-    font-size: var(--cv-font-size-base);
+    font-size: var(--wp--preset--font-size--normal);
     border-top: 1px solid var(--cv-color-blue-dark);
     margin-top: var(--cv-space-sm);
     padding-top: var(--cv-space-sm);
@@ -96,7 +95,7 @@
 .register-form__actions {
     display: flex;
     justify-content: space-between;
-    margin-top: var(--cv-space-md);
+    margin-top: var(--cv-space-xl);
 }
 
 
@@ -130,7 +129,7 @@
 }
 
 .register-form__participant-header {
-    font-size: var(--cv-font-size-lg);
+    font-size: var(--wp--preset--font-size--large);
     font-weight: var(--cv-font-weight-semibold);
     color: var(--cv-color-blue-dark);
     margin: 0;
@@ -146,7 +145,8 @@
 .form-section-wrapper {
     position: relative;
     overflow: hidden;
-    min-height: 400px;
+    min-height: 500px;
+    padding: 0px 4px; /* to show input outlines */
 }
 
 /* Form Step Sections */
@@ -201,7 +201,7 @@
 }
 
 .form-section__progress-text {
-    font-size: var(--cv-font-size-sm);
+    font-size: var(--wp--preset--font-size--small);
     color: var(--cv-color-text);
     margin-bottom: var(--cv-space-xs);
     text-align: center;
@@ -245,7 +245,7 @@
 }
 
 .form-field__input {
-    font-size: var(--cv-font-size-base);
+    font-size: var(--wp--preset--font-size--normal);
     color: var(--cv-color-blue-dark);
     padding: var(--cv-input-padding);
     border: var(--cv-border-width) solid var(--cv-color-teal-light);
@@ -297,18 +297,12 @@
 
 .form-field__checkbox-label,
 .form-field__radio-label {
-    font-size: var(--cv-font-size-sm);
+    font-size: var(--wp--preset--font-size--small);
     color: var(--cv-color-text);
     cursor: pointer;
     user-select: none;
 }
 
-/* Error State */
-.form-field__error {
-    color: var(--cv-color-error);
-    font-size: var(--cv-font-size-xs);
-    margin-top: 2px;
-}
 
 /* Responsive Design */
 @media (max-width: 768px) {
@@ -342,7 +336,7 @@
     
     .register-form__submit {
         padding: var(--cv-space-sm) var(--cv-space-lg);
-        font-size: var(--cv-font-size-sm);
+        font-size: var(--wp--preset--font-size--small);
     }
 }
 
@@ -365,21 +359,21 @@
 }
 
 .register-form__summary-section-title {
-    font-size: var(--cv-font-size-lg);
+    font-size: var(--wp--preset--font-size--large);
     font-weight: var(--cv-font-weight-semibold);
     color: var(--cv-color-blue-dark);
     margin: 0 0 var(--cv-space-sm) 0;
 }
 
 .register-form__summary-item-label {
-    font-size: var(--cv-font-size-sm);
+    font-size: var(--wp--preset--font-size--small);
     font-weight: var(--cv-font-weight-semibold);
     color: var(--cv-color-teal-dark);
     text-transform: uppercase;
 }
 
 .register-form__summary-item-value {
-    font-size: var(--cv-font-size-base);
+    font-size: var(--wp--preset--font-size--normal);
     color: var(--cv-color-grey-darkest);
     font-weight: var(--cv-font-weight-normal);
 }

@@ -56,10 +56,10 @@
 .training__price,
 .training__location,
 .training__show-planning {
-    font-size: var(--wp--preset--font-size--medium);
+    font-size: var(--wp--preset--font-size--normal);
+    font-weight: var(--cv-font-weight-semibold);
     color: inherit;
     flex-basis: 25%;
-    font-weight: 400;
     display: flex;
     gap: var(--start-dates-icon-to-txt-gap);
     align-items: center;
@@ -69,6 +69,10 @@
 }
 .training__icon {
      width: var(--start-dates-icon-width);
+}
+
+.training__register-image {
+    width: 16px;
 }
 
 /** Show planning buttons **/
@@ -96,19 +100,20 @@ a.training__show-planning:hover {
     margin-top: 0.5rem;
     padding-top: 0.5rem;
     color: var(--cv-color-blue-dark);
-    font-size: var(--wp--preset--font-size--small);
+    font-size: var(--wp--preset--font-size--normal);
 }
 
 .training__planning h3 {
-    font-size: var(--wp--preset--font-size--medium);
-    font-weight: bold;
+    font-size: var(--wp--preset--font-size--large);
+    font-weight: var(--cv-font-weight-semibold);
     margin: 0.5rem 0;
 }
 .training__planning-lessons {
-    margin: 0 0 .5rem 0;
+    margin: 0 0 var(--cv-space-md) 0;
 }
 .training__planning-lessons li div {
     display: flex;
+    margin-bottom: 4px;
 }
 .training__planning-lessons li div > span {
     flex-basis: 25%;

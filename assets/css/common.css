@@ -29,12 +29,6 @@
 
 
     /* Typography */
-    --cv-font-size-xs: 0.6rem;
-    --cv-font-size-sm: 0.875rem;
-    --cv-font-size-md: 1.2rem;
-    --cv-font-size-base: 1rem;
-    --cv-font-size-lg: 1.5rem;
-
     --cv-font-weight-light: 300;
     --cv-font-weight-normal: 400;
     --cv-font-weight-semibold: 500;
@@ -46,15 +40,17 @@
 .cv-button {
     font-family: 'Poppins', sans-serif;
     color: var(--cv-color-grey-darkest);
-    font-size: var(--cv-font-size-base);
+    font-size: var(--wp--preset--font-size--normal);
     font-weight: var(--cv-font-weight-semibold);
-    padding: var(--cv-space-sm) var(--cv-space-md);
+    padding: var(--cv-space-sm) var(--cv-space-lg);
     text-transform: uppercase;
     outline: none;
     text-decoration: none;
     border: 0;
     background: transparent;
     display: flex;
+    align-items: center;
+    gap: 4px;
 }
 .cv-button:hover,
 .cv-button:active,
