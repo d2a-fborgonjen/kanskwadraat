@@ -6,7 +6,7 @@
 
 .training-start-dates {
     display: flex;
-    background: var(--cv-color-blue-dark);
+    background: var(--e-global-color-primary);
     justify-content: center;
     padding: 2em;
 }
@@ -31,7 +31,7 @@
 
 .training__header {
     display: flex;
-    color: var(--cv-color-blue-dark);
+    color: var(--e-global-color-primary);
 }
 
 .training__header-left,
@@ -56,7 +56,7 @@
 .training__price,
 .training__location,
 .training__show-planning {
-    font-size: var(--wp--preset--font-size--normal);
+    font-size: var(--cv-font-size-base);
     font-weight: var(--cv-font-weight-semibold);
     color: inherit;
     flex-basis: 25%;
@@ -99,12 +99,12 @@ a.training__show-planning:hover {
     border-top: 1px solid var(--cv-color-teal-light);
     margin-top: 0.5rem;
     padding-top: 0.5rem;
-    color: var(--cv-color-blue-dark);
-    font-size: var(--wp--preset--font-size--normal);
+    color: var(--e-global-color-primary);
+    font-size: var(--cv-font-size-base);
 }
 
 .training__planning h3 {
-    font-size: var(--wp--preset--font-size--large);
+    font-size: var(--cv-font-size-lg);
     font-weight: var(--cv-font-weight-semibold);
     margin: 0.5rem 0;
 }

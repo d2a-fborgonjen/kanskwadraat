@@ -1,10 +1,17 @@
-const REGISTER_MESSAGE_TYPES = {
-    info: 'info',
-    success: 'success',
-    error: 'error',
+const REGISTER_PAGE = {
+    MESSAGE_TYPES: {
+        info: 'info',
+        success: 'success',
+        error: 'error',
+    },
+    FEEDBACK_RESET_CLASSES: 'register-page__feedback--success register-page__feedback--error register-page__feedback--info',
+    TEXT: {
+        submitting: 'Bezig met verzenden...',
+        defaultSuccess: 'Dankjewel voor je aanmelding.',
+        defaultError: 'Er is iets misgegaan bij het verwerken van je aanmelding. Probeer het later opnieuw.',
+        successTitleDefault: 'Aanmelding afgerond',
+    },
 };
-
-const REGISTER_PAGE_FEEDBACK_RESET_CLASSES = 'register-page__feedback--success register-page__feedback--error register-page__feedback--info';
 
 jQuery(document).ready(function($) {
     const $form = $('.register-page__form');
@@ -18,12 +25,6 @@ jQuery(document).ready(function($) {
     const registerEndpoint = restRoot.replace(/\/$/, '') + '/coachview/v1/register';
     const $submitButton = $form.find('.register-form__submit');
     let isSubmitting = false;
-    const registerPageText = {
-        submitting: 'Bezig met verzenden...',
-        defaultSuccess: 'Dankjewel voor je aanmelding.',
-        defaultError: 'Er is iets misgegaan bij het verwerken van je aanmelding. Probeer het later opnieuw.',
-        successTitleDefault: 'Aanmelding afgerond',
-    };
 
     const wizard = window.RegisterPageWizard ? new window.RegisterPageWizard($form) : null;
     const participantsManager = window.RegisterPageParticipants ? new window.RegisterPageParticipants($form) : null;
@@ -34,7 +35,7 @@ jQuery(document).ready(function($) {
         }
 
         $feedbackContainer
-            .removeClass(REGISTER_PAGE_FEEDBACK_RESET_CLASSES)
+            .removeClass(REGISTER_PAGE.FEEDBACK_RESET_CLASSES)
             .addClass(`register-page__feedback--${type}`)
             .text(message)
             .show();
@@ -46,7 +47,7 @@ jQuery(document).ready(function($) {
         }
 
         $feedbackContainer
-            .removeClass(REGISTER_PAGE_FEEDBACK_RESET_CLASSES)
+            .removeClass(REGISTER_PAGE.FEEDBACK_RESET_CLASSES)
             .hide()
             .text('');
     }
@@ -62,7 +63,7 @@ jQuery(document).ready(function($) {
                 $submitButton.data('original-text', $submitButton.text());
             }
             $submitButton.prop('disabled', true).addClass('is-loading');
-            const loadingText = $submitButton.data('loading-text') || registerPageText.submitting;
+            const loadingText = $submitButton.data('loading-text') || REGISTER_PAGE.TEXT.submitting;
             $submitButton.text(loadingText);
         } else {
             const originalText = $submitButton.data('original-text');
@@ -98,10 +99,10 @@ jQuery(document).ready(function($) {
     }
 
     function completeRegistration(successMessage, redirectUrl) {
-        const successTitle = $currentStepTitle.data('success-title') || registerPageText.successTitleDefault;
+        const successTitle = $currentStepTitle.data('success-title') || REGISTER_PAGE.TEXT.successTitleDefault;
         $currentStepTitle.text(successTitle);
         clearRegistrationUI();
-        showFormMessage(REGISTER_MESSAGE_TYPES.success, successMessage);
+        showFormMessage(REGISTER_PAGE.MESSAGE_TYPES.success, successMessage);
 
         if (redirectUrl) {
             setTimeout(function() {
@@ -112,7 +113,7 @@ jQuery(document).ready(function($) {
 
     function submitRegistrationForm() {
         toggleSubmitting(true);
-        showFormMessage(REGISTER_MESSAGE_TYPES.info, registerPageText.submitting);
+        showFormMessage(REGISTER_PAGE.MESSAGE_TYPES.info, REGISTER_PAGE.TEXT.submitting);
 
         const payload = buildFormPayload();
         const headers = {
@@ -141,28 +142,27 @@ jQuery(document).ready(function($) {
                 if (!ok) {
                     const message = data && data.message
                         ? data.message
-                        : registerPageText.defaultError;
+                        : REGISTER_PAGE.TEXT.defaultError;
                     throw new Error(message);
                 }
 
                 const redirectUrl = data && data.redirect_url ? data.redirect_url : null;
                 let successMessage = data && data.message
                     ? data.message
-                    : registerPageText.defaultSuccess;
+                    : REGISTER_PAGE.TEXT.defaultSuccess;
                 completeRegistration(successMessage, redirectUrl);
             })
             .catch((error) => {
                 const message = error && error.message
                     ? error.message
-                    : registerPageText.defaultError;
-                showFormMessage(REGISTER_MESSAGE_TYPES.error, message);
+                    : REGISTER_PAGE.TEXT.defaultError;
+                showFormMessage(REGISTER_PAGE.MESSAGE_TYPES.error, message);
             })
             .finally(() => {
                 toggleSubmitting(false);
             });
     }
-    
-    // Validate on form submit (final step)
+
     $form.on('submit', function(e) {
         e.preventDefault();
 
@@ -179,8 +179,4 @@ jQuery(document).ready(function($) {
         submitRegistrationForm();
         return false;
     });
-    
-    if (participantsManager) {
-        participantsManager.updatePrices();
-    }
 });

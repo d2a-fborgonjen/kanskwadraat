@@ -37,7 +37,7 @@
 }
 
 .register-page__title {
-    font-size: var(--wp--preset--font-size--x-large);
+    font-size: var(--cv-font-size-xl);
     flex-basis: 100%;
     margin: 0;
 }
@@ -53,13 +53,13 @@
 .register-page__feedback--info {
     display: block;
     background-color: var(--cv-color-teal-lighter);
-    color: var(--cv-color-blue-dark);
+    color: var(--e-global-color-primary);
 }
 
 .register-page__feedback--success {
     display: block;
     background-color: var(--cv-color-green-light);
-    color: var(--cv-color-blue-dark);
+    color: var(--e-global-color-primary);
 }
 
 .register-page__feedback--error {
@@ -81,7 +81,7 @@
 }
 
 .register-page__cart--title {
-    font-size: var(--wp--preset--font-size--large);
+    font-size: var(--cv-font-size-lg);
     margin: 0;
 }
 
@@ -98,21 +98,21 @@
     gap: var(--cv-space-xs);
 }
 .register-page__cart--item span {
-    font-size: var(--wp--preset--font-size--medium);
-    color: var(--cv-color-blue-dark);
+    font-size: var(--cv-font-size-md);
+    color: var(--e-global-color-primary);
 }
 
 .register-page__cart--item small {
-    font-size: var(--wp--preset--font-size--small);
-    color: var(--cv-color-blue-dark);
+    font-size: var(--cv-font-size-sm);
+    color: var(--e-global-color-primary);
 }
 .register-page__cart--total {
     display: flex;
     justify-content: space-between;
-    color: var(--cv-color-blue-dark);
+    color: var(--e-global-color-primary);
     font-weight: var(--cv-font-weight-semibold);
-    font-size: var(--wp--preset--font-size--normal);
-    border-top: 1px solid var(--cv-color-blue-dark);
+    font-size: var(--cv-font-size-base);
+    border-top: 1px solid var(--e-global-color-primary);
     margin-top: var(--cv-space-sm);
     padding-top: var(--cv-space-sm);
 }
@@ -163,13 +163,13 @@
     align-items: center;
     margin-bottom: var(--cv-space-sm);
     padding-bottom: var(--cv-space-xs);
-    border-bottom: var(--cv-border-width-thick) solid var(--cv-color-teal-dark);
+    border-bottom: var(--cv-border-width-thick) solid var(--e-global-color-secondary);
 }
 
 .register-form__participant-header {
-    font-size: var(--wp--preset--font-size--large);
+    font-size: var(--cv-font-size-lg);
     font-weight: var(--cv-font-weight-semibold);
-    color: var(--cv-color-blue-dark);
+    color: var(--e-global-color-primary);
     margin: 0;
 }
 button.register-form__remove_participant {
@@ -246,7 +246,7 @@ button.register-form__remove_participant {
 }
 
 .form-section__progress-text {
-    font-size: var(--wp--preset--font-size--small);
+    font-size: var(--cv-font-size-sm);
     color: var(--cv-color-text);
     margin-bottom: var(--cv-space-xs);
     text-align: center;
@@ -260,7 +260,7 @@ button.register-form__remove_participant {
     overflow: hidden;
 }
 .form-section__progress-bar {
-    background-color: var(--cv-color-blue-dark);
+    background-color: var(--e-global-color-primary);
     height: 100%;
     width: 0;
     transition: width 0.3s ease;
@@ -290,8 +290,8 @@ button.register-form__remove_participant {
 }
 
 .form-field__input {
-    font-size: var(--wp--preset--font-size--normal);
-    color: var(--cv-color-blue-dark);
+    font-size: var(--cv-font-size-base);
+    color: var(--e-global-color-primary);
     padding: var(--cv-input-padding);
     border: var(--cv-border-width) solid var(--cv-color-teal-light);
     border-radius: var(--cv-radius-sm);
@@ -301,7 +301,7 @@ button.register-form__remove_participant {
 
 .form-field__input:focus {
     outline: none;
-    border-color: var(--cv-color-teal-dark);
+    border-color: var(--e-global-color-secondary);
     box-shadow: 0 0 0 3px var(--cv-color-teal-light);
 }
 
@@ -342,7 +342,7 @@ button.register-form__remove_participant {
 
 .form-field__checkbox-label,
 .form-field__radio-label {
-    font-size: var(--wp--preset--font-size--small);
+    font-size: var(--cv-font-size-sm);
     color: var(--cv-color-text);
     cursor: pointer;
     user-select: none;
@@ -381,7 +381,7 @@ button.register-form__remove_participant {
     
     .register-form__submit {
         padding: var(--cv-space-sm) var(--cv-space-lg);
-        font-size: var(--wp--preset--font-size--small);
+        font-size: var(--cv-font-size-sm);
     }
 }
 
@@ -404,21 +404,21 @@ button.register-form__remove_participant {
 }
 
 .register-form__summary-section-title {
-    font-size: var(--wp--preset--font-size--large);
+    font-size: var(--cv-font-size-lg);
     font-weight: var(--cv-font-weight-semibold);
-    color: var(--cv-color-blue-dark);
+    color: var(--e-global-color-primary);
     margin: 0 0 var(--cv-space-sm) 0;
 }
 
 .register-form__summary-item-label {
-    font-size: var(--wp--preset--font-size--small);
+    font-size: var(--cv-font-size-sm);
     font-weight: var(--cv-font-weight-semibold);
-    color: var(--cv-color-teal-dark);
+    color: var(--e-global-color-secondary);
     text-transform: uppercase;
 }
 
 .register-form__summary-item-value {
-    font-size: var(--wp--preset--font-size--normal);
+    font-size: var(--cv-font-size-base);
     color: var(--cv-color-grey-darkest);
     font-weight: var(--cv-font-weight-light);
 }

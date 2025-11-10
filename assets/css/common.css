@@ -1,10 +1,13 @@
 :root {
-    --cv-color-blue-dark: #002250;
-    --cv-color-teal-dark: #569aa1;
+    --e-global-color-primary: #002352;
+    --e-global-color-secondary: #569BA1;
+    --e-global-color-text: #202020;
+    --e-global-color-accent: #C0E337;
+    --e-global-color-accent-hov: #ACCC31;
+
     --cv-color-teal-light: #aaccd0;
     --cv-color-teal-lighter: #edf9f9;
     --cv-color-green-light: #baebd4;
-    --cv-color-green-bright: #c8f012;
     --cv-color-grey-darkest: #0f0f0f;
     --cv-color-grey-dark: #403f3f;
 
@@ -29,18 +32,25 @@
 
 
     /* Typography */
+    --cv-font-size-xs: 11px;
+    --cv-font-size-sm: 14px;
+    --cv-font-size-md: 16px;
+    --cv-font-size-lg: 18px;
+    --cv-font-size-xl: 24px;
+    --cv-font-size-base: 14px;
+
     --cv-font-weight-light: 300;
     --cv-font-weight-normal: 400;
-    --cv-font-weight-semibold: 500;
+    --cv-font-weight-semibold: 600;
     --cv-font-weight-bold: 700;
     --cv-line-height: 1.5;
 }
 
 /* plain button */
-.cv-button {
-    font-family: 'Poppins', sans-serif;
-    color: var(--cv-color-grey-darkest);
-    font-size: var(--wp--preset--font-size--normal);
+button.cv-button {
+    font-family: var(--e-global-typography-text-font-family), sans-serif;
+    color: var(--e-global-color-primary);
+    font-size: var(--cv-font-size-sm);
     font-weight: var(--cv-font-weight-semibold);
     padding: var(--cv-space-sm) var(--cv-space-lg);
     text-transform: uppercase;
@@ -55,34 +65,32 @@
 .cv-button:hover,
 .cv-button:active,
 .cv-button:focus {
-    color: var(--cv-color-grey-dark);
+    color: var(--e-global-color-text);
     cursor: pointer;
 }
 
 /* call to action */
-.cv-button-cta {
-    background-color: var(--cv-color-green-bright);
-    color: var(--cv-color-blue-dark);
-    border-radius: var(--cv-radius-lg);
+button.cv-button-cta {
+    background-color: var(--e-global-color-accent);
+    color: var(--e-global-color-primary);
+    border-radius: 50px;
 }
 .cv-button-cta:hover,
 .cv-button-cta:active,
 .cv-button-cta:focus {
-    background-color: var(--cv-color-green-bright);
-    color: var(--cv-color-blue-dark);
-    filter: brightness(110%);
+    background-color: var(--e-global-color-accent-hov);
 }
 
 /* button with border */
 .cv-button-outline {
-    border: 1px solid var(--cv-color-grey-darkest);
-    border-radius: var(--cv-radius-lg);
+    border: 1px solid var(--e-global-color-text);
+    border-radius: 50px;
     background: white;
 }
 .cv-button-outline,
 .cv-button-outline:focus,
 .cv-button-outline:active {
-    border-color: var(--cv-color-blue-dark);
+    border-color: var(--e-global-color-primary);
 }
 
 /** Flex helpers */

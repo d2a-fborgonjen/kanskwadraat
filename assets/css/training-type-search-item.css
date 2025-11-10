@@ -58,23 +58,23 @@
 }
 
 .training-card__category {
-    color: var(--cv-color-teal-dark);
-    font-size: var(--wp--preset--font-size--small);
+    color: var(--e-global-color-secondary);
+    font-size: var(--cv-font-size-sm);
     text-transform: uppercase;
     font-weight: var(--cv-font-weight-semibold);
     margin-bottom: 0.25rem;
 }
 
 .training-card__title {
-    color: var(--cv-color-blue-dark);
-    font-size: var(--wp--preset--font-size--large);
+    color: var(--e-global-color-primary);
+    font-size: var(--cv-font-size-lg);
     font-weight: var(--cv-font-weight-semibold);
     margin: 0.25rem 0 0.5rem;
 }
 
 .training-card__description {
     color: var(--cv-color-grey-dark);
-    font-size: var(--wp--preset--font-size--small);
+    font-size: var(--cv-font-size-sm);
     font-weight: var(--cv-font-weight-light);
     line-height: 1.4;
     margin-bottom: 1rem;
@@ -84,9 +84,9 @@
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    font-size: var(--wp--preset--font-size--small);
+    font-size: var(--cv-font-size-sm);
     font-weight: var(--cv-font-weight-normal);
-    color: var(--cv-color-blue-dark);
+    color: var(--e-global-color-primary);
     border-top: 1px solid var(--cv-color-teal-light);
     padding-top: 0.75rem;
     gap: .5rem;
@@ -102,7 +102,7 @@
 
 .training-card__metadata-text {
     display: inline-block;
-    color: var(--cv-color-teal-dark);
+    color: var(--e-global-color-secondary);
     max-width: 100%;
     overflow: hidden;
     text-overflow: ellipsis;
