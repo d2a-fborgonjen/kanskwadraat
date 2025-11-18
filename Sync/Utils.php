@@ -102,6 +102,15 @@ function log_cv_exception($action, $exception) {
     update_option('coachview_sync_error', $error_log);
 }
 
+function log_cv_info($info_msg) {
+    error_log($info_msg);
+
+    $error_log = get_option('coachview_sync_info', '');
+    $date = date('Y-m-d H:i:s');
+    $error_log = $error_log . "[$date] $info_msg\n";
+    update_option('coachview_sync_info', $error_log);
+}
+
 // Helper method to find the first non-empty value in a collection
 function firstNonEmpty($array_or_collection) {
     return collect($array_or_collection)->first(fn($value) => !empty($value));

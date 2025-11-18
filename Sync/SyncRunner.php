@@ -1,9 +1,7 @@
 <?php
 
 namespace Coachview\Sync;
-
-
-use mysql_xdevapi\Exception;
+use Exception;
 
 class SyncRunner
 {
@@ -20,6 +18,7 @@ class SyncRunner
         update_option('coachview_sync_running', true);
         update_option('coachview_sync_started', current_time('mysql'));
         update_option('coachview_sync_error', null);
+        update_option('coachview_sync_info', null);
         update_option('coachview_sync_finished', null);
         error_log('Coachview sync started at ' . current_time('mysql'));
     }

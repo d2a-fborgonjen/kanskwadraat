@@ -2,6 +2,7 @@
 
 use Automattic\WooCommerce\Enums\ProductStatus;
 use Coachview\Api\TokenManager;
+use Coachview\Models\CourseFormat;
 use Coachview\Models\RegistrationType;
 
 function coachview_test_mode_enabled(): bool {
@@ -42,7 +43,7 @@ function get_registration_type(WC_Product $training_type): RegistrationType
     // Published but hidden training types are only available for in-company registrations
     if ($training_type->get_status() == ProductStatus::PUBLISH && !$training_type->is_visible()) {
         return RegistrationType::IN_COMPANY;
-    } else if ($training_type_category === 'elearning') {
+    } else if ($training_type_category === CourseFormat::E_LEARNING->value) {
         return RegistrationType::OPEN_ENROLLMENT;
     } else if ($training_type instanceof WC_Product_Variable && count($training_type->get_available_variations()) == 0) {
         // No training dates available, make people enlist

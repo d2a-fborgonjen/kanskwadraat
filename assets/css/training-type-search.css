@@ -58,6 +58,8 @@
     border-radius: 10px;
     overflow-y: auto;
     box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
 }
 
 .coachview-search__filters-title {
@@ -102,6 +104,8 @@
 
 .coachview-search__filters-bottom {
     display: flex;
+    flex: 1;
+    align-items: flex-end;
     justify-content: center;
     margin-top: var(--cv-space-lg);
 }

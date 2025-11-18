@@ -20,6 +20,8 @@ class TrainingTypeHooks {
             return;
         }
 
+        wp_enqueue_style('coachview-common', cv_assets_url('css/common.css'));
+
         $atts = ['id' => $product->get_id()];
         $shortcode = '[cv_training_call_to_action id="' . $atts['id'] . '"]';
         echo do_shortcode($shortcode);

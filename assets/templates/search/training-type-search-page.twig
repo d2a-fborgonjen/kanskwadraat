@@ -8,7 +8,7 @@
             <button class="coachview-search__open-filters cv-button cv-button-cta">
                 Filters
             </button>
-            <!--        <input type="text" class="coachview-search__input" placeholder="Search products…">-->
+            <!--<input type="text" class="coachview-search__input" placeholder="Search products…">-->
         </div>
 
         <!-- Results Area -->
@@ -21,15 +21,17 @@
     <!-- Filters -->
     <div class="coachview-search__filters-wrapper">
         <aside class="coachview-search__filters">
-            <h3 class="coachview-search__filters-title">
+            <h4 class="coachview-search__filters-title">
                 Filters
-                <a class="coachview-search__close-filters" href="#close">×</a>
-            </h3>
+                <a class="coachview-search__close-filters" href="#close">
+                    <img src="{{  assets_url }}img/icon_close.svg" />
+                </a>
+            </h4>
             {{ category_list|raw }}
 
         <div class="coachview-search__filters-bottom">
-            <button class="cv-button cv-button-cta coachview-search__apply-filters">
-                filters toepassen
+            <button class="cv-button cv-button-cta coachview-search__close-filters">
+                filters sluiten
             </button>
         </aside>
     </div>

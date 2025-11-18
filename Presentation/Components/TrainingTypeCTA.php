@@ -27,8 +27,6 @@ class TrainingTypeCTA {
         $registration_type = get_registration_type($product);
         $register_link = site_url('/aanmelden/') . '?pid=' . $product->get_id();
 
-        wp_enqueue_style('coachview-font', cv_assets_url('fonts/poppins.css'));
-        wp_enqueue_style('coachview-common', cv_assets_url('css/common.css'));
         if ($product->is_type('variable')) {
             if ($registration_type === RegistrationType::ENLIST) {
                 return create_link_button('Aanmelden wachtlijst', $register_link);

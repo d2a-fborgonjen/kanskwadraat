@@ -84,7 +84,7 @@
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    font-size: var(--cv-font-size-sm);
+    font-size: var(--cv-font-size-base);
     font-weight: var(--cv-font-weight-normal);
     color: var(--e-global-color-primary);
     border-top: 1px solid var(--cv-color-teal-light);

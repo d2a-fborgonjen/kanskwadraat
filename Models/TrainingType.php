@@ -2,6 +2,7 @@
 namespace Coachview\Models;
 
 use Illuminate\Support\Collection;
+use function Coachview\Sync\log_cv_info;
 
 class TrainingType {
     public function __construct(

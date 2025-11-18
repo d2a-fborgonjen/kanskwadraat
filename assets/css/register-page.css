@@ -25,7 +25,7 @@
     display: flex;
     align-items: flex-start;
     justify-content: space-around;
-    padding: var(--cv-space-xl) 0;
+    padding: 120px 0;
 }
 
 .register-page__container {

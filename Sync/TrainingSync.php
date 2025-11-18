@@ -6,8 +6,8 @@ use Coachview\Models\CourseFormat;
 use Coachview\Models\Training;
 use Coachview\Models\TrainingType;
 use Coachview\Sync\Dataloaders\TrainingDataloader;
+use Exception;
 use Illuminate\Support\Collection;
-use SimplePie\Exception;
 use WC_Product;
 use WC_Product_Attribute;
 use WC_Product_Simple;
@@ -24,11 +24,10 @@ class TrainingSync {
         $training_types = TrainingDataloader::load_training_types($take, [TrainingSync::class, 'report_progress']);
         $training_types->each(function(TrainingType $training_type, $idx) {
             try {
-//                error_log(print_r($training_type, true));
                 if ($training_type->get_course_format() == CourseFormat::E_LEARNING) {
                     $product = TrainingSync::__save_single_product($training_type);
                     $product_id = $product->get_id();
-                    error_log("$idx. [SAVE] Single Product [$training_type->code] WP ID [$product_id]");
+                    log_cv_info("Saved single product [$training_type->code] WP ID [$product_id]");
                 } else {
                     $product = TrainingSync::__save_variable_product($training_type);
                     $variations = TrainingSync::__save_variations($product, $training_type->trainings);
@@ -36,8 +35,7 @@ class TrainingSync {
 
                     $product_id = $product->get_id();
                     $num_variations = $variations->count();
-
-                    error_log("$idx. [SAVE] Variable Product [$training_type->code] WP ID [$product_id] Num variations: [$num_variations] Price: [{$training_type->price}]");
+                    log_cv_info("Saved variable Product [$training_type->code] WP ID [$product_id] Num variations: [$num_variations] Price: [{$training_type->price}]");
                 }
                 TrainingSync::__save_product_categories($product, $training_type);
             } catch (Exception $e) {
@@ -100,7 +98,7 @@ class TrainingSync {
     {
         $product = get_product_by_cv_id($training_type->id) ?? new WC_Product_Simple();
         if ($product instanceof WC_Product_Variable) {
-            log_cv_exception();
+            log_cv_info('Product type mismatch: expected Simple, got Variable. Deleting and recreating as Simple.');
             $product->delete(true);
             $product = new WC_Product_Simple();
         }
@@ -114,6 +112,7 @@ class TrainingSync {
     {
         $product = get_product_by_cv_id($training_type->id) ?? new WC_Product_Variable();
         if ($product instanceof WC_Product_Simple) {
+            log_cv_info('Product type mismatch: expected Variable, got Simple. Deleting and recreating as Variable.');
             $product->delete(true);
             $product = new WC_Product_Variable($product->get_id());
         }
@@ -147,30 +146,28 @@ class TrainingSync {
         // one of: default, elearning, list
 //        $product->update_meta_data('registration_type', $training_type->get_registration_type());
 
-        $product->set_description($training_type->description);
         if ($product->get_id() === 0) {
             $product->set_virtual(true);
             $product->set_status('draft');
             $product->add_meta_data('coachview_id', $training_type->id, true);
+            $product->set_description($training_type->description);
         }
 
-        $product->set_status('publish');
+//        $product->set_status('publish');
     }
-
 
     private static function __save_variations(WC_Product_Variable $product, Collection $trainings): Collection
     {
         return $trainings->map(function(Training $training) use ($product) {
             $variation = get_product_variation_by_sku($training->code)?? new WC_Product_Variation();
             if ($product->get_id() === 0) {
+                $variation->set_sku($training->code);
                 $variation->set_manage_stock(true);
-                $variation->set_status('publish');
+                $variation->set_parent_id($product->get_id());
+                $variation->set_attributes(['training_code' => $training->code]);
+//                $variation->set_status('publish');
             }
-            $variation->set_parent_id($product->get_id());
-            $variation->set_attributes(['training_code' => $training->code]);
-            $variation->set_sku($training->code);
             $variation->set_regular_price($product->get_regular_price());
-            $variation->set_manage_stock(true);
             $variation->set_stock_quantity($training->num_seats_available);
 
             $variation->update_meta_data('coachview_id', $training->id);
@@ -213,7 +210,7 @@ class TrainingSync {
                 $variation->set_manage_stock(true);
                 $variation->save();
 
-                error_log("[ARCHIVE] Archived stale training. Product variation ID [$variation_id] code: [$variation_code]");
+                log_cv_info("Archived stale training. Product variation ID [$variation_id] code: [$variation_code]");
             }
         }
     }

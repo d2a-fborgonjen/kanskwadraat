@@ -4,6 +4,7 @@ namespace Coachview\Admin;
 
 use Coachview\Sync\Store\TrainingDetail;
 
+use Coachview\Sync\SyncRunner;
 use function Coachview\Sync\get_item_count;
 
 class Admin
@@ -29,12 +30,14 @@ class Admin
         ];
 
         $last_sync = get_option('coachview_sync_finished');
-        if ($last_sync) {
-            $formatted_date = date_i18n(get_option('date_format') . ' om ' . get_option('time_format'), strtotime($last_sync));
-            echo '<div id="sync-status" class="updated"><p>Laatste synchronisatie ' . esc_html($formatted_date) . '</p></div>';
-        }
+        $last_sync_date  = $last_sync ? date_i18n(get_option('date_format') . ' om ' . get_option('time_format'), strtotime($last_sync)) : 'onbekend';
+        $info_log = get_option('coachview_sync_info', '');
+        $error_log = get_option('coachview_sync_error', '');
 
         ?>
+
+        <div id="sync-status" class="updated"><p>Laatste synchronisatie <?php echo $last_sync_date; ?></p></div>
+
         <div class="wrap">
             <h1>Coachview</h1>
             <button id="run-sync" class="button button-cta">
@@ -64,7 +67,12 @@ class Admin
                 </tbody>
             </table>
 
-            <div id="sync-error-log"><pre></pre></div>
+            <div id="sync-info-log">
+                <pre><?php echo $info_log; ?></pre>
+            </div>
+            <div id="sync-error-log">
+                <pre><?php echo $error_log; ?></pre>
+            </div>
         </div>
         <?php
     }

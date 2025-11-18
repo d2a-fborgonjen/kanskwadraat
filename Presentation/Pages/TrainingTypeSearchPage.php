@@ -1,6 +1,7 @@
 <?php
 namespace Coachview\Presentation\Pages;
 
+use Coachview\Models\CourseFormat;
 use Coachview\Presentation\TemplateEngine;
 use WP_REST_Response;
 
@@ -50,9 +51,10 @@ class TrainingTypeSearchPage
         $data = [
             'category_list' => $this->renderCategorySidebar(),
             'header' => $include_header_and_footer ? $this->capture_header() : '',
-            'footer' => $include_header_and_footer ? $this->capture_footer() : ''
+            'footer' => $include_header_and_footer ? $this->capture_footer() : '',
+            'assets_url' => cv_assets_url()
         ];
-        return $this->templateEngine->render('base-search-layout', $data);
+        return $this->templateEngine->render('training-type-search-page', $data);
     }
 
     private function renderCategorySidebar()
@@ -99,8 +101,12 @@ class TrainingTypeSearchPage
         $cities = get_post_meta($product->get_id(), 'cities', true);
         $training_type_category = get_post_meta($product->get_id(), 'training_type_category', true);
         $product_url = get_permalink($product->get_id());
-        
-        // Get product image URL properly
+
+        $is_online = $training_type_category === CourseFormat::E_LEARNING->value;
+        $location = $is_online ? 'Online' : join(", ", $cities);
+
+
+            // Get product image URL properly
         $image_id = $product->get_image_id();
         $image_url = $image_id ?  wp_get_attachment_image_url($image_id, 'woocommerce_thumbnail') : '';
 
@@ -110,7 +116,7 @@ class TrainingTypeSearchPage
             'description' => substr($product->get_description(), 0, 100) . (strlen($product->get_description()) > 100 ? '...' : ''),
             'training_url' => $product_url,
             'training_type_category' => $training_type_category,
-            'cities' => $cities,
+            'location' => $location,
             'product_price' => $product->get_price() > 0 ? $product->get_price() : '',
             'num_locations' => $num_locations > 0 ? $num_locations : null,
             'duration' => $duration ?: null,

@@ -30,7 +30,8 @@ class Sync {
         $error_messages = get_option('coachview_sync_error');
         if ($error_messages) {
             wp_send_json_error([
-                'error_log' =>  $error_messages
+                'error_log' =>  $error_messages,
+                'info_log' => get_option('coachview_sync_info'),
             ]);
         } else {
             wp_send_json_success([
@@ -38,6 +39,7 @@ class Sync {
                 'running' => get_option('coachview_sync_running'),
                 'started' => get_option('coachview_sync_started'),
                 'finished' => get_option('coachview_sync_finished'),
+                'info_log' => get_option('coachview_sync_info'),
             ]);
         }
     }

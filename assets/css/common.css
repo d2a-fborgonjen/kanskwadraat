@@ -1,4 +1,5 @@
 :root {
+    --e-global-typography-text-font-family: 'Poppins';
     --e-global-color-primary: #002352;
     --e-global-color-secondary: #569BA1;
     --e-global-color-text: #202020;
@@ -44,15 +45,20 @@
     --cv-font-weight-semibold: 600;
     --cv-font-weight-bold: 700;
     --cv-line-height: 1.5;
+
+    --cv-button-padding: 15px 24px;
+    --cv-button-border-radius: 50px
 }
 
 /* plain button */
+a.cv-button,
 button.cv-button {
     font-family: var(--e-global-typography-text-font-family), sans-serif;
     color: var(--e-global-color-primary);
     font-size: var(--cv-font-size-sm);
+    line-height: var(--cv-font-size-sm);
     font-weight: var(--cv-font-weight-semibold);
-    padding: var(--cv-space-sm) var(--cv-space-lg);
+    padding: var(--cv-button-padding);
     text-transform: uppercase;
     outline: none;
     text-decoration: none;
@@ -62,34 +68,46 @@ button.cv-button {
     align-items: center;
     gap: 4px;
 }
-.cv-button:hover,
-.cv-button:active,
-.cv-button:focus {
+
+a.cv-button:hover,
+a.cv-button:active,
+a.cv-button:focus,
+button.cv-button:hover,
+button.cv-button:active,
+button.cv-button:focus {
     color: var(--e-global-color-text);
     cursor: pointer;
 }
 
 /* call to action */
+a.cv-button-cta,
 button.cv-button-cta {
     background-color: var(--e-global-color-accent);
     color: var(--e-global-color-primary);
-    border-radius: 50px;
+    border-radius: var(--cv-button-border-radius);
 }
-.cv-button-cta:hover,
-.cv-button-cta:active,
-.cv-button-cta:focus {
-    background-color: var(--e-global-color-accent-hov);
+a.cv-button-cta:hover,
+a.cv-button-cta:active,
+a.cv-button-cta:focus,
+button.cv-button-cta:hover,
+button.cv-button-cta:active,
+button.cv-button-cta:focus{
+    background-color: var(--e-global-color-accent-hov) !important;
 }
 
 /* button with border */
-.cv-button-outline {
+a.cv-button-outline,
+button.cv-button-outline {
     border: 1px solid var(--e-global-color-text);
-    border-radius: 50px;
+    border-radius: var(--cv-button-border-radius);
     background: white;
 }
-.cv-button-outline,
-.cv-button-outline:focus,
-.cv-button-outline:active {
+a.cv-button-outline,
+a.cv-button-outline:focus,
+a.cv-button-outline:active,
+button.cv-button-outline,
+button.cv-button-outline:focus,
+button.cv-button-outline:active{
     border-color: var(--e-global-color-primary);
 }
 

@@ -8,6 +8,8 @@ use Coachview\Models\Training;
 use Coachview\Models\TrainingComponent;
 use Coachview\Models\TrainingType;
 use Coachview\Models\TrainingTypeComponent;
+use Coachview\Sync\Hooks\Sync;
+use Coachview\Sync\SyncRunner;
 use Exception;
 use Illuminate\Support\Collection;
 use function Coachview\Sync\log_cv_exception;
@@ -23,7 +25,7 @@ class TrainingDataloader
             ->includeFreeFields()
             ->includeExtraFields()
             ->includeDirectRelations()
-            ->order_by('audittrail.gewijzigdDatumTijd', 'asc')
+            ->order_by('audittrail.gewijzigdDatumTijd', 'desc')
             ->take($take)
             ->build();
         try {

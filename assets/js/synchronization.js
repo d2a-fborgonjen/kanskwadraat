@@ -31,12 +31,12 @@ jQuery(document).ready(function($) {
             showSyncError('Synchronisatie is mislukt', response.data?.error_log);
             return;
         }
-
         if (response.data.running) {
-            updateProgress(response.data.num_processed);
+            updateProgress(response.data.progress);
             pollTimer = setTimeout(() => getAction('cv_get_sync_progress', handlePollingResponse), 1000);
         } else {
             showLastSyncTime();
+            setSyncInfoLogText(response.data.info_log);
             enableButton(runSyncBtn);
         }
     }
@@ -56,6 +56,10 @@ jQuery(document).ready(function($) {
 
     function setSyncErrorLogText(text) {
         $('#sync-error-log pre').text(text || '');
+    }
+
+    function setSyncInfoLogText(text) {
+        $('#sync-info-log pre').text(text || '');
     }
 
     function setSyncStatusClass(className) {
