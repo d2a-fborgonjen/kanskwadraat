@@ -138,10 +138,14 @@ class TrainingTypeSearchPage
         ];
 
         if (!empty($cats)) {
-            $args['category'] = array_map(function($id) {
-                $term = get_term($id, 'product_cat');
-                return $term ? $term->slug : '';
-            }, $cats);
+            $args['tax_query'] = [
+                [
+                    'taxonomy' => 'product_cat',
+                    'field'    => 'term_id',
+                    'terms'    => $cats,
+                    'operator' => 'AND',
+                ],
+            ];
         }
 
         $products = wc_get_products($args);
