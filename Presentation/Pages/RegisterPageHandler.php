@@ -49,10 +49,10 @@ class RegisterPageHandler
 
     private function handle_submission(array $data): array
     {
-        $nonce = $data['_coachview_wpnonce'] ?? '';
-
-        if (!$nonce || !wp_verify_nonce($nonce, 'coachview_order_form')) {
-            error_log('Invalid form submission attempt.');
+        $token = $data['_coachview_form_token'] ?? '';
+        $key = 'coachview_form_' . $token;
+        if (!$token || !get_transient($key)) {
+            error_log('Invalid or expired form submission attempt.');
 
             return [
                 'success' => false,
@@ -62,6 +62,8 @@ class RegisterPageHandler
                 'order'   => null,
             ];
         }
+        delete_transient($key);
+
 
         $order_data = $this->to_coachview_order_data($data);
         error_log('Processing form submission for training registration.' . print_r($order_data, true));

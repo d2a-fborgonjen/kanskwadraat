@@ -152,10 +152,17 @@ class RegisterPage
         return $this->templateEngine->render('form-header', $data);
     }
 
+    private function generate_form_token() {
+        $token = wp_generate_password(20, false); // random 20-char string
+        $key = 'coachview_form_' . $token;
+        set_transient($key, true, 60 * 60); // 1 hour expiration
+        return $token;
+    }
+
     public function render_hidden_inputs($training_type, $training = null)
     {
         $hidden_form_data = [
-            '_coachview_wpnonce' => wp_create_nonce('coachview_order_form'),
+            '_coachview_form_token' => $this->generate_form_token(),
             'action' => 'coachview_training_form',
             'opleidingen[opleidingssoortId]' => get_post_meta($training_type->get_id(), 'coachview_id', true),
             'debiteur[verzendwijzeFactuur]' => 'Email'
