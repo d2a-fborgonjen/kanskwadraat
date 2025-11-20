@@ -1,6 +1,13 @@
 jQuery(document).ready(function($) {
     const runSyncBtn = $('#run-sync');
+    const toggleLogBtn = $('.toggle-logging');
+    const logging = $('.logging');
     let pollTimer;
+
+    toggleLogBtn.on('click', function() {
+        logging.toggle();
+        toggleLogBtn.text(logging.is(':visible') ? 'Verberg logging' : 'Toon logging');
+    });
 
     runSyncBtn.on('click', () => {
         disableButton(runSyncBtn);

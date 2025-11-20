@@ -31,7 +31,7 @@ class TrainingSync {
                 } else {
                     $product = TrainingSync::__save_variable_product($training_type);
                     $variations = TrainingSync::__save_variations($product, $training_type->trainings);
-                    TrainingSync::__archive_stale_variations($product, $training_type->trainings);
+//                    TrainingSync::__archive_stale_variations($product, $training_type->trainings);
 
                     $product_id = $product->get_id();
                     $num_variations = $variations->count();
@@ -47,7 +47,7 @@ class TrainingSync {
     public static function report_progress(int $done, int $total): void
     {
         $progress = round(($done / $total) * 100, 2);
-        update_option('coachview_sync_num_processed', $progress);
+        update_option('coachview_sync_progress', $progress);
     }
 
     private static function __ensure_term_exists(string $term, ?int $parent, string $taxonomy): ?int {
@@ -103,7 +103,6 @@ class TrainingSync {
             $product = new WC_Product_Simple();
         }
         TrainingSync::__set_product_info($product, $training_type);
-        $product->set_manage_stock(false);
         $product->save();
         return $product;
     }
@@ -136,6 +135,9 @@ class TrainingSync {
         $product->set_name($training_type->name);
         $product->set_sku($training_type->code);
         $product->set_regular_price($training_type->price);
+        $product->set_manage_stock(false);
+        $product->set_stock_status('instock');
+
         $product->update_meta_data('training_duration', $training_type->num_half_days);
         $product->update_meta_data('locations', $training_type->get_locations());
         $product->update_meta_data('num_locations', count($training_type->get_locations()));
@@ -150,6 +152,7 @@ class TrainingSync {
             $product->set_virtual(true);
             $product->set_status('draft');
             $product->add_meta_data('coachview_id', $training_type->id, true);
+            $product->add_meta_data('coachview_source', coachview_test_mode_enabled() ? 'TEST' : 'PRODUCTION');
             $product->set_description($training_type->description);
         }
 
@@ -160,17 +163,19 @@ class TrainingSync {
     {
         return $trainings->map(function(Training $training) use ($product) {
             $variation = get_product_variation_by_sku($training->code)?? new WC_Product_Variation();
-            if ($product->get_id() === 0) {
+            if ($variation->get_id() === 0) {
                 $variation->set_sku($training->code);
                 $variation->set_manage_stock(true);
                 $variation->set_parent_id($product->get_id());
                 $variation->set_attributes(['training_code' => $training->code]);
-//                $variation->set_status('publish');
+                $variation->set_status('publish');
+
+                $variation->update_meta_data('coachview_id', $training->id);
+                $variation->update_meta_data('coachview_source', coachview_test_mode_enabled() ? 'TEST' : 'PRODUCTION');
             }
             $variation->set_regular_price($product->get_regular_price());
             $variation->set_stock_quantity($training->num_seats_available);
 
-            $variation->update_meta_data('coachview_id', $training->id);
             $variation->update_meta_data('location',  firstNonEmpty($training->components->pluck('location')));
             $variation->update_meta_data('address', firstNonEmpty($training->components->pluck('address')));
             $variation->update_meta_data('zipcode', firstNonEmpty($training->components->pluck('zipcode')));
@@ -191,9 +196,12 @@ class TrainingSync {
         });
     }
 
+    /**
+     * TODO: Ask johan
+     */
     private static function __archive_stale_variations(WC_Product_Variable $product, Collection $current_trainings): void
     {
-        $current_codes = $current_trainings->pluck('code')->toArray();
+        $training_codes = $current_trainings->pluck('code')->toArray();
 
         foreach ($product->get_children() as $variation_id) {
             $variation = wc_get_product($variation_id);
@@ -202,15 +210,15 @@ class TrainingSync {
             }
 
             $attributes = $variation->get_attributes();
-            $variation_code = $attributes['training_code'] ?? null;
+            $training_code = $attributes['training_code'] ?? null;
 
-            if (!$variation_code || !in_array($variation_code, $current_codes)) {
+            if (!$training_code || !in_array($training_code, $training_codes)) {
                 $variation->set_status('private');
                 $variation->set_stock_quantity(0);
                 $variation->set_manage_stock(true);
                 $variation->save();
 
-                log_cv_info("Archived stale training. Product variation ID [$variation_id] code: [$variation_code]");
+                log_cv_info("Archived stale training. Product variation ID [$variation_id] code: [$training_code]");
             }
         }
     }

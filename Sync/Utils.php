@@ -38,17 +38,10 @@ function get_product_variation_by_sku(string $sku): ?WC_Product
 }
 
 
-function get_item_count(string $type): int
+function get_item_count(string $product_type): int
 {
     $query = new WP_Query([
-        'post_type'      => 'product',
-        'tax_query'      => [
-            [
-                'taxonomy' => 'product_type',
-                'field'    => 'slug',
-                'terms'    => $type,
-            ],
-        ],
+        'post_type'      => $product_type,
         'meta_query'     => [
             [
                 'key'     => 'coachview_id',

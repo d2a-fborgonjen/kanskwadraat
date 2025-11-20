@@ -25,8 +25,8 @@ class Admin
         wp_localize_script('coachview-synchronization', 'coachview_ajax', ['ajax_url' => admin_url('admin-ajax.php')]);
 
         $counts = [
-            "trainingType" => get_item_count('variable') + get_item_count('simple'),
-            "training" => get_item_count('variation'),
+            "trainingType" => get_item_count('product'),
+            "training" => get_item_count('product_variation'),
         ];
 
         $last_sync = get_option('coachview_sync_finished');
@@ -67,11 +67,20 @@ class Admin
                 </tbody>
             </table>
 
-            <div id="sync-info-log">
-                <pre><?php echo $info_log; ?></pre>
-            </div>
-            <div id="sync-error-log">
-                <pre><?php echo $error_log; ?></pre>
+            <h2>Logging</h2>
+            <hr>
+            <button class="button button-cta toggle-logging">Toon logging</button>
+
+            <div class="logging" style="display: none">
+                <h3>Info</h3>
+                <div id="sync-info-log">
+                    <pre><?php echo $info_log ?? 'geen logging'; ?></pre>
+                </div>
+
+                <h3>Fouten</h3>
+                <div id="sync-error-log">
+                    <pre><?php echo $error_log ?? 'geen logging'; ?></pre>
+                </div>
             </div>
         </div>
         <?php

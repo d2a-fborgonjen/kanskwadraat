@@ -21,7 +21,7 @@ class TrainingDataloader
             ->where('publicatieWebsite', 'true')
             ->where('opleidingssoortStatusId', 'Definitief')
             ->where('inactief', 'false')
-//            ->where('code', 'PC-KLAS')
+//            ->where('code', 'WIJZR-COMBI')
             ->includeFreeFields()
             ->includeExtraFields()
             ->includeDirectRelations()
@@ -37,6 +37,7 @@ class TrainingDataloader
                 try {
                     $trainings = self::__load_trainings($data['id']);
                     $components = self::__load_training_type_components($data['id']);
+//                    error_log(print_r($components->toArray(), true));
                     $categories = self::__load_training_type_categories($data['id']);
                     $result[] = TrainingType::from_array($data, $categories, $trainings, $components);
                 } catch (Exception $e) {
@@ -87,6 +88,8 @@ class TrainingDataloader
             ->includeExtraFields()
             ->build();
         $trainings = collect(ApiClient::trainings()->get($query));
+
+//        error_log(print_r($trainings->toArray(), true));
         return $trainings
             ->map(function($data) {
                 $training_components = self::__load_training_components($data['id']);

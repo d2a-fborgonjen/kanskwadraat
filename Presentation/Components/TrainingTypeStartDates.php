@@ -22,7 +22,9 @@ class TrainingTypeStartDates
     }
 
     public function render_start_dates($product_id): string {
-        $product = wc_get_product($product_id);
+        global $product;
+
+        $product = wc_get_product($product_id) ?? $product;
         if (!$product || !$product->is_type('variable')) {
             return '';
         }

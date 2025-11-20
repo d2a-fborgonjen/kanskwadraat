@@ -6,7 +6,7 @@ class TrainingHooks {
 
     public function __construct()
     {
-        add_action('woocommerce_variable_add_to_cart', [$this, 'render_training_details'], 25);
+//        add_action('woocommerce_variable_add_to_cart', [$this, 'render_training_details'], 25);
 
         add_filter('acf/location/rule_values/post_type', [$this, 'add_product_variation_rule']);
         add_filter('acf/load_field_group', [$this, 'customize_acf_field_group']);
@@ -15,19 +15,19 @@ class TrainingHooks {
         add_action('woocommerce_save_product_variation', [$this, 'save_acf_fields_for_variation'], 10, 2);
     }
 
-    /**
-     * Render training details below variations on the frontend
-     */
-    public function render_training_details(): void
-    {
-        global $product;
-        if (!$product || !$product->is_type('variable')) {
-            return;
-        }
-
-        $id = $product->get_id();
-        echo do_shortcode("[cv_training_details id=\"{$id}\"]");
-    }
+//    /**
+//     * Render training details below variations on the frontend
+//     */
+//    public function render_training_details(): void
+//    {
+//        global $product;
+//        if (!$product || !$product->is_type('variable')) {
+//            return;
+//        }
+//
+//        $id = $product->get_id();
+//        echo do_shortcode("[cv_training_details id=\"{$id}\"]");
+//    }
 
     /**
      * Add "Product Variation" to ACF post type location rules

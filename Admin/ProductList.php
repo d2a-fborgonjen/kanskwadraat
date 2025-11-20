@@ -1,6 +1,7 @@
 <?php
 
 namespace Coachview\Admin;
+use WC_Product_Variable;
 
 class ProductList {
     public function __construct()
@@ -14,8 +15,9 @@ class ProductList {
 
     public function add_product_column($columns): array
     {
-        // add column that shows metadata field 'training_type_category'
-        $columns['training_type_category'] = __('Training Type Category', 'coachview');
+        // add column that shows metadata fields 'training_type_category' and 'product_type'
+        $columns['training_type_category'] = __('Type', 'coachview');
+        $columns['product_type'] = __('Product type', 'coachview');
 
         unset($columns['featured']);
         unset($columns['taxonomy-product_brand']);
@@ -32,12 +34,13 @@ class ProductList {
             } else {
                 echo '-';
             }
-        } else if ($column === 'training_type_category') {
-            $training_type_category = get_post_meta($post_id, 'training_type_category', true);
-            if ($training_type_category) {
-                echo ucfirst($training_type_category);
+        } else if ($column === 'product_type') {
+            $product = wc_get_product($post_id);
+            if ($product instanceof WC_Product_Variable) {
+                $num_trainings = count($product->get_children());
+                echo "Opleidinigssoort ($num_trainings trainingen)";
             } else {
-                echo '-';
+                echo "Opleidingssoort (los)";
             }
         }
     }

@@ -35,7 +35,7 @@ class Sync {
             ]);
         } else {
             wp_send_json_success([
-                'num_processed' => get_option('coachview_sync_num_processed', 0),
+                'progress' => get_option('coachview_sync_progress', 0),
                 'running' => get_option('coachview_sync_running'),
                 'started' => get_option('coachview_sync_started'),
                 'finished' => get_option('coachview_sync_finished'),
