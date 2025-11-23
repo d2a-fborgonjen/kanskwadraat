@@ -8,7 +8,6 @@ class TrainingTypeHooks {
     {
         remove_action( 'woocommerce_after_single_product', 'woocommerce_template_single_add_to_cart', 30 );
         remove_action( 'woocommerce_single_product_summary', 'woocommerce_template_single_add_to_cart', 30 );
-
         add_action('woocommerce_single_product_summary', [$this, 'render_training_type_details'], 25);
         add_action('woocommerce_after_single_product', [$this, 'render_training_type_details_after_description'], 5);
     }
@@ -20,7 +19,7 @@ class TrainingTypeHooks {
             return;
         }
 
-        wp_enqueue_style('coachview-common', cv_assets_url('css/common.css'));
+        wp_enqueue_style('bc-compiled', cv_assets_url('css/bc-compiled.css'));
 
         $atts = ['id' => $product->get_id()];
         $shortcode = '[cv_training_call_to_action id="' . $atts['id'] . '"]';

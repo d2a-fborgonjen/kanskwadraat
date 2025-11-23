@@ -41,11 +41,13 @@ class TrainingTypeSearchPage
     }
 
     private function render_search_page($include_header_and_footer = true): string {
-        wp_enqueue_style('coachview-font', cv_assets_url('fonts/poppins.css'));
-        wp_enqueue_style('coachview-common', cv_assets_url('css/common.css'));
-        wp_enqueue_style('coachview-search', cv_assets_url('css/training-type-search.css'));
-        wp_enqueue_style('coachview-search-items', cv_assets_url('css/training-type-search-item.css'));
-        wp_enqueue_script('coachview-search', cv_assets_url('js/training-type-search.js'), array('jquery'), null, true);
+        wp_enqueue_style('fonts', cv_assets_url('css/bc-fonts.css'));
+        wp_enqueue_style('bootstrap', cv_assets_url('css/bootstrap.min.css'));
+        wp_enqueue_style('fontawesome', cv_assets_url('css/fontawesome.min.css'));
+        wp_enqueue_style('bc-compiled', cv_assets_url('css/bc-compiled.css'));
+
+        wp_enqueue_style('coachview-search', cv_assets_url('css/training-search.css'));
+        wp_enqueue_script('coachview-search', cv_assets_url('js/training-search.js'), array('jquery'), null, true);
 
         $this->templateEngine = new TemplateEngine();
         $data = [
@@ -54,7 +56,7 @@ class TrainingTypeSearchPage
             'footer' => $include_header_and_footer ? $this->capture_footer() : '',
             'assets_url' => cv_assets_url()
         ];
-        return $this->templateEngine->render('training-type-search-page', $data);
+        return $this->templateEngine->render('training-search', $data);
     }
 
     private function renderCategorySidebar()
@@ -90,7 +92,7 @@ class TrainingTypeSearchPage
             }
         }
         
-        return $this->templateEngine->render('category-sidebar', ['parent_categories' => $categories]);
+        return $this->templateEngine->render('training-search-categories', ['parent_categories' => $categories]);
     }
 
     private function render_training_type($product)
@@ -124,7 +126,7 @@ class TrainingTypeSearchPage
             'start_date_formatted' => $startDate ? date_i18n('j F', $startDate) : null,
             'assets_url' => cv_assets_url()
         ];
-        return $this->templateEngine->render('training-type-search-item', $data);
+        return $this->templateEngine->render('training-search-item', $data);
     }
 
 
@@ -149,11 +151,15 @@ class TrainingTypeSearchPage
         }
 
         $products = wc_get_products($args);
-        $html = '';
-
         $this->templateEngine = new TemplateEngine();
-        foreach ($products as $product) {
-            $html .= $this->render_training_type($product);
+
+        $html = '';
+        if (empty($products)) {
+            $html = $this->templateEngine->render('training-search-no-results');
+        } else {
+            foreach ($products as $product) {
+                $html .= $this->render_training_type($product);
+            }
         }
 
         return new WP_REST_Response($html, 200);

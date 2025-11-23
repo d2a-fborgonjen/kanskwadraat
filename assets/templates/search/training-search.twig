@@ -1,0 +1,55 @@
+{{ header|raw }}
+
+<div class="coachview-search bc-bg-blue-grey h-100 p-4">
+
+    <!-- Filter bar -->
+    <div class="coachview-search__bar container d-flex mb-4">
+        <button class="coachview-search__open-filters btn btn-primary small">
+            Filters
+            <i class="fa-thin fa-filter"></i>
+        </button>
+        <div class="coachview-search__bar-active_filters"></div>
+        <div class="coachview-search__spinner">
+            <i class="fa-thin fa-spinner"></i>
+        </div>
+    </div>
+
+    <div class="container">
+        <section class="coachview-search__results row"></section>
+    </div>
+
+    <!-- Filters -->
+    <div class="coachview-search__filters-wrapper position-fixed top-0 start-0 w-100 h-100 bg-dark bg-opacity-50 p-4">
+        <aside class="coachview-search__filters rounded d-flex flex-column bc-bg-blue-grey-light bg-white h-100 col-sm-3 col-lg-2 p-3">
+
+            <h3 class="coachview-search__filters-title d-flex">
+                <span style="flex: 1;">Filters</span>
+                <a class="coachview-search__close-filters" href="#close">
+                    <i class="fa-thin fa-times"></i>
+                </a>
+            </h3>
+
+            <div class="overflow-auto" style="flex-grow: 1;">
+
+                <div class="gfield gfield--type-text gfield--width-full">
+                    <div class="ginput_container ginput_container_text">
+                        <input type="text" value="" class="large coachview-search__input" placeholder="Zoek opleidingen..." aria-invalid="false">
+                    </div>
+                </div>
+
+                {{ category_list|raw }}
+
+            </div>
+
+            <div class="coachview-search__filters-bottom d-flex justify-content-center mt-2">
+                <button class="btn btn-primary coachview-search__apply-filters">
+                    filters toepassen
+                </button>
+            </div>
+        </aside>
+    </div>
+
+</div>
+
+
+{{ footer|raw }}

@@ -1,0 +1,42 @@
+<div class="training-type-search-item col-sm-12 col-md-6 col-lg-4 mb-4">
+    <div class="bc-wrapper" aria-label="{{ product_name }}" aria-description="{{ description }}">
+        <div class="bc-wrapper-inner">
+            <a href="{{ training_url }}" tabindex="0">
+                <div class="bc-wrapper-inner__image">
+                    <img width="2000" height="1333" src="{{ image_url }}" sizes="(max-width: 2000px) 100vw, 2000px">
+                    <div class="bc-wrapper-inner__curve">
+                        <svg viewBox="0 0 1440 120" preserveAspectRatio="none">
+                            <path d="M0,0 C300,120 1140,120 1440,0 L1440,120 L0,120 Z"></path>
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="bc-wrapper-inner__title mt-2 mx-4 mb-4" style="height: 164px;">
+                    <div class="kicker mb-1">
+                        {{ training_type_category }}
+                    </div>
+                    <h3>{{ name }}</h3>
+                    {{ description }}
+                </div>
+                <div class="bc-wrapper-inner__footer m-4 pt-4 d-flex flex-row gap-2 gap-md-3">
+                    {% if location %}
+                    <div class="location meta d-flex flex-row align-items-center gap-1 gap-md-2">
+                        <i class="fa-thin fa-location-dot" aria-hidden="true"></i>
+                        {{  location }}
+                    </div>
+                    {%  endif %}
+                    {% if duration %}
+                    <div class="time meta d-flex flex-row align-items-center gap-1 gap-md-2">
+                        <i class="fa-thin fa-clock" aria-hidden="true"></i>
+                        {{ duration }}
+                    </div>
+                    {% endif %}
+                    <div class="price meta d-flex flex-row align-items-center gap-1 gap-md-2">
+                        <i class="fa-thin fa-circle-euro" aria-hidden="true"></i>
+                        {{ product_price|number_format(2, '.', ',') }}
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>

@@ -12,6 +12,6 @@ namespace Coachview\Presentation;
 function create_link_button(string $text, string $url): string
 {
     return '<div class="d-flex">
-            <a class="cv-button cv-button-cta" href="' . esc_url($url) . '">' . $text . '</a>
-        </div>';
+        <a class="btn btn-primary" href="' . esc_url($url) . '">' . $text . '</a>
+    </div>';
 }

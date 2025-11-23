@@ -1,97 +1,99 @@
 {{ header|raw }}
 
-<div class="register-page">
-
-    <div class="register-page__container">
-
-        <h2 class="register-page__title">Deelnemer(s)</h2>
+<div class="register-page bc-bg-blue-grey h-100 p-4">
+    <div class="register-page__header container">
+        <h3 class="register-page__title">Deelnemer(s)</h3>
         <div class="register-page__feedback" role="alert" aria-live="polite"></div>
+    </div>
 
-        <form class="register-page__form" method="post" action="{{ form_action }}">
-            {{ hidden_inputs|raw }}
+    <div class="register-page__container container">
+        <div class="row">
+            <form class="register-page__form col-sm-9 col-lg-2" method="post" action="{{ form_action }}">
+                {{ hidden_inputs|raw }}
 
-            <div class="form-section__progress">
-                <span class="form-section__progress-text">Stap 1 van 3</span>
-                <div class="form-section__progress-bar--wrapper">
-                    <div class="form-section__progress-bar"></div>
+                <div class="form-section__progress">
+                    <span class="form-section__progress-text">Stap 1 van 3</span>
+                    <div class="form-section__progress-bar--wrapper">
+                        <div class="form-section__progress-bar"></div>
+                    </div>
                 </div>
-            </div>
 
-            <!-- This wrapper contains the form steps. e.g. participant(s) form, invoice details and form summary -->
-            <div class="form-section-wrapper">
+                <!-- This wrapper contains the form steps. e.g. participant(s) form, invoice details and form summary -->
+                <div class="form-section-wrapper">
 
-                {% for section in form_sections %}
-                <div class="form-section__step{% if loop.first %} active{% endif %}" data-label="{{section.title}}">
+                    {% for section in form_sections %}
+                    <div class="form-section__step{% if loop.first %} active{% endif %}" data-label="{{section.title}}">
 
-                    {% if loop.first %}
-                    <div class="register-form__participants">
-                        <div class="register-form__participant" data-participant-index="1">
-                            <div class="register-form__participant-header-wrapper">
-                                <h3 class="register-form__participant-header">Deelnemer 1</h3>
-                                <button type="button" class="register-form__remove_participant cv-button cv-button-outline"title="Deelnemer verwijderen">
-                                    ×
-                                </button>
-                            </div>
-                            <div class="register-form__participant-form">
-                                {{ section.form | raw }}
+                        {% if loop.first %}
+                        <div class="register-form__participants">
+                            <div class="register-form__participant" data-participant-index="1">
+                                <div class="register-form__participant-header-wrapper">
+                                    <h4 class="register-form__participant-header">Deelnemer 1</h4>
+                                    <button type="button" class="register-form__remove_participant btn btn-secondary small"title="Deelnemer verwijderen">
+                                        <i class="fa-thin fa-times"></i>
+                                    </button>
+                                </div>
+                                <div class="register-form__participant-form">
+                                    {{ section.form | raw }}
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    {% else %}
-                     {{ section.form | raw }}
-                    {% endif %}
+                        {% else %}
+                         {{ section.form | raw }}
+                        {% endif %}
 
-                    <div class="register-form__actions">
-                        {% if loop.first %}
-                        <button type="button" class="register-form__add_participant cv-button cv-button-outline">Deelnemer toevoegen +</button>
-                        {% endif %}
-                        {% if not loop.first %}
-                        <button type="button" class="register-form__previous cv-button">&lt; Vorige</button>
-                        {% endif %}
-                        {% if not loop.last %}
-                        <button type="button" class="register-form__next cv-button">Volgende &gt;</button>
-                        {% endif %}
-                        {% if loop.last %}
-                        <button type="button" class="register-form__check cv-button cv-button-outline">Controleer gegevens</button>
-                        {% endif %}
+                        <div class="register-form__actions">
+                            {% if loop.first %}
+                            <button type="button" class="register-form__add_participant btn btn-secondary">Deelnemer toevoegen +</button>
+                            {% endif %}
+                            {% if not loop.first %}
+                            <button type="button" class="register-form__previous btn btn-tertiary">&lt; Vorige</button>
+                            {% endif %}
+                            {% if not loop.last %}
+                            <button type="button" class="register-form__next btn btn-tertiary">Volgende &gt;</button>
+                            {% endif %}
+                            {% if loop.last %}
+                            <button type="button" class="register-form__check btn btn-secondary">Controleer gegevens</button>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+
+
+                    <div class="form-section__step register-form--summary" data-label="Controleer gegevens">
+                        <!-- summarize the form input -->
+                        <div class="register-form__summary-details">
+
+                        </div>
+
+                        <div class="register-form__actions">
+                            <button type="button" class="register-form__previous btn btn-tertiary">&lt; Vorige</button>
+                            <button type="submit" class="register-form__submit btn btn-primary">Verzenden</button>
+                        </div>
                     </div>
                 </div>
-                {% endfor %}
 
+            </form>
 
-                <div class="form-section__step register-form--summary" data-label="Controleer gegevens">
-                    <!-- summarize the form input -->
-                    <div class="register-form__summary-details">
-
+            <div class="register-page__cart col-sm-3 col-lg-">
+                <h2 class="register-page__cart--title">
+                    Mijn investering
+                </h2>
+                <div class="register-page__cart--contents">
+                    <div class="register-page__cart--item" data-price="{{ price }}">
+                        <span>{{ training_type_title }}</span>
+                        {% if training %}
+                            <small>{{ training_day }} {{ training_date }} - {{ training_location }}</small>
+                        {% endif %}
+                        <small class="register-page__cart--quantity" data-quantity="1">
+                            1 deelnemer
+                        </small>
                     </div>
 
-                    <div class="register-form__actions">
-                        <button type="button" class="register-form__previous cv-button">&lt; Vorige</button>
-                        <button type="submit" class="register-form__submit cv-button cv-button-cta">Verzenden</button>
+                    <div class="register-page__cart--total">
+                        <span>Totale kosten</span>
+                        <span class="register-page__cart--total-price">&euro; {{ price | number_format(2, '.', ',') }}</span>
                     </div>
-                </div>
-            </div>
-
-        </form>
-
-        <div class="register-page__cart">
-            <h2 class="register-page__cart--title">
-                Mijn investering
-            </h2>
-            <div class="register-page__cart--contents">
-                <div class="register-page__cart--item" data-price="{{ price }}">
-                    <span>{{ training_type_title }}</span>
-                    {% if training %}
-                        <small>{{ training_day }} {{ training_date }} - {{ training_location }}</small>
-                    {% endif %}
-                    <small class="register-page__cart--quantity" data-quantity="1">
-                        1 deelnemer
-                    </small>
-                </div>
-
-                <div class="register-page__cart--total">
-                    <span>Totale kosten</span>
-                    <span class="register-page__cart--total-price">&euro; {{ price | number_format(2, '.', ',') }}</span>
                 </div>
             </div>
         </div>
