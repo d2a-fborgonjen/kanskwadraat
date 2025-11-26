@@ -92,8 +92,8 @@ class RegisterPage
         
         $data = [
             // Page structure
-            'header' => $this->captureHeader(),
-            'footer' => $this->captureFooter(),
+            'header' => '', // $this->captureHeader(),
+            'footer' => '', // $this->captureFooter(),
 
             // Form contents
             'form_action' => esc_url(admin_url('admin-post.php')),

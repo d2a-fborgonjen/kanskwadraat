@@ -1,8 +1,8 @@
 {{ header|raw }}
 
-<div class="register-page bc-bg-blue-grey h-100 p-4">
+<div class="register-page bg-white h-100 p-4">
     <div class="register-page__header container">
-        <h3 class="register-page__title">Deelnemer(s)</h3>
+        <h2 class="register-page__title">Deelnemer(s)</h2>
         <div class="register-page__feedback" role="alert" aria-live="polite"></div>
     </div>
 
@@ -19,16 +19,16 @@
                 </div>
 
                 <!-- This wrapper contains the form steps. e.g. participant(s) form, invoice details and form summary -->
-                <div class="form-section-wrapper">
+                <div class="form-section-wrapper gform_wrapper gform-theme gform-theme--framework gform-theme--foundation ">
 
                     {% for section in form_sections %}
-                    <div class="form-section__step{% if loop.first %} active{% endif %}" data-label="{{section.title}}">
+                    <div class="form-section__step{% if loop.first %} active{% endif %} gform_body" data-label="{{section.title}}">
 
                         {% if loop.first %}
                         <div class="register-form__participants">
                             <div class="register-form__participant" data-participant-index="1">
                                 <div class="register-form__participant-header-wrapper">
-                                    <h4 class="register-form__participant-header">Deelnemer 1</h4>
+                                    <h3 class="register-form__participant-header">Deelnemer 1</h3>
                                     <button type="button" class="register-form__remove_participant btn btn-secondary small"title="Deelnemer verwijderen">
                                         <i class="fa-thin fa-times"></i>
                                     </button>
