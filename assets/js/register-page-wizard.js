@@ -22,9 +22,9 @@
             currentStepTitle: '.register-page__title',
         },
         SUMMARY_CLASSES: {
-            section: 'register-form__summary-section',
+            section: 'register-form__summary-section col-6',
             sectionTitle: 'register-form__summary-section-title',
-            item: 'register-form__summary-item',
+            item: 'register-form__summary-item mb-4',
             itemLabel: 'register-form__summary-item-label',
             itemValue: 'register-form__summary-item-value',
         },
@@ -77,28 +77,20 @@
 
     class RegisterPageWizard {
         constructor($form) {
-            this.$form = null;
-            this.$steps = $();
-            this.$progressText = $();
-            this.$progressBar = $();
-            this.$currentStepTitle = $();
-            this.totalSteps = 0;
-            this.currentStep = 0;
-
             if (!$form || !$form.length) {
                 return;
             }
-
             this.$form = $form;
             this.$steps = this.$form.find(REGISTER_PAGE_WIZARD.SELECTORS.steps);
-            this.$progressText = this.$form.find(REGISTER_PAGE_WIZARD.SELECTORS.progressText);
-            this.$progressBar = this.$form.find(REGISTER_PAGE_WIZARD.SELECTORS.progressBar);
             this.$currentStepTitle = this.$form.find(REGISTER_PAGE_WIZARD.SELECTORS.currentStepTitle);
+
+            this.$progressText = $(REGISTER_PAGE_WIZARD.SELECTORS.progressText);
+            this.$progressBar = $(REGISTER_PAGE_WIZARD.SELECTORS.progressBar);
 
             if (!this.$steps.length) {
                 return;
             }
-
+            this.currentStep = 0;
             this.totalSteps = this.$steps.length;
 
             this.bindEvents();
@@ -164,6 +156,7 @@
 
         updateProgressForStep(stepIndex) {
             if (!this.$progressText || !this.$progressBar) {
+                console.log('Progress elements not found');
                 return;
             }
 
@@ -173,6 +166,8 @@
 
             this.$progressText.text(stepLabel);
             this.$progressBar.css('width', `${percentage}%`);
+            console.log(this.$progressText);
+            console.log(this.$progressBar);
         }
 
         validateStep(stepIndex, options) {
@@ -324,7 +319,7 @@
 
                     if (sectionTitle) {
                         $formSectionSummary.append(
-                            `<h2 class="${REGISTER_PAGE_WIZARD.SUMMARY_CLASSES.sectionTitle}">${sectionTitle}</h2>`
+                            `<h3 class="${REGISTER_PAGE_WIZARD.SUMMARY_CLASSES.sectionTitle}">${sectionTitle}</h3>`
                         );
                     }
 

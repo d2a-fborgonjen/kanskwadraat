@@ -11,9 +11,6 @@ class TrainingTypeSearchPage
 
     function __construct()
     {
-        add_filter('query_vars', [$this, 'add_query_vars']);
-        add_action('init', [$this, 'add_rewrite_rule']);
-        add_action('template_redirect', [$this, 'template_redirect']);
         add_action('rest_api_init', [$this, 'register_rest_routes']);
         add_shortcode('cv_training_type_search', [$this, 'training_type_search_shortcode']);
     }
@@ -40,20 +37,13 @@ class TrainingTypeSearchPage
         ]);
     }
 
-    private function render_search_page($include_header_and_footer = true): string {
-        wp_enqueue_style('fonts', cv_assets_url('css/bc-fonts.css'));
-        wp_enqueue_style('bootstrap', cv_assets_url('css/bootstrap.min.css'));
-        wp_enqueue_style('fontawesome', cv_assets_url('css/fontawesome.min.css'));
-        wp_enqueue_style('bc-compiled', cv_assets_url('css/bc-compiled.css'));
-
+    public function training_type_search_shortcode(): string {
         wp_enqueue_style('coachview-search', cv_assets_url('css/training-search.css'));
         wp_enqueue_script('coachview-search', cv_assets_url('js/training-search.js'), array('jquery'), null, true);
 
         $this->templateEngine = new TemplateEngine();
         $data = [
             'category_list' => $this->renderCategorySidebar(),
-            'header' => $include_header_and_footer ? $this->capture_header() : '',
-            'footer' => $include_header_and_footer ? $this->capture_footer() : '',
             'assets_url' => cv_assets_url()
         ];
         return $this->templateEngine->render('training-search', $data);
@@ -66,21 +56,21 @@ class TrainingTypeSearchPage
             'hide_empty' => false,
             'parent' => 0
         ]);
-        
+
         $categories = [];
-        
+
         foreach ($parent_cats as $parent) {
             $category = [
                 'name' => $parent->name,
                 'child_categories' => []
             ];
-            
+
             $child_cats = get_terms([
                 'taxonomy' => 'product_cat',
                 'hide_empty' => false,
                 'parent' => $parent->term_id
             ]);
-            
+
             foreach ($child_cats as $child) {
                 $category['child_categories'][] = [
                     'term_id' => $child->term_id,
@@ -91,9 +81,10 @@ class TrainingTypeSearchPage
                 $categories[] = $category;
             }
         }
-        
+
         return $this->templateEngine->render('training-search-categories', ['parent_categories' => $categories]);
     }
+
 
     private function render_training_type($product)
     {
@@ -129,7 +120,6 @@ class TrainingTypeSearchPage
         return $this->templateEngine->render('training-search-item', $data);
     }
 
-
     public function coachview_filter_products($request): WP_REST_Response {
         $search = $request->get_param('search') ?? '';
         $cats = $request->get_param('categories') ?? [];
@@ -163,26 +153,6 @@ class TrainingTypeSearchPage
         }
 
         return new WP_REST_Response($html, 200);
-    }
-
-    public function training_type_search_shortcode(): string {
-        return $this->render_search_page(false);
-    }
-
-    public function add_rewrite_rule() {
-        add_rewrite_rule('^zoek\-opleidingen/?$', 'index.php?training_type_search=1', 'top');
-    }
-
-    public function template_redirect() {
-        if (get_query_var('training_type_search')) {
-            echo $this->render_search_page(true);
-            exit;
-        }
-    }
-
-    public function add_query_vars($vars) {
-        $vars[] = 'training_type_search';
-        return $vars;
     }
 
     private function capture_header()

@@ -164,5 +164,10 @@ jQuery(document).ready(function($) {
     window.addEventListener('popstate', syncUIFromUrl);
 
     /* ---------- Init ---------- */
+    // Move filters wrapper to end of body
+    if ($filtersWrapper.length) {
+        $filtersWrapper.detach().appendTo('body');
+    }
+
     syncUIFromUrl();
 });

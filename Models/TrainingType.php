@@ -42,6 +42,18 @@ class TrainingType {
         );
     }
 
+    // return an array of unique start dates (YYYY-MM-DD) from the trainings plus their locations (city)
+    public function get_start_dates(): array {
+        return $this->trainings->map(function(Training $training) {
+            return [
+                'training_id' => $training->id,
+                'start_date' => $training->start_date,
+                'display_date' => date_i18n('j F', strtotime($training->start_date)),
+                'city' => $training->city
+            ];
+        })->unique('start_date')->toArray();
+    }
+
     public function get_locations(): array {
         return $this->trainings->pluck('locations')->flatten()->filter(fn($value) => !empty($value))->unique()->toArray();
     }

@@ -12,6 +12,7 @@ use Coachview\Admin\ProductList;
 use Coachview\Admin\ProductMeta;
 use Coachview\Admin\Settings;
 use Coachview\Cron\Cron;
+use Coachview\Presentation\Components\TrainingAgenda;
 use Coachview\Presentation\Components\TrainingTypeCTA;
 use Coachview\Presentation\Components\TrainingTypeStartDates;
 use Coachview\Presentation\Hooks\TrainingHooks;
@@ -36,13 +37,13 @@ add_action('plugins_loaded', function () {
     new TrainingTypeCTA();
     new TrainingHooks();
     new TrainingTypeHooks();
+    new TrainingAgenda();
 
     new Cron();
     new Sync();
 });
 
 register_activation_hook(__FILE__, function() {
-    (new TrainingTypeSearchPage())->add_rewrite_rule();
     (new RegisterPage())->add_rewrite_rule();
     flush_rewrite_rules();
 });

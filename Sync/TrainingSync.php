@@ -137,8 +137,8 @@ class TrainingSync {
         $product->set_regular_price($training_type->price);
         $product->set_manage_stock(false);
         $product->set_stock_status('instock');
-
         $product->update_meta_data('training_duration', $training_type->num_half_days);
+        $product->update_meta_data('start_dates', $training_type->get_start_dates());
         $product->update_meta_data('locations', $training_type->get_locations());
         $product->update_meta_data('num_locations', count($training_type->get_locations()));
         $product->update_meta_data('cities', $training_type->get_cities());

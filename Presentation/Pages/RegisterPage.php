@@ -38,25 +38,39 @@ class RegisterPage
 
     public function template_redirect(): void {
         if (get_query_var('register')) {
-            echo $this->render_register_page(wp_get_query_var('vid'), wp_get_query_var('pid'));
+
+            $variation_id = wp_get_query_var('vid');
+            $product_id = wp_get_query_var('pid');
+            $training_id = wp_get_query_var('tid');
+
+            if (!empty($training_id)) {
+                $products = wc_get_products([
+                    'type' => 'variation',
+                    'limit' => 1,
+                    'meta_key' => 'coachview_id',
+                    'meta_value' => $training_id,
+                ]);
+                error_log(print_r($products, true));
+                if (!empty($products)) {
+                    $product = $products[0];
+                    $variation_id = $product->get_id();
+                }
+            }
+
+            echo $this->render_register_page($variation_id, $product_id);
             exit;
         }
     }
 
-    private function render_register_page(mixed $vid, mixed $pid): string
+    private function render_register_page(mixed $variation_id, mixed $product_id): string
     {
         $this->templateEngine = new TemplateEngine();
-        [$training_type, $training] = $this->resolve_training($vid, $pid);
+        [$training_type, $training] = $this->resolve_training($variation_id, $product_id);
         if (!$training_type) {
             return '<p>' . esc_html__('Ongeldige training.', 'coachview') . '</p>';
         }
 
-        wp_enqueue_style('fonts', cv_assets_url('css/bc-fonts.css'));
-        wp_enqueue_style('bootstrap', cv_assets_url('css/bootstrap.min.css'));
-        wp_enqueue_style('fontawesome', cv_assets_url('css/fontawesome.min.css'));
-        wp_enqueue_style('bc-compiled', cv_assets_url('css/bc-compiled.css'));
         wp_enqueue_style('coachview-register', cv_assets_url('css/register-page.css'));
-
         wp_enqueue_script('coachview-register-wizard', cv_assets_url('js/register-page-wizard.js'), ['jquery'], '1.0', true);
         wp_enqueue_script('coachview-register-participants', cv_assets_url('js/register-page-participants.js'), ['jquery'], '1.0', true);
         wp_enqueue_script('coachview-register', cv_assets_url('js/register-page.js'), ['jquery', 'coachview-register-wizard', 'coachview-register-participants'], '1.0', true);
@@ -92,17 +106,16 @@ class RegisterPage
         
         $data = [
             // Page structure
-            'header' => '', // $this->captureHeader(),
-            'footer' => '', // $this->captureFooter(),
-
-            // Form contents
-            'form_action' => esc_url(admin_url('admin-post.php')),
-            'hidden_inputs' => $this->render_hidden_inputs($training_type, $training),
-            'form_sections' => $rendered_sections,
+            'header' =>  $this->captureHeader(),
+            'footer' => $this->captureFooter(),
 
             // Order details
             'training_type_title' => $training_type->get_title(),
             'price' => $training_type->get_price(),
+
+            // Form contents
+            'hidden_inputs' => $this->render_hidden_inputs($training_type, $training),
+            'form_sections' => $rendered_sections,
         ];
 
         if ($training) {
@@ -115,20 +128,19 @@ class RegisterPage
             $data['training_date'] = $date;
             $data['training_location'] = $location;
         }
-        
         return $this->templateEngine->render('register-page', $data);
     }
 
-    private function resolve_training(mixed $vid, mixed $pid): array
+    private function resolve_training(mixed $variation_id, mixed $product_id): array
     {
-        if ($vid) {
-            $training = new WC_Product_Variation((int)$vid);
+        if ($variation_id) {
+            $training = new WC_Product_Variation((int)$variation_id);
             $training_type = new WC_Product_Variable($training->get_parent_id());
             return [$training_type, $training];
         }
 
-        if ($pid) {
-            $training_type = new WC_Product_Simple((int)$pid);
+        if ($product_id) {
+            $training_type = new WC_Product_Simple((int)$product_id);
             return [$training_type, null];
         }
 
