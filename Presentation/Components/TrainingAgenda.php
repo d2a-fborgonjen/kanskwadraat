@@ -32,7 +32,9 @@ class TrainingAgenda
             }
 
             $image_id = $training->get_image_id();
-            $image_url = $image_id ?  wp_get_attachment_image_url($image_id, 'woocommerce_thumbnail') : '';
+            $image_url = $image_id
+                ? wp_get_attachment_image_url($image_id, 'woocommerce_thumbnail')
+                : cv_assets_url('img/example_training4.png');;
 
             foreach ($start_dates as $start_date) {
                 if (empty($start_date['start_date'])) {

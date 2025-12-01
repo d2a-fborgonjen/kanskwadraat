@@ -47,7 +47,7 @@
             animation: 300,
             scroll: 300,
         },
-        SCROLL_OFFSET: 100,
+        SCROLL_OFFSET: 150,
         DATE: {
             locale: 'nl-NL',
             format: {

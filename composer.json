@@ -5,7 +5,6 @@
             "Coachview\\Api\\": "Api/",
             "Coachview\\Models\\": "Models/",
             "Coachview\\Presentation\\": "Presentation/",
-            "Coachview\\Forms\\": "Forms/",
             "Coachview\\Cron\\": "Cron/",
             "Coachview\\Sync\\": "Sync/"
         },

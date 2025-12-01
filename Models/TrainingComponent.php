@@ -154,14 +154,11 @@ class TrainingComponent {
         public ?string      $city,            // e.g. 'Amsterdam'
         public ?string      $date,            // e.g. '2025-06-06'
         public ?string      $start_time,      // e.g. '09:30:00'
-        public ?string      $end_time,        // e.g. '17:00:00',
+        public ?string      $end_time,        // e.g. '17:00:00'
     ) {
     }
 
     public static function from_array(array $data): self {
-//        error_log("TrainingComponent::from_array called with data: ");
-//        error_log(print_r($data, true));
-
         $collection_data = collect([$data]);
         return new self(
             id: $data['id'],

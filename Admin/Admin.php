@@ -4,7 +4,6 @@ namespace Coachview\Admin;
 
 use Coachview\Sync\Store\TrainingDetail;
 
-use Coachview\Sync\SyncRunner;
 use function Coachview\Sync\get_item_count;
 
 class Admin
@@ -33,7 +32,6 @@ class Admin
         $last_sync_date  = $last_sync ? date_i18n(get_option('date_format') . ' om ' . get_option('time_format'), strtotime($last_sync)) : 'onbekend';
         $info_log = get_option('coachview_sync_info', '');
         $error_log = get_option('coachview_sync_error', '');
-
         ?>
 
         <div id="sync-status" class="updated"><p>Laatste synchronisatie <?php echo $last_sync_date; ?></p></div>

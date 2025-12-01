@@ -22,8 +22,6 @@ class TrainingTypeComponent {
     }
 
     public static function from_array(array $data): self {
-//        error_log("TrainingTypeComponent::from_array called with data: ");
-//        error_log(print_r($data, true)); // Debugging line to log the data structure
         return new self(
             id: $data['id'],
             code: $data['code'],

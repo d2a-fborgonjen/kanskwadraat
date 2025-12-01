@@ -44,8 +44,7 @@ class TrainingTypeSearchPage
 
         $this->templateEngine = new TemplateEngine();
         $data = [
-            'category_list' => $this->renderCategorySidebar(),
-            'assets_url' => cv_assets_url()
+            'category_list' => $this->renderCategorySidebar()
         ];
         return $this->templateEngine->render('training-search', $data);
     }
@@ -100,9 +99,11 @@ class TrainingTypeSearchPage
         $location = $is_online ? 'Online' : join(", ", $cities);
 
 
-            // Get product image URL properly
+        // Get product image URL properly
         $image_id = $product->get_image_id();
-        $image_url = $image_id ?  wp_get_attachment_image_url($image_id, 'woocommerce_thumbnail') : '';
+        $image_url = $image_id
+            ? wp_get_attachment_image_url($image_id, 'woocommerce_thumbnail')
+            : cv_assets_url('img/example_training4.png');
 
         $data = [
             'image_url' => $image_url ?: wc_placeholder_img_src('woocommerce_thumbnail'),

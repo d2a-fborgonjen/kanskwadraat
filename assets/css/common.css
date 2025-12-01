@@ -12,3 +12,12 @@
 .btn.btn-no-after:after {
     display: none !important;
 }
+
+.accordion-button[data-bs-toggle=collapse] i:last-of-type {
+    transition: transform .2s ease-out;
+    transform: rotate(180deg);
+}
+
+.accordion-button[data-bs-toggle=collapse].collapsed i:last-of-type {
+    transform: rotate(0);
+}

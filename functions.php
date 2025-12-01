@@ -31,11 +31,6 @@ function coachview_api_token(bool $refresh = false): string {
     return TokenManager::instance()->getToken($refresh);
 }
 
-function get_order_success_redirect_url(): string {
-    $url = get_option('coachview_order_success_redirect_url');
-    return $url ?: home_url();
-}
-
 function get_registration_type(WC_Product $training_type): RegistrationType
 {
     $training_type_category = get_post_meta($training_type->get_id(), 'training_type_category', true);
@@ -54,10 +49,6 @@ function get_registration_type(WC_Product $training_type): RegistrationType
 
 function cv_assets_url(string $path = ''): string {
     return plugin_dir_url(__FILE__) . 'assets/' . ltrim($path, '/');
-}
-
-function cv_assets_path(string $path = ''): string {
-    return plugin_dir_path(__FILE__) . 'assets/' . ltrim($path, '/');
 }
 
 function wp_get_query_var( $key, $default = '' ) {

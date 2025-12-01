@@ -14,7 +14,7 @@ class TrainingType {
         public int        $num_components,
         public string     $num_half_days,
         public array      $categories,
-        public Collection $trainings, /** Collection of Trainings */
+        public Collection $trainings,               /** Collection of Trainings */
         public Collection $training_type_components /** Collection of TrainingTypeComponents */
     ) {
 //         error_log("TrainingType::__construct called with id: {$this->id}, code: {$this->code}, name: {$this->name}");
