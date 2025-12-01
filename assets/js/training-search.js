@@ -6,6 +6,7 @@ jQuery(document).ready(function($) {
     const $openFilters = $('.coachview-search__open-filters');
     const $closeFilters = $('.coachview-search__close-filters');
     const $applyFilters = $('.coachview-search__apply-filters');
+    const $searchSubmitBtn = $('.coachview-search__submit-btn');
     const $resetFilters = $('.coachview-search__reset-filters');
     const $filtersWrapper = $('.coachview-search__filters-wrapper');
     const $activeFilters = $('.coachview-search__bar-active_filters');
@@ -164,11 +165,19 @@ jQuery(document).ready(function($) {
         $filtersWrapper.hide();
     });
 
+    $searchSubmitBtn.on('click', function(e) {
+        e.preventDefault();
+        updateUrlFromForm();
+        syncUIFromUrl();
+        $filtersWrapper.hide();
+    });
+
     $search.on('keypress', function(e) {
         if (e.which === 13) {
             e.preventDefault();
             updateUrlFromForm();
             syncUIFromUrl();
+            $filtersWrapper.hide();
         }
     });
 

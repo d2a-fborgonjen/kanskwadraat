@@ -11,12 +11,14 @@
                     </div>
                 </div>
 
-                <div class="bc-wrapper-inner__title mt-2 mx-4 mb-4" style="height: 164px;">
+                <div class="bc-wrapper-inner__title mt-2 mx-4 mb-4 overflow-hidden">
                     <div class="kicker mb-1">
                         {{ training_type_category }}
                     </div>
                     <h3>{{ name }}</h3>
-                    {{ description }}
+                    <span class="description flex-grow-1">
+                        {{ description }}
+                    </span>
                 </div>
                 <div class="bc-wrapper-inner__footer m-4 pt-4 d-flex flex-row gap-2 gap-md-3">
                     {% if location %}
