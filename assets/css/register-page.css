@@ -1,41 +1,6 @@
-:root {
-    /* Colors */
-    --body-font: "Poppins", Roboto, Arial, sans-serif;
-    --bc-blue: #002352;
-    --bc-blue-grey: #569BA1;
-    --bc-green: #C0E337;
-    --bc-blue-light: #E9F3FF;
-    --bc-blue-grey-light: #EDF9FA;
-    --bc-green-light: #BBEBD5;
-
-    --red: #dc4a31;
-
-
-
-    --cv-color-secondary: #DFF0F1;
-    --cv-color-border: #69727d;
-    --cv-color-text: #333;
-    --cv-color-error: #dc4a31;
-    --cv-color-white: #fff;
-    --cv-color-bg: #f8f9fa;
-    --cv-color-shadow: rgba(0, 35, 82, 0.1);
-
-
-  
-    /* Borders & Radius */
-    --cv-border-width: 1px;
-    --cv-border-width-thick: 2px;
-
-  
-    /* Form Elements */
-    --cv-input-padding: 0.7rem 1rem;
-    --cv-input-padding-sm: 0.3rem 0.5rem;
-    --cv-checkbox-size: 1.25rem;
-
-  }
-
-.meta-cards,
+.meta-card,
 .form-field-label,
+.form-section__progress-text,
 .register-form__summary-item-label {
     font-family: var(--body-font);
     color: var(--bc-blue);
@@ -47,68 +12,38 @@
     margin-bottom: 0;
 }
 
-/*!* Register Page Layout *!*/
+
 .register-page {
     padding: 180px 0;
 }
 
-
 .register-page__feedback {
-    flex-basis: 100%;
-    /*margin: var(--cv-space-md) 0;*/
-    /*padding: var(--cv-space-md);*/
-    /*border-radius: var(--cv-radius-md);*/
     display: none;
 }
 
-.register-page__feedback--info {
-    display: block;
-    /*background-color: var(--cv-color-teal-lighter);*/
-    /*color: var(--e-global-color-primary);*/
+/* Progress Bar */
+.form-section__progress-bar--wrapper {
+    height: 10px;
+    width: 100%;
+    border-radius: 5px;
+    overflow: hidden;
 }
 
-.register-page__feedback--success {
-    display: block;
-    background: var(--bc-blue-grey);
-    color: white;
+.form-section__progress-bar {
+    background-color: var(--bc-blue);
+    border-radius: 5px;
+    height: 100%;
+    width: 0;
+    transition: width 0.3s ease;
 }
 
-.register-page__feedback--error {
-    display: block;
-    background-color: rgba(211, 47, 47, 0.1);
-    color: var(--red);
-}
-
-.register-page__cart--item {
-    display: flex;
-    flex-direction: column;
-}
-
-.register-page__cart--total {
+/** Participant form section header */
+.register-form__participant-header-wrapper {
     display: flex;
     justify-content: space-between;
-    font-family: var(--body-font);
-    font-size: 18px;
-    font-weight: 600;
-    border-top: 1px solid var(--bc-blue);
+    align-items: center;
 }
 
-
-/* Form Section */
-.form-section {
-    display: flex;
-    flex-direction: column;
-    /*gap: var(--cv-gap-md);*/
-}
-
-button.register-form__remove_participant:after {
-    display: none !important;
-}
-
-.register-form__participant-form {
-    display: flex;
-    flex-direction: column;
-}
 
 /* Wizard Form Section Wrapper */
 .form-section-wrapper {
@@ -164,20 +99,22 @@ button.register-form__remove_participant:after {
     transform: translateX(100%);
 }
 
-/* Progress Bar */
-.form-section__progress-bar--wrapper {
-    height: 10px;
-    width: 100%;
-    border-radius: 5px;
-    overflow: hidden;
+
+/** Cart contents */
+.register-page__cart--item {
+    display: flex;
+    flex-direction: column;
 }
-.form-section__progress-bar {
-    background-color: var(--bc-blue);
-    border-radius: 5px;
-    height: 100%;
-    width: 0;
-    transition: width 0.3s ease;
+
+.register-page__cart--total {
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--body-font);
+    font-size: 18px;
+    font-weight: 600;
+    border-top: 1px solid var(--bc-blue);
 }
+
 
 /* Form Group */
 .form-group {
@@ -187,14 +124,13 @@ button.register-form__remove_participant:after {
     align-items: start;
 }
 
-
 .form-field__input--error {
-    border: 1px solid #d32f2f !important;
+    border: 1px solid var(--red) !important;
     box-shadow: 0 0 0 3px rgba(211, 47, 47, 0.1) !important;
 }
 
 .form-field__input--error:focus {
-    border: 1px solid #d32f2f !important;
+    border: 1px solid var(--red) !important;
     box-shadow: 0 0 0 3px rgba(211, 47, 47, 0.2) !important;;
 }
 
@@ -203,31 +139,7 @@ button.register-form__remove_participant:after {
     resize: vertical;
 }
 
-.register-form__summary-section {
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-}
-
-.register-form__summary-item {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-}
-
-/*.register-form__summary-section-title {*/
-/*    font-size: var(--cv-font-size-lg);*/
-/*    font-weight: var(--cv-font-weight-semibold);*/
-/*    color: var(--e-global-color-primary);*/
-/*    margin: 0 0 var(--cv-space-sm) 0;*/
-/*}*/
-
+/** form summary */
 .register-form__summary-item-label {
     color: var(--bc-blue-grey)
 }
-
-/*.register-form__summary-item-value {*/
-/*    font-size: var(--cv-font-size-base);*/
-/*    color: var(--cv-color-grey-darkest);*/
-/*    font-weight: var(--cv-font-weight-light);*/
-/*}*/

@@ -1,22 +1,22 @@
 {{ header|raw }}
 
 <div class="register-page bg-white h-100">
-    <div class="register-page__header container">
+    <div class="register-page__header container mb-5">
         <h2 class="register-page__title">Deelnemer(s)</h2>
-        <div class="register-page__feedback" role="alert" aria-live="polite"></div>
+        <div class="register-page__feedback alert my-4" role="alert" aria-live="polite"></div>
     </div>
 
     <div class="register-page__container container">
         <div class="row">
 
-            <div class="form-section__progress my-5">
-                <span class="form-section__progress-text meta-cards">Stap 1 van 3</span>
-                <div class="form-section__progress-bar--wrapper bc-bg-blue-grey-light">
-                    <div class="form-section__progress-bar"></div>
-                </div>
-            </div>
-
             <form class="register-page__form col-12 col-lg-8 col-xxl-9" method="post" action="{{ form_action }}">
+                <div class="form-section__progress mb-5">
+                    <span class="form-section__progress-text">Stap 1 van 3</span>
+                    <div class="form-section__progress-bar--wrapper bc-bg-blue-grey-light">
+                        <div class="form-section__progress-bar"></div>
+                    </div>
+                </div>
+
                 {{ hidden_inputs|raw }}
 
                 <!-- This wrapper contains the form steps. e.g. participant(s) form, invoice details and form summary -->
@@ -26,15 +26,15 @@
                     <div class="form-section__step{% if loop.first %} active{% endif %} gform_body" data-label="{{section.title}}">
 
                         {% if loop.first %}
-                        <div class="register-form__participants d-flex flex-column">
+                        <div class="register-form__participants d-flex flex-column gap-4">
                             <div class="register-form__participant d-flex flex-column" data-participant-index="1">
-                                <div class="register-form__participant-header-wrapper d-flex justify-content-between align-items-center">
+                                <div class="register-form__participant-header-wrapper mb-4">
                                     <h3 class="register-form__participant-header">Deelnemer 1</h3>
-                                    <button type="button" class="register-form__remove_participant btn" title="Deelnemer verwijderen">
-                                        <i class="fa-thin fa-times"></i>
+                                    <button type="button" class="register-form__remove_participant btn btn-no-after small" title="Deelnemer verwijderen">
+                                        <i class="fa-regular fa-times"></i>
                                     </button>
                                 </div>
-                                <div class="register-form__participant-form">
+                                <div class="register-form__participant-form d-flex flex-column">
                                     {{ section.form | raw }}
                                 </div>
                             </div>
@@ -48,7 +48,7 @@
                             <button type="button" class="register-form__add_participant btn btn-secondary">Deelnemer toevoegen</button>
                             {% endif %}
                             {% if not loop.first %}
-                            <button type="button" class="register-form__previous btn btn-tertiary">Vorige</button>
+                                <button type="button" class="register-form__previous btn btn-tertiary btn-no-after"><i class="fa-regular fa-chevron-left"></i>Vorige</button>
                             {% endif %}
                             {% if not loop.last %}
                             <button type="button" class="register-form__next btn btn-tertiary">Volgende</button>
@@ -63,7 +63,7 @@
 
                     <div class="form-section__step register-form--summary" data-label="Controleer gegevens">
                         <!-- summarize the form input -->
-                        <div class="register-form__summary-details d-flex">
+                        <div class="register-form__summary-details row">
                         </div>
 
                         <div class="register-form__actions d-flex justify-content-between my-4">

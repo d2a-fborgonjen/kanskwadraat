@@ -50,7 +50,6 @@ class RegisterPage
                     'meta_key' => 'coachview_id',
                     'meta_value' => $training_id,
                 ]);
-                error_log(print_r($products, true));
                 if (!empty($products)) {
                     $product = $products[0];
                     $variation_id = $product->get_id();
@@ -70,6 +69,7 @@ class RegisterPage
             return '<p>' . esc_html__('Ongeldige training.', 'coachview') . '</p>';
         }
 
+        wp_enqueue_style('coachview-common', cv_assets_url('css/common.css'));
         wp_enqueue_style('coachview-register', cv_assets_url('css/register-page.css'));
         wp_enqueue_script('coachview-register-wizard', cv_assets_url('js/register-page-wizard.js'), ['jquery'], '1.0', true);
         wp_enqueue_script('coachview-register-participants', cv_assets_url('js/register-page-participants.js'), ['jquery'], '1.0', true);
@@ -147,27 +147,6 @@ class RegisterPage
         return [null, null];
     }
 
-    public function render_form_header($training_type, $training = null)
-    {
-        $data = [
-            'training_type_title' => $training_type->get_title()
-        ];
-        
-        if ($training) {
-            $location = collect(get_post_meta($training->get_id(), 'location', true))->first() ?? 'Onbekend';
-            $startDate = get_post_meta($training->get_id(), 'start_date', true);
-            $day = date_i18n('l', strtotime($startDate));
-            $date = date_i18n('j F', strtotime($startDate));
-            
-            $data['training'] = true;
-            $data['training_day'] = $day;
-            $data['training_date'] = $date;
-            $data['training_location'] = $location;
-        }
-        
-        return $this->templateEngine->render('form-header', $data);
-    }
-
     private function generate_form_token() {
         $token = wp_generate_password(20, false); // random 20-char string
         $key = 'coachview_form_' . $token;
@@ -190,28 +169,6 @@ class RegisterPage
         }
         
         return $this->templateEngine->render('hidden-inputs', ['hidden_inputs' => $hidden_form_data]);
-    }
-
-    public function render_form_section(string $form_type, RegistrationType $registration_type): string {
-        if (!$this->canShow($form_type, $registration_type)) {
-            return '';
-        }
-
-        $templateEngine = new TemplateEngine();
-
-        // Prepare items with their render methods
-        $renderedItems = [];
-        foreach ($this->items as $item) {
-            $renderedItems[] = $item->render($form_type, $registration_type);
-        }
-
-        $data = [
-            'title' => $this->title,
-            'description' => $this->description,
-            'items' => $renderedItems
-        ];
-
-        return $templateEngine->render('form-section', $data);
     }
 
     public function captureHeader()

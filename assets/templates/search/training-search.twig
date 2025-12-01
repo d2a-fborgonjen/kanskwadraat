@@ -2,9 +2,12 @@
 
     <!-- Filter bar -->
     <div class="coachview-search__bar d-flex mb-4">
-        <button class="coachview-search__open-filters btn btn-primary small">
-            Filters
-            <i class="fa-thin fa-filter"></i>
+        <button class="coachview-search__open-filters btn btn-primary">
+            <i class="fa-thin fa-sliders-up"></i>
+            Filter trainingen <span class="coachview-search__filter-count"></span>
+        </button>
+        <button class="coachview-search__reset-filters btn">
+            Reset filters
         </button>
         <div class="coachview-search__bar-active_filters"></div>
         <div class="coachview-search__spinner">
@@ -16,7 +19,7 @@
 
     <!-- Filters -->
     <div class="coachview-search__filters-wrapper position-fixed top-0 start-0 w-100 h-100 bg-dark bg-opacity-50 p-4">
-        <aside class="coachview-search__filters rounded d-flex flex-column bc-bg-blue-grey-light bg-white h-100 col-sm-3 col-lg-2 p-3">
+        <aside class="coachview-search__filters rounded d-flex flex-column bc-bg-blue-grey-light bg-white h-100 col-5 col-sm-4 col-xl-3 p-3">
 
             <h3 class="coachview-search__filters-title d-flex">
                 <span style="flex: 1;">Filters</span>

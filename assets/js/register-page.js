@@ -2,9 +2,9 @@ const REGISTER_PAGE = {
     MESSAGE_TYPES: {
         info: 'info',
         success: 'success',
-        error: 'error',
+        warning: 'warning',
     },
-    FEEDBACK_RESET_CLASSES: 'register-page__feedback--success register-page__feedback--error register-page__feedback--info',
+    FEEDBACK_RESET_CLASSES: 'alert-info alert-success alert-warning',
     TEXT: {
         submitting: 'Bezig met verzenden...',
         defaultSuccess: 'Dankjewel voor je aanmelding.',
@@ -36,9 +36,14 @@ jQuery(document).ready(function($) {
 
         $feedbackContainer
             .removeClass(REGISTER_PAGE.FEEDBACK_RESET_CLASSES)
-            .addClass(`register-page__feedback--${type}`)
+            .addClass(`alert-${type}`)
             .text(message)
             .show();
+
+        // scroll to feedback
+        $('html, body').animate({
+            scrollTop: Math.max(0, $feedbackContainer.offset().top - 200),
+        }, 500);
     }
 
     function clearFormMessage() {
@@ -156,7 +161,7 @@ jQuery(document).ready(function($) {
                 const message = error && error.message
                     ? error.message
                     : REGISTER_PAGE.TEXT.defaultError;
-                showFormMessage(REGISTER_PAGE.MESSAGE_TYPES.error, message);
+                showFormMessage(REGISTER_PAGE.MESSAGE_TYPES.warning, message);
             })
             .finally(() => {
                 toggleSubmitting(false);

@@ -11,15 +11,14 @@ use Coachview\Admin\Admin;
 use Coachview\Admin\ProductList;
 use Coachview\Admin\ProductMeta;
 use Coachview\Admin\Settings;
+use Coachview\Admin\CustomACF;
 use Coachview\Cron\Cron;
 use Coachview\Presentation\Components\TrainingAgenda;
 use Coachview\Presentation\Components\TrainingTypeCTA;
 use Coachview\Presentation\Components\TrainingTypeStartDates;
-use Coachview\Presentation\Hooks\TrainingHooks;
-use Coachview\Presentation\Hooks\TrainingTypeHooks;
-use Coachview\Presentation\Pages\TrainingTypeSearchPage;
 use Coachview\Presentation\Pages\RegisterPage;
 use Coachview\Presentation\Pages\RegisterPageHandler;
+use Coachview\Presentation\Pages\TrainingTypeSearchPage;
 use Coachview\Sync\Hooks\Sync;
 
 add_action('plugins_loaded', function () {
@@ -28,16 +27,17 @@ add_action('plugins_loaded', function () {
     new Settings();
     new ProductList();
     new ProductMeta();
+    new CustomACF();
 
-    // Presentation
+    // Training Type + Training
     new TrainingTypeSearchPage();
-    new RegisterPage();
-    new RegisterPageHandler();
     new TrainingTypeStartDates();
     new TrainingTypeCTA();
-    new TrainingHooks();
-    new TrainingTypeHooks();
     new TrainingAgenda();
+
+    // Register page
+    new RegisterPage();
+    new RegisterPageHandler();
 
     new Cron();
     new Sync();

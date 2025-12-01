@@ -3,7 +3,6 @@
         TEXT: {
             stepPrefix: 'Stap ',
             stepSeparator: ' van ',
-            consoleNextStep: 'Current Step after next:',
             unknownField: 'Onbekend veld',
             yes: 'Ja',
             no: 'Nee',
@@ -22,9 +21,9 @@
             currentStepTitle: '.register-page__title',
         },
         SUMMARY_CLASSES: {
-            section: 'register-form__summary-section col-6',
-            sectionTitle: 'register-form__summary-section-title',
-            item: 'register-form__summary-item mb-4',
+            section: 'register-form__summary-section col-6 d-flex flex-column',
+            sectionTitle: 'register-form__summary-section-title mb-4 gap-1',
+            item: 'register-form__summary-item mb-4 d-flex flex-column gap-1',
             itemLabel: 'register-form__summary-item-label',
             itemValue: 'register-form__summary-item-value',
         },
@@ -81,9 +80,8 @@
                 return;
             }
             this.$form = $form;
-            this.$steps = this.$form.find(REGISTER_PAGE_WIZARD.SELECTORS.steps);
-            this.$currentStepTitle = this.$form.find(REGISTER_PAGE_WIZARD.SELECTORS.currentStepTitle);
-
+            this.$steps = $(REGISTER_PAGE_WIZARD.SELECTORS.steps);
+            this.$currentStepTitle = $(REGISTER_PAGE_WIZARD.SELECTORS.currentStepTitle);
             this.$progressText = $(REGISTER_PAGE_WIZARD.SELECTORS.progressText);
             this.$progressBar = $(REGISTER_PAGE_WIZARD.SELECTORS.progressBar);
 
@@ -156,7 +154,6 @@
 
         updateProgressForStep(stepIndex) {
             if (!this.$progressText || !this.$progressBar) {
-                console.log('Progress elements not found');
                 return;
             }
 
@@ -166,8 +163,6 @@
 
             this.$progressText.text(stepLabel);
             this.$progressBar.css('width', `${percentage}%`);
-            console.log(this.$progressText);
-            console.log(this.$progressBar);
         }
 
         validateStep(stepIndex, options) {
@@ -245,11 +240,6 @@
                 $nextStepElement.removeClass(REGISTER_PAGE_WIZARD.STEP_CLASSES.slideInRight).addClass(REGISTER_PAGE_WIZARD.STEP_CLASSES.active);
                 this.currentStep = nextStepIndex;
                 this.updateStepTitle();
-
-                if (REGISTER_PAGE_WIZARD.TEXT.consoleNextStep) {
-                    // eslint-disable-next-line no-console
-                    console.log(REGISTER_PAGE_WIZARD.TEXT.consoleNextStep, this.currentStep, this.totalSteps - 1);
-                }
 
                 if (this.isSummaryStep(nextStepIndex)) {
                     this.buildSummary();

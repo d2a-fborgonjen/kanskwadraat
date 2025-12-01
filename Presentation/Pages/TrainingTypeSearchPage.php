@@ -38,6 +38,7 @@ class TrainingTypeSearchPage
     }
 
     public function training_type_search_shortcode(): string {
+        wp_enqueue_style('coachview-common', cv_assets_url('css/common.css'));
         wp_enqueue_style('coachview-search', cv_assets_url('css/training-search.css'));
         wp_enqueue_script('coachview-search', cv_assets_url('js/training-search.js'), array('jquery'), null, true);
 

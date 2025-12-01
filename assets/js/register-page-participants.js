@@ -20,7 +20,7 @@
             fieldError: 'form-field__input--error',
         },
         TEMPLATE: {
-            removeButton: '<button type="button" class="register-form__remove_participant cv-button" title="{title}">{label}</button>',
+            removeButton: '<button type="button" class="register-form__remove_participant btn btn-no-after small" title="{title}">{label}</button>',
         },
         REGEX: {
             participantName: /^deelnemer\[\d+\]/,
@@ -34,7 +34,7 @@
             participantPluralSuffix: 's',
             removeParticipantTitle: 'Deelnemer verwijderen',
             confirmRemoveParticipant: 'Weet je zeker dat je deze deelnemer wilt verwijderen?',
-            closeSymbol: '×',
+            closeSymbol: '<i class="fa-regular fa-times"></i>'
         },
     };
 
@@ -56,7 +56,7 @@
             }
 
             this.bindEvents();
-            this.updateDeleteButtonsVisibility();
+            this.updateParticipantHeaderVisibility();
             this.updatePrices();
         }
 
@@ -95,7 +95,7 @@
             $newParticipant.find(`.${REGISTER_PAGE_PARTICIPANTS.CLASSNAMES.fieldError}`).removeClass(REGISTER_PAGE_PARTICIPANTS.CLASSNAMES.fieldError);
             this.$participantsContainer.append($newParticipant);
 
-            this.updateDeleteButtonsVisibility();
+            this.updateParticipantHeaderVisibility();
             this.reindexParticipants();
             this.updatePrices();
         }
@@ -238,17 +238,17 @@
                 });
             });
 
-            this.updateDeleteButtonsVisibility();
+            this.updateParticipantHeaderVisibility();
         }
 
-        updateDeleteButtonsVisibility() {
+        updateParticipantHeaderVisibility() {
             const participantCount = this.$participantsContainer.find(REGISTER_PAGE_PARTICIPANTS.SELECTORS.participantWrapper).length;
-            const $removeButtons = this.$participantsContainer.find(REGISTER_PAGE_PARTICIPANTS.SELECTORS.removeParticipantButton);
+            const $participantHeaderWrapper = this.$participantsContainer.find(REGISTER_PAGE_PARTICIPANTS.SELECTORS.participantHeaderWrapper);
 
             if (participantCount <= 1) {
-                $removeButtons.hide();
+                $participantHeaderWrapper.hide();
             } else {
-                $removeButtons.show();
+                $participantHeaderWrapper.show();
             }
         }
     }

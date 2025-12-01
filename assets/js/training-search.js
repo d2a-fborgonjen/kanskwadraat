@@ -6,8 +6,10 @@ jQuery(document).ready(function($) {
     const $openFilters = $('.coachview-search__open-filters');
     const $closeFilters = $('.coachview-search__close-filters');
     const $applyFilters = $('.coachview-search__apply-filters');
+    const $resetFilters = $('.coachview-search__reset-filters');
     const $filtersWrapper = $('.coachview-search__filters-wrapper');
     const $activeFilters = $('.coachview-search__bar-active_filters');
+    const $filterCount = $('.coachview-search__filter-count');
 
     /* ---------- Helpers ---------- */
 
@@ -45,7 +47,9 @@ jQuery(document).ready(function($) {
     function syncUIFromUrl() {
         applyFiltersFromUrl();
         fetchProducts();
-        displayActiveFilters();
+        displayActiveFilterCount();
+        toggleResetButton();
+        // displayActiveFilters();
     }
 
     /* ---------- UI Sync ---------- */
@@ -112,6 +116,25 @@ jQuery(document).ready(function($) {
         $activeFilters.find('button').on('click', onRemoveFilterClick);
     }
 
+    function getFilterCount() {
+        const params = getUrlParams();
+        return (params.search ? 1 : 0) + params.categories.length;
+    }
+
+    function displayActiveFilterCount() {
+        const filterCount = getFilterCount();
+        $filterCount.text(filterCount > 0 ? `(${filterCount})` : '');
+    }
+
+    function toggleResetButton() {
+        const filterCount = getFilterCount();
+        if (filterCount > 0) {
+            $resetFilters.show();
+        } else {
+            $resetFilters.hide();
+        }
+    }
+
     function onRemoveFilterClick() {
         const $btn = $(this);
         const params = getUrlParams();
@@ -147,6 +170,14 @@ jQuery(document).ready(function($) {
             updateUrlFromForm();
             syncUIFromUrl();
         }
+    });
+
+    $resetFilters.on('click', function(e) {
+        e.preventDefault();
+        $search.val('');
+        $checkboxes.prop('checked', false);
+        updateUrl('', []);
+        syncUIFromUrl();
     });
 
     $openFilters.on('click', e => { e.preventDefault(); $filtersWrapper.show(); });

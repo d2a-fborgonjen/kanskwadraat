@@ -64,11 +64,11 @@ class RegisterPageHandler
         }
         delete_transient($key);
 
-
         $order_data = $this->to_coachview_order_data($data);
         error_log('Processing form submission for training registration.' . print_r($order_data, true));
 
         $order = $this->create_coachview_order($order_data);
+        error_log('Response from CoachView: ' . print_r($order, true));
 
         if (is_wp_error($order) || !$order) {
             $statusCode = 500;
@@ -81,8 +81,6 @@ class RegisterPageHandler
                 }
                 $message = $order->get_error_message() ?: $message;
             }
-
-            error_log('Order creation result: ' . print_r($order, true));
 
             return [
                 'success' => false,
