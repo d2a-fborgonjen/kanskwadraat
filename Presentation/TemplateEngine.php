@@ -12,9 +12,9 @@ class TemplateEngine
     public function __construct()
     {
         $loader = new FilesystemLoader([
-            'search' =>  plugin_dir_path(__FILE__) . '../assets/templates/search/',
-            'register' =>  plugin_dir_path(__FILE__) . '../assets/templates/register/',
-            'training' =>  plugin_dir_path(__FILE__) . '../assets/templates/training/',
+            'search' =>  plugin_dir_path(__FILE__) . '../assets/tpls/search/',
+            'register' =>  plugin_dir_path(__FILE__) . '../assets/tpls/register/',
+            'training' =>  plugin_dir_path(__FILE__) . '../assets/tpls/training/',
         ]);
         
         $this->twig = new Environment($loader, [

@@ -10,13 +10,13 @@ use Coachview\Presentation\TemplateEngine;
 class TrainingAgenda
 {
     public function __construct() {
-        add_shortcode('cv_training_agenda', [$this, 'renderTrainingAgenda']);
+        add_shortcode('cv_training_agenda', [$this, 'render_training_agenda']);
     }
 
-    public function renderTrainingAgenda($atts): string
+    public function render_training_agenda(): string
     {
-        // Query all trainings that have the meta key
-        $trainings = wc_get_products([
+        // Query all training_types that have the meta key
+        $training_types = wc_get_products([
             'limit'      => -1,
             'status'     => 'publish',
             'meta_key'   => 'start_dates', // change to your key
@@ -25,16 +25,21 @@ class TrainingAgenda
 
         $items = [];
         $now = time();
-        foreach ($trainings as $training) {
-            $start_dates = get_post_meta($training->get_id(), 'start_dates', true);
+        foreach ($training_types as $training_type) {
+            $start_dates = get_post_meta($training_type->get_id(), 'start_dates', true);
             if (!is_array($start_dates)) {
                 continue;
             }
 
-            $image_id = $training->get_image_id();
+            $image_id = $training_type->get_image_id();
             $image_url = $image_id
                 ? wp_get_attachment_image_url($image_id, 'woocommerce_thumbnail')
-                : cv_assets_url('img/example_training4.png');;
+                : cv_assets_url('img/example_training4.png');
+
+            // Add register_url to each start_date
+            for ($i = 0; $i < count($start_dates); $i++) {
+                $start_dates[$i]['register_url'] = coachview_register_page_url(['cv_tid' => $start_dates[$i]['training_id']]);
+            }
 
             foreach ($start_dates as $start_date) {
                 if (empty($start_date['start_date'])) {
@@ -43,9 +48,9 @@ class TrainingAgenda
                 $start = strtotime($start_date['start_date']);
                 if ($start > $now) {
                     $items[] = [
-                        'name' => $training->name,
+                        'name' => $training_type->get_name(),
                         'image_url' => $image_url,
-                        'product_url' => $training->get_permalink(),
+                        'product_url' => $training_type->get_permalink(),
                         'start_date' => $start,
                         'display_date' => $start_date['display_date'],
                         'all_start_dates' => $start_dates,
@@ -60,10 +65,10 @@ class TrainingAgenda
         });
 
         // Take first 5 items
-        $trainings = array_slice($items, 0, 5);
+        $training_types = array_slice($items, 0, 5);
 
         // Use TemplateEngine to render the template
         $template_engine = new TemplateEngine();
-        return $template_engine->render('training-agenda', ['trainings' => $trainings]);
+        return $template_engine->render('training-agenda', ['training_types' => $training_types]);
     }
 }

@@ -23,7 +23,7 @@ class TokenManager {
                 set_transient('coachview_api_token', $token, 1 * HOUR_IN_SECONDS);
             }
         }
-        return $token;
+        return $token ?: 'not-authorized';
     }
 
     private function authenticate(): ?string {

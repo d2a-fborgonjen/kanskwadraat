@@ -1,13 +1,13 @@
 <?php
 
-namespace Coachview\Presentation\Pages;
+namespace Coachview\Presentation\Components;
 
 use WP_Error;
 use WP_Http;
 use WP_REST_Request;
 use WP_REST_Response;
 
-class RegisterPageHandler
+class RegisterFormHandler
 {
     public function __construct()
     {

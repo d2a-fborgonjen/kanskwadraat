@@ -1,83 +1,76 @@
 <?php
-namespace Coachview\Presentation\Pages;
 
+namespace Coachview\Presentation\Components;
+
+use Coachview\Constants;
 use Coachview\Models\FormSection;
-use Coachview\Models\RegistrationType;
 use Coachview\Presentation\TemplateEngine;
+
 use WC_Product;
 use WC_Product_Simple;
 use WC_Product_Variable;
 use WC_Product_Variation;
 
-class RegisterPage
+class RegisterForm
 {
     private $templateEngine;
 
-    public function __construct() {
-        add_shortcode('cv_register_form', [$this, 'apply_register_form_shortcode']);
+    public function __construct()
+    {
+        add_shortcode('cv_register_form', [$this, 'render_shortcode']);
         add_filter('query_vars', [$this, 'parse_query_vars']);
-        add_action('template_redirect', [$this, 'template_redirect']);
-        add_action('init', [$this, 'add_rewrite_rule']);
+
+        if (!has_custom_register_page()) {
+            add_action('template_redirect', [$this, 'template_redirect']);
+            add_action('init', [$this, 'add_register_rewrite_rule']);
+        }
+
+        // always enqueue styles since they are often ignored when rendering the shortcode
+        wp_enqueue_style('coachview-common', cv_assets_url('css/common.css'));
+        wp_enqueue_style('coachview-register', cv_assets_url('css/register-page.css'));
     }
 
-    public function parse_query_vars($vars): array {
+    public function parse_query_vars($vars): array
+    {
         $vars[] = 'register';
         return $vars;
     }
 
-    public function add_rewrite_rule() {
-        add_rewrite_rule('^aanmelden/?$', 'index.php?register=1', 'top');
-    }
-
-    public function apply_register_form_shortcode($atts): string
+    public function add_register_rewrite_rule(): void
     {
-        $atts = shortcode_atts(['vid' => null, 'pid' => null], $atts, 'cv_register_form');
-        return $this->render_register_page($atts['vid'], $atts['pid']);
+        $slug = Constants::DEFAULT_REGISTER_PAGE_SLUG;
+        add_rewrite_rule("^{$slug}/?$", 'index.php?register=1', 'top');
     }
 
-
-    public function template_redirect(): void {
+    public function template_redirect(): void
+    {
         if (get_query_var('register')) {
-
-            $variation_id = wp_get_query_var('vid');
-            $product_id = wp_get_query_var('pid');
-            $training_id = wp_get_query_var('tid');
-
-            if (!empty($training_id)) {
-                $products = wc_get_products([
-                    'type' => 'variation',
-                    'limit' => 1,
-                    'meta_key' => 'coachview_id',
-                    'meta_value' => $training_id,
-                ]);
-                if (!empty($products)) {
-                    $product = $products[0];
-                    $variation_id = $product->get_id();
-                }
-            }
-
-            echo $this->render_register_page($variation_id, $product_id);
+            echo $this->render_register_page(true);
             exit;
         }
     }
 
-    private function render_register_page(mixed $variation_id, mixed $product_id): string
+    public function render_shortcode($atts): string
     {
+        return $this->render_register_page(false);
+    }
+
+    private function render_register_page(bool $with_header_and_footer = false): string
+    {
+        $params = $this->get_query_parameters();
         $this->templateEngine = new TemplateEngine();
-        [$training_type, $training] = $this->resolve_training($variation_id, $product_id);
+        [$training_type, $training] = $this->resolve_training($params['variation_id'], $params['product_id']);
         if (!$training_type) {
             return '<p>' . esc_html__('Ongeldige training.', 'coachview') . '</p>';
         }
 
-        wp_enqueue_style('coachview-common', cv_assets_url('css/common.css'));
-        wp_enqueue_style('coachview-register', cv_assets_url('css/register-page.css'));
         wp_enqueue_script('coachview-register-wizard', cv_assets_url('js/register-page-wizard.js'), ['jquery'], '1.0', true);
         wp_enqueue_script('coachview-register-participants', cv_assets_url('js/register-page-participants.js'), ['jquery'], '1.0', true);
         wp_enqueue_script('coachview-register', cv_assets_url('js/register-page.js'), ['jquery', 'coachview-register-wizard', 'coachview-register-participants'], '1.0', true);
-        return $this->render_form($training_type, $training);
+        return $this->render_form($training_type, $training, $with_header_and_footer);
     }
 
-    private function render_form(WC_Product $training_type, ?WC_Product_Variation $training): string
+    private function render_form(WC_Product $training_type, ?WC_Product_Variation $training, bool $with_header_and_footer): string
     {
         $form_type = get_post_meta($training_type->get_id(), 'form_type', true) ?? 'default';
         $registration_type = get_registration_type($training_type);
@@ -103,11 +96,11 @@ class RegisterPage
                 ];
             }
         }
-        
+
         $data = [
             // Page structure
-            'header' =>  $this->captureHeader(),
-            'footer' => $this->captureFooter(),
+            'header' => $with_header_and_footer ? $this->capture_header() : '',
+            'footer' => $with_header_and_footer ? $this->captureFooter() : '',
 
             // Order details
             'training_type_title' => $training_type->get_title(),
@@ -131,6 +124,56 @@ class RegisterPage
         return $this->templateEngine->render('register-page', $data);
     }
 
+    private function generate_form_token()
+    {
+        $token = wp_generate_password(20, false); // random 20-char string
+        $key = 'coachview_form_' . $token;
+        set_transient($key, true, 60 * 60); // 1 hour expiration
+        return $token;
+    }
+
+    public function render_hidden_inputs($training_type, $training = null)
+    {
+        $hidden_form_data = [
+            '_coachview_form_token' => $this->generate_form_token(),
+            'action' => 'coachview_training_form',
+            'opleidingen[opleidingssoortId]' => get_post_meta($training_type->get_id(), 'coachview_id', true),
+            'debiteur[verzendwijzeFactuur]' => 'Email'
+        ];
+
+        if ($training) {
+            $hidden_form_data['opleidingen[opleidingId]'] = get_post_meta($training->get_id(), 'coachview_id', true);
+            $hidden_form_data['training_id'] = $training->get_id();
+        }
+
+        return $this->templateEngine->render('hidden-inputs', ['hidden_inputs' => $hidden_form_data]);
+    }
+
+
+    private function get_query_parameters(): array
+    {
+        $variation_id = wp_get_query_var('woo_vid');
+        $product_id = wp_get_query_var('woo_pid');
+        $cv_training_id = wp_get_query_var('cv_tid');
+
+        if (!empty($cv_training_id)) {
+            $variations = wc_get_products([
+                'type' => 'variation',
+                'limit' => 1,
+                'meta_key' => 'coachview_id',
+                'meta_value' => $cv_training_id,
+            ]);
+            if (!empty($variations)) {
+                $variation = $variations[0];
+                $variation_id = $variation->get_id();
+            }
+        }
+        return [
+            'variation_id' => $variation_id,
+            'product_id' => $product_id
+        ];
+    }
+
     private function resolve_training(mixed $variation_id, mixed $product_id): array
     {
         if ($variation_id) {
@@ -147,38 +190,14 @@ class RegisterPage
         return [null, null];
     }
 
-    private function generate_form_token() {
-        $token = wp_generate_password(20, false); // random 20-char string
-        $key = 'coachview_form_' . $token;
-        set_transient($key, true, 60 * 60); // 1 hour expiration
-        return $token;
-    }
-
-    public function render_hidden_inputs($training_type, $training = null)
-    {
-        $hidden_form_data = [
-            '_coachview_form_token' => $this->generate_form_token(),
-            'action' => 'coachview_training_form',
-            'opleidingen[opleidingssoortId]' => get_post_meta($training_type->get_id(), 'coachview_id', true),
-            'debiteur[verzendwijzeFactuur]' => 'Email'
-        ];
-        
-        if ($training) {
-            $hidden_form_data['opleidingen[opleidingId]'] = get_post_meta($training->get_id(), 'coachview_id', true);
-            $hidden_form_data['training_id'] = $training->get_id();
-        }
-        
-        return $this->templateEngine->render('hidden-inputs', ['hidden_inputs' => $hidden_form_data]);
-    }
-
-    public function captureHeader()
+    public function capture_header(): false | string
     {
         ob_start();
         get_header();
         return ob_get_clean();
     }
 
-    public function captureFooter()
+    public function captureFooter(): false | string
     {
         ob_start();
         get_footer();

@@ -32,7 +32,6 @@ class TrainingTypeStartDates
         // TODO: Filter based on dates?
         $variations = $product->get_available_variations('products');
 
-//        wp_enqueue_style('coachview-training-type-start-dates', cv_assets_url('css/training-type-start-dates.css'));
         wp_enqueue_script('coachview-training-type-start-dates', cv_assets_url('js/training-type-start-dates.js'), array('jquery'), null, true);
 
         // Prepare data for template
@@ -54,7 +53,7 @@ class TrainingTypeStartDates
             $variation_id = $variation->get_id();
             $startDate = get_post_meta($variation_id, 'start_date', true);
             $date = date_i18n('j F', strtotime($startDate));
-            $link = home_url('/aanmelden/') . '?vid=' . $variation_id;
+            $link = coachview_register_page_url(['woo_vid' => $variation_id]);
 
             $prepared_variations[] = [
                 'id' => $variation_id,

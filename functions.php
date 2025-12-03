@@ -2,6 +2,7 @@
 
 use Automattic\WooCommerce\Enums\ProductStatus;
 use Coachview\Api\TokenManager;
+use Coachview\Constants;
 use Coachview\Models\CourseFormat;
 use Coachview\Models\RegistrationType;
 
@@ -29,6 +30,25 @@ function coachview_api_secret(): string {
 
 function coachview_api_token(bool $refresh = false): string {
     return TokenManager::instance()->getToken($refresh);
+}
+
+function coachview_register_page_url(array $params): string {
+    $query_params = http_build_query($params);
+    if (has_custom_register_page()) {
+        return get_permalink(get_option('coachview_register_page')) . '?' . $query_params;
+    } else {
+        return coachview_get_default_register_url() . '?' . $query_params;
+    }
+}
+
+function has_custom_register_page(): bool {
+    $register_page_id = get_option('coachview_register_page', 0);
+    return $register_page_id && get_post_status($register_page_id) === 'publish';
+}
+
+function coachview_get_default_register_url(): string {
+    $slug = Constants::DEFAULT_REGISTER_PAGE_SLUG;
+    return home_url("/$slug");
 }
 
 function get_registration_type(WC_Product $training_type): RegistrationType

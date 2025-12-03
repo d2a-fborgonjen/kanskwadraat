@@ -10,7 +10,9 @@ class CustomACF {
         add_filter('acf/load_field_group', [$this, 'customize_acf_field_group']);
 
         add_action('woocommerce_product_after_variable_attributes', [$this, 'render_acf_fields_for_variation'], 10, 3);
-        add_action('woocommerce_save_product_variation', [$this, 'save_acf_fields_for_variation'], 10, 2);
+
+        // Disabled since it messes up other ACF fields saving
+        //add_action('woocommerce_save_product_variation', [$this, 'save_acf_fields_for_variation'], 10, 2);
     }
 
     /**

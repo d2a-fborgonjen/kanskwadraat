@@ -1,11 +1,12 @@
 <?php
-namespace Coachview\Presentation\Pages;
+
+namespace Coachview\Presentation\Components;
 
 use Coachview\Models\CourseFormat;
 use Coachview\Presentation\TemplateEngine;
 use WP_REST_Response;
 
-class TrainingTypeSearchPage
+class TrainingTypeSearch
 {
     private $templateEngine;
 
@@ -13,9 +14,23 @@ class TrainingTypeSearchPage
     {
         add_action('rest_api_init', [$this, 'register_rest_routes']);
         add_shortcode('cv_training_type_search', [$this, 'training_type_search_shortcode']);
+
+        // Always enqueue styles since they are often ignored when rendering the shortcode
+        wp_enqueue_style('coachview-common', cv_assets_url('css/common.css'));
+        wp_enqueue_style('coachview-search', cv_assets_url('css/training-search.css'));
     }
 
-    public function register_rest_routes() {
+    public function training_type_search_shortcode(): string
+    {
+        wp_enqueue_script('coachview-search', cv_assets_url('js/training-search.js'), array('jquery'), null, true);
+
+        $this->templateEngine = new TemplateEngine();
+        $data = ['category_list' => $this->renderCategorySidebar()];
+        return $this->templateEngine->render('training-search', $data);
+    }
+
+    public function register_rest_routes()
+    {
         register_rest_route('coachview/v1', '/products/filter', [
             'methods' => 'POST',
             'callback' => [$this, 'coachview_filter_products'],
@@ -35,18 +50,6 @@ class TrainingTypeSearchPage
                 ],
             ],
         ]);
-    }
-
-    public function training_type_search_shortcode(): string {
-        wp_enqueue_style('coachview-common', cv_assets_url('css/common.css'));
-        wp_enqueue_style('coachview-search', cv_assets_url('css/training-search.css'));
-        wp_enqueue_script('coachview-search', cv_assets_url('js/training-search.js'), array('jquery'), null, true);
-
-        $this->templateEngine = new TemplateEngine();
-        $data = [
-            'category_list' => $this->renderCategorySidebar()
-        ];
-        return $this->templateEngine->render('training-search', $data);
     }
 
     private function renderCategorySidebar()
@@ -122,21 +125,22 @@ class TrainingTypeSearchPage
         return $this->templateEngine->render('training-search-item', $data);
     }
 
-    public function coachview_filter_products($request): WP_REST_Response {
+    public function coachview_filter_products($request): WP_REST_Response
+    {
         $search = $request->get_param('search') ?? '';
         $cats = $request->get_param('categories') ?? [];
 
         $args = [
             'limit' => 12,
-            's'     => $search,
+            's' => $search,
         ];
 
         if (!empty($cats)) {
             $args['tax_query'] = [
                 [
                     'taxonomy' => 'product_cat',
-                    'field'    => 'term_id',
-                    'terms'    => $cats,
+                    'field' => 'term_id',
+                    'terms' => $cats,
                     'operator' => 'AND',
                 ],
             ];

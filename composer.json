@@ -10,7 +10,7 @@
         },
         "files": [
             "functions.php",
-            "Presentation/Utils.php",
+            "Constants.php",
             "Sync/Utils.php"
         ]
     },

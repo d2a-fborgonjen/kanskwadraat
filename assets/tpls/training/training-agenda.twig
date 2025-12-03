@@ -1,0 +1,80 @@
+<section class="bc-calendar">
+    <div class="accordion" id="accordion-agenda">
+        {% for training in trainings %}
+            <div class="accordion-item mb-3">
+                <div class="accordion-header" id="agenda-item-header--{{ loop.index }}">
+                    <div class="accordion-button">
+                        <div class="accordion-button-inner">
+                            <div class="row">
+                                <div class="col-xl-6">
+                                    <div class="d-flex flex-row align-items-center">
+                                        <div class="accordion-button-inner__image">
+                                            <img width="200" height="133" src="{{ training.image_url }}"
+                                                 class="attachment-post-thumbnail size-post-thumbnail wp-post-image"></div>
+                                        <div class="accordion-button-inner__training ps-3">
+                                            <h3 class="mb-0">{{ training.name }}</h3>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xl-6 d-flex flex-row align-items-center justify-content-end">
+                                    <div class="accordion-button-inner-wrapper py-3 py-xl-0 ps-xl-0 w-100 d-lg-flex flex-row align-items-center justify-content-between">
+                                        <div class="accordion-button-inner-wrapper__next d-flex flex-row align-items-center">
+                                            <i class="fa-thin fa-circle-calendar me-2" aria-hidden="true"></i>
+                                            Volgende startdatum: {{ training.display_date }}
+                                        </div>
+
+                                        <div class="accordion-button-inner-wrapper__show px-lg-2">
+                                            <button class="accordion-button collapsed"
+                                                    type="button"
+                                                    data-bs-toggle="collapse"
+                                                    data-bs-target="#agenda-item--{{ loop.index }}"
+                                                    aria-controls="agenda-item--{{ loop.index }}"
+                                                    aria-expanded="false">
+                                                <div class="accordion-button-inner d-flex flex-row align-items-center">
+                                                    <i class="fa-thin fa-circle-calendar me-2" aria-hidden="true"></i>
+                                                    Toon data
+                                                    <i class="fa-light fa-chevron-down ms-1" aria-hidden="true"></i>
+                                                </div>
+                                            </button>
+                                        </div>
+                                        <div class="accordion-button-inner-wrapper__button mt-3 mt-lg-0">
+                                            <a href="{{ training.product_url }}" class="btn btn-secondary small">Meer
+                                                info</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="agenda-item--{{ loop.index }}" class="accordion-collapse collapse"
+                     data-bs-parent="#accordion-agenda">
+                    <div class="accordion-body">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                {% for item in training.all_start_dates %}
+                                <div class="bc-calendar__item pt-2 pb-3 pb-md-2 d-block d-md-flex align-items-center justify-content-between">
+                                    <div class="bc-calendar__item-content d-flex align-items-center">
+                                        <i class="fa-thin fa-circle-calendar me-2"
+                                           aria-hidden="true"></i> {{ item.display_date }} - {{ item.city }}
+                                    </div>
+                                    <div class="bc-calendar__item-btn d-flex justify-content-md-end mt-2 mt-md-0">
+                                        <a href="{{ item.register_url }}" class="btn btn-primary small">Inschrijven</a>
+                                    </div>
+                                </div>
+
+                                <!-- half way divider -->
+                                {% if loop.index == (loop.length / 2)|round %}
+                            </div>
+                            <div class="col-lg-6">
+                                {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</section>

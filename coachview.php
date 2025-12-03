@@ -8,17 +8,17 @@ Author: Frank Borgonjen
 require_once __DIR__ . '/vendor/autoload.php';
 
 use Coachview\Admin\Admin;
+use Coachview\Admin\CustomACF;
 use Coachview\Admin\ProductList;
 use Coachview\Admin\ProductMeta;
 use Coachview\Admin\Settings;
-use Coachview\Admin\CustomACF;
 use Coachview\Cron\Cron;
+use Coachview\Presentation\Components\RegisterForm;
+use Coachview\Presentation\Components\RegisterFormHandler;
 use Coachview\Presentation\Components\TrainingAgenda;
 use Coachview\Presentation\Components\TrainingTypeCTA;
+use Coachview\Presentation\Components\TrainingTypeSearch;
 use Coachview\Presentation\Components\TrainingTypeStartDates;
-use Coachview\Presentation\Pages\RegisterPage;
-use Coachview\Presentation\Pages\RegisterPageHandler;
-use Coachview\Presentation\Pages\TrainingTypeSearchPage;
 use Coachview\Sync\Hooks\Sync;
 
 add_action('plugins_loaded', function () {
@@ -30,20 +30,23 @@ add_action('plugins_loaded', function () {
     new CustomACF();
 
     // Training Type + Training
-    new TrainingTypeSearchPage();
+    new TrainingTypeSearch();
     new TrainingTypeStartDates();
     new TrainingTypeCTA();
     new TrainingAgenda();
 
-    // Register page
-    new RegisterPage();
-    new RegisterPageHandler();
+    // Register form
+    new RegisterForm();
+    new RegisterFormHandler();
 
     new Cron();
     new Sync();
 });
 
 register_activation_hook(__FILE__, function() {
-    (new RegisterPage())->add_rewrite_rule();
+    if (has_custom_register_page()) {
+        return;
+    }
+    (new RegisterForm())->add_register_rewrite_rule();
     flush_rewrite_rules();
 });

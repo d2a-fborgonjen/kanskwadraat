@@ -20,7 +20,7 @@ class TrainingSync {
     public static function run(): void
     {
         TrainingSync::report_progress(0, 1);
-        $take = get_option('training_import_limit', 1);
+        $take = get_option('coachview_training_import_limit', 1000);
         $training_types = TrainingDataloader::load_training_types($take, [TrainingSync::class, 'report_progress']);
         $training_types->each(function(TrainingType $training_type, $idx) {
             try {
@@ -137,6 +137,7 @@ class TrainingSync {
         $product->set_regular_price($training_type->price);
         $product->set_manage_stock(false);
         $product->set_stock_status('instock');
+        $product->update_meta_data('training_goal', $training_type->goal);
         $product->update_meta_data('training_duration', $training_type->num_half_days);
         $product->update_meta_data('start_dates', $training_type->get_start_dates());
         $product->update_meta_data('locations', $training_type->get_locations());
