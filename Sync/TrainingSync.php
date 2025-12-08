@@ -110,10 +110,10 @@ class TrainingSync {
     public static function __save_variable_product(TrainingType $training_type): WC_Product_Variable
     {
         $product = get_product_by_cv_id($training_type->id) ?? new WC_Product_Variable();
-        if ($product instanceof WC_Product_Simple) {
+        if (!($product instanceof WC_Product_Variable)) {
             log_cv_info('Product type mismatch: expected Variable, got Simple. Deleting and recreating as Variable.');
             $product->delete(true);
-            $product = new WC_Product_Variable($product->get_id());
+            $product = new WC_Product_Variable();
         }
 
         TrainingSync::__set_product_info($product, $training_type);
@@ -139,11 +139,13 @@ class TrainingSync {
         $product->set_stock_status('instock');
         $product->update_meta_data('training_goal', $training_type->goal);
         $product->update_meta_data('training_duration', $training_type->num_half_days);
-        $product->update_meta_data('start_dates', $training_type->get_start_dates());
         $product->update_meta_data('locations', $training_type->get_locations());
         $product->update_meta_data('num_locations', count($training_type->get_locations()));
-        $product->update_meta_data('cities', $training_type->get_cities());
-        $product->update_meta_data('start_date', $training_type->trainings->pluck('start_date')->min());
+
+        $product->update_meta_data('training_cities', $training_type->get_training_cities());
+        $product->update_meta_data('training_start_dates', $training_type->get_training_start_dates());
+        $product->update_meta_data('training_type_components', $training_type->get_training_type_components());
+
         // one of: elearning, klassikaal, blended
         $product->update_meta_data('training_type_category', $training_type->get_course_format()->value);
         // one of: default, elearning, list

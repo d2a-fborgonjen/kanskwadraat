@@ -42,8 +42,19 @@ class TrainingType {
         );
     }
 
-    // return an array of unique start dates (YYYY-MM-DD) from the trainings plus their locations (city)
-    public function get_start_dates(): array {
+    public function is_in_stock(): bool {
+        if ($this->get_course_format() == CourseFormat::E_LEARNING) {
+            return true;
+        }
+        return $this->trainings->some(fn(Training $training) => $training->is_in_stock());
+    }
+
+    public function get_training_type_components(): array {
+        return normalize_enums($this->training_type_components->toArray());
+    }
+
+    // return an array of unique start dates from the trainings plus their locations (city)
+    public function get_training_start_dates(): array {
         return $this->trainings->map(function(Training $training) {
             return [
                 'training_id' => $training->id,
@@ -58,7 +69,7 @@ class TrainingType {
         return $this->trainings->pluck('locations')->flatten()->filter(fn($value) => !empty($value))->unique()->toArray();
     }
 
-    public function get_cities(): array {
+    public function get_training_cities(): array {
         return $this->trainings->pluck('city')->unique()->toArray();
     }
 

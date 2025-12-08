@@ -16,8 +16,8 @@ class ProductList {
     public function add_product_column($columns): array
     {
         // add column that shows metadata fields 'training_type_category' and 'product_type'
-        $columns['training_type_category'] = __('Type', 'coachview');
         $columns['product_type'] = __('Product type', 'coachview');
+        $columns['training_type_category'] = __('Type', 'coachview');
 
         unset($columns['featured']);
         unset($columns['taxonomy-product_brand']);

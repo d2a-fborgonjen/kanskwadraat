@@ -37,7 +37,6 @@ class TrainingDataloader
                 try {
                     $trainings = self::__load_trainings($data['id']);
                     $components = self::__load_training_type_components($data['id']);
-//                    error_log(print_r($components->toArray(), true));
                     $categories = self::__load_training_type_categories($data['id']);
                     $result[] = TrainingType::from_array($data, $categories, $trainings, $components);
                 } catch (Exception $e) {

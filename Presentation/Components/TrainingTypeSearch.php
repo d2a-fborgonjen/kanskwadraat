@@ -70,12 +70,12 @@ class TrainingTypeSearch
         $num_locations = get_post_meta($product->get_id(), 'num_locations', true);
         $startDate = get_post_meta($product->get_id(), 'start_date', true);
         $duration = get_post_meta($product->get_id(), 'training_duration', true);
-        $cities = get_post_meta($product->get_id(), 'cities', true);
+        $training_cities = get_post_meta($product->get_id(), 'training_cities', true);
         $training_type_category = get_post_meta($product->get_id(), 'training_type_category', true);
         $product_url = get_permalink($product->get_id());
 
         $is_online = $training_type_category === CourseFormat::E_LEARNING->value;
-        $location = $is_online ? 'Online' : join(", ", $cities);
+        $location = $is_online ? 'Online' : join(", ", $training_cities ?: []);
 
 
         // Get product image URL properly

@@ -18,4 +18,9 @@ enum CourseFormat: string
             default => self::E_LEARNING
         };
     }
+
+    public function jsonSerialize(): mixed
+    {
+        return $this->value;
+    }
 }

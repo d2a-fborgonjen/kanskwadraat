@@ -19,14 +19,16 @@ class TrainingAgenda
         $training_types = wc_get_products([
             'limit'      => -1,
             'status'     => 'publish',
-            'meta_key'   => 'start_dates', // change to your key
-            'meta_compare' => 'EXISTS',
+            'type'       => 'variable',
+            'meta_query' => [
+                ['key' => 'training_start_dates', 'compare' => 'EXISTS']
+            ]
         ]);
 
         $items = [];
         $now = time();
         foreach ($training_types as $training_type) {
-            $start_dates = get_post_meta($training_type->get_id(), 'start_dates', true);
+            $start_dates = get_post_meta($training_type->get_id(), 'training_start_dates', true);
             if (!is_array($start_dates)) {
                 continue;
             }
@@ -47,31 +49,30 @@ class TrainingAgenda
                 }
                 $start = strtotime($start_date['start_date']);
                 if ($start > $now) {
-                    $items[] = [
-                        'name' => $training_type->get_name(),
-                        'image_url' => $image_url,
-                        'product_url' => $training_type->get_permalink(),
-                        'start_date' => $start,
-                        'display_date' => $start_date['display_date'],
-                        'all_start_dates' => $start_dates,
-                    ];
+                        $items[] = [
+                            'name' => $training_type->get_name(),
+                            'image_url' => $image_url,
+                            'product_url' => $training_type->get_permalink(),
+                            'start_date' => $start,
+                            'display_date' => $start_date['display_date'],
+                            'all_start_dates' => $start_dates,
+                        ];
+                    }
                 }
-            }
         }
-
         // Sort by start_date
         usort($items, function ($a, $b) {
             return $a['start_date'] <=> $b['start_date'];
         });
 
         // Take first 5 items
-        $training_types = array_slice($items, 0, 5);
+        $trainings = array_slice($items, 0, 5);
 
         // Use TemplateEngine to render the template
         $template_engine = new TemplateEngine();
         return $template_engine->render('training-agenda', [
             'placeholder_image_url' => cv_assets_url('img/example_training4.png'),
-            'training_types' => $training_types,
+            'trainings' => $trainings,
         ]);
     }
 }

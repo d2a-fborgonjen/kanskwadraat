@@ -74,6 +74,11 @@ class Training {
     ) {
     }
 
+    public function is_in_stock(): bool {
+        // Return if this training has a start_date a least one day in the future with available seats
+        return ($this->num_seats_available > 0) && (strtotime($this->start_date) >= strtotime('+1 day'));
+    }
+
     public static function from_array(array $data, Collection $components): self {
         $locations = $components->pluck('location')->unique()->toArray();
         $city = firstNonEmpty($components->pluck('city'));
