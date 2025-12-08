@@ -16,8 +16,8 @@ class TrainingTypeSearch
         add_shortcode('cv_training_type_search', [$this, 'training_type_search_shortcode']);
 
         // Always enqueue styles since they are often ignored when rendering the shortcode
-        wp_enqueue_style('coachview-common', cv_assets_url('css/common.css'));
-        wp_enqueue_style('coachview-search', cv_assets_url('css/training-search.css'));
+//        wp_enqueue_style('coachview-common', cv_assets_url('css/common.css'));
+//        wp_enqueue_style('coachview-search', cv_assets_url('css/training-search.css'));
     }
 
     public function training_type_search_shortcode(): string
@@ -25,7 +25,13 @@ class TrainingTypeSearch
         wp_enqueue_script('coachview-search', cv_assets_url('js/training-search.js'), array('jquery'), null, true);
 
         $this->templateEngine = new TemplateEngine();
-        $data = ['category_list' => $this->renderCategorySidebar()];
+        $data = [
+            'category_list' => $this->renderCategorySidebar(),
+            'style_urls' => [
+                'common' => cv_assets_url('css/common.css'),
+                'search' => cv_assets_url('css/training-search.css'),
+            ]
+        ];
         return $this->templateEngine->render('training-search', $data);
     }
 
@@ -54,38 +60,8 @@ class TrainingTypeSearch
 
     private function renderCategorySidebar()
     {
-        $parent_cats = get_terms([
-            'taxonomy' => 'product_cat',
-            'hide_empty' => false,
-            'parent' => 0
-        ]);
-
-        $categories = [];
-
-        foreach ($parent_cats as $parent) {
-            $category = [
-                'name' => $parent->name,
-                'child_categories' => []
-            ];
-
-            $child_cats = get_terms([
-                'taxonomy' => 'product_cat',
-                'hide_empty' => false,
-                'parent' => $parent->term_id
-            ]);
-
-            foreach ($child_cats as $child) {
-                $category['child_categories'][] = [
-                    'term_id' => $child->term_id,
-                    'name' => $child->name
-                ];
-            }
-            if (!empty($category['child_categories'])) {
-                $categories[] = $category;
-            }
-        }
-
-        return $this->templateEngine->render('training-search-categories', ['parent_categories' => $categories]);
+        $categories = get_hierarchical_categories();
+        return $this->templateEngine->render('training-search-categories', ['categories' => $categories]);
     }
 
 
@@ -132,6 +108,7 @@ class TrainingTypeSearch
 
         $args = [
             'limit' => 12,
+            'status' => 'publish',
             's' => $search,
         ];
 
@@ -159,19 +136,5 @@ class TrainingTypeSearch
         }
 
         return new WP_REST_Response($html, 200);
-    }
-
-    private function capture_header()
-    {
-        ob_start();
-        get_header();
-        return ob_get_clean();
-    }
-
-    private function capture_footer()
-    {
-        ob_start();
-        get_footer();
-        return ob_get_clean();
     }
 }

@@ -32,13 +32,32 @@ function coachview_api_token(bool $refresh = false): string {
     return TokenManager::instance()->getToken($refresh);
 }
 
-function coachview_register_page_url(array $params): string {
-    $query_params = http_build_query($params);
-    if (has_custom_register_page()) {
-        return get_permalink(get_option('coachview_register_page')) . '?' . $query_params;
-    } else {
-        return coachview_get_default_register_url() . '?' . $query_params;
+
+function coachview_search_page_url(array $params = []): string {
+    $url = coachview_get_default_search_url();
+    if (has_custom_search_page()) {
+        $url = get_permalink(get_option('coachview_search_page'));
     }
+    return empty($params) ? $url : $url . '?' . http_build_query($params);
+}
+
+function has_custom_search_page(): bool {
+    $register_page_id = get_option('coachview_search_page', 0);
+    return $register_page_id && get_post_status($register_page_id) === 'publish';
+}
+
+function coachview_get_default_search_url(): string {
+    $slug = Constants::DEFAULT_SEARCH_PAGE_SLUG;
+    return home_url("/$slug");
+}
+
+
+function coachview_register_page_url(array $params): string {
+    $url = coachview_get_default_register_url();
+    if (has_custom_register_page()) {
+        $url = get_permalink(get_option('coachview_register_page'));
+    }
+    return empty($params) ? $url : $url . '?' . http_build_query($params);
 }
 
 function has_custom_register_page(): bool {
@@ -65,6 +84,49 @@ function get_registration_type(WC_Product $training_type): RegistrationType
         return RegistrationType::ENLIST;
     }
     return RegistrationType::DEFAULT;
+}
+
+function get_hierarchical_categories(): array {
+    $parent_cats = get_terms([
+        'taxonomy' => 'product_cat',
+        'hide_empty' => false,
+        'parent' => 0
+    ]);
+
+    $categories = [];
+    foreach($parent_cats as $parent_cat) {
+        $category = get_category_with_children($parent_cat->term_id);
+        if ($category) {
+            $categories[] = $category;
+        }
+    }
+    return $categories;
+}
+
+function get_category_with_children($id): array | null {
+    $term = get_term($id, 'product_cat');
+    if (!$term || is_wp_error($term)) {
+        return null;
+    }
+    $result = [
+        'term_id' => $term->term_id,
+        'name' => $term->name,
+        'child_categories' => []
+    ];
+
+    $child_cats = get_terms([
+        'taxonomy' => 'product_cat',
+        'hide_empty' => false,
+        'parent' => $id
+    ]);
+
+    foreach ($child_cats as $child) {
+        $result['child_categories'][] = [
+            'term_id' => $child->term_id,
+            'name' => $child->name
+        ];
+    }
+    return $result;
 }
 
 function cv_assets_url(string $path = ''): string {

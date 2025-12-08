@@ -69,6 +69,9 @@ class TrainingAgenda
 
         // Use TemplateEngine to render the template
         $template_engine = new TemplateEngine();
-        return $template_engine->render('training-agenda', ['training_types' => $training_types]);
+        return $template_engine->render('training-agenda', [
+            'placeholder_image_url' => cv_assets_url('img/example_training4.png'),
+            'training_types' => $training_types,
+        ]);
     }
 }

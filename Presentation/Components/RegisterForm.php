@@ -26,8 +26,8 @@ class RegisterForm
         }
 
         // always enqueue styles since they are often ignored when rendering the shortcode
-        wp_enqueue_style('coachview-common', cv_assets_url('css/common.css'));
-        wp_enqueue_style('coachview-register', cv_assets_url('css/register-page.css'));
+        // wp_enqueue_style('coachview-common', cv_assets_url('css/common.css'));
+        // wp_enqueue_style('coachview-register', cv_assets_url('css/register-page.css'));
     }
 
     public function parse_query_vars($vars): array
@@ -101,6 +101,11 @@ class RegisterForm
             // Page structure
             'header' => $with_header_and_footer ? $this->capture_header() : '',
             'footer' => $with_header_and_footer ? $this->captureFooter() : '',
+
+            'style_urls' => [
+                'common' => cv_assets_url('css/common.css'),
+                'search' => cv_assets_url('css/training-search.css'),
+            ],
 
             // Order details
             'training_type_title' => $training_type->get_title(),

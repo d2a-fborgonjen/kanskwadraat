@@ -1,5 +1,27 @@
 <section class="bc-calendar">
     <div class="accordion" id="accordion-agenda">
+
+        {%  if trainings.length == 0 %}
+            <div class="accordion-item mb-3">
+                <div class="accordion-header">
+                    <div class="accordion-button">
+                        <div class="accordion-button-inner">
+
+                            <div class="d-flex flex-row align-items-center">
+                                <div class="accordion-button-inner__image">
+                                    <img width="200" height="133" src="{{ placeholder_image_url }}"
+                                         class="attachment-post-thumbnail size-post-thumbnail wp-post-image"></div>
+                                <div class="accordion-button-inner__training px-3 d-flex justify-content-center flex-grow-1">
+                                    <h3 class="mb-0">
+                                        Er zijn momenteel geen geplande trainingen
+                                    </h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {%  endif %}
         {% for training in trainings %}
             <div class="accordion-item mb-3">
                 <div class="accordion-header" id="agenda-item-header--{{ loop.index }}">

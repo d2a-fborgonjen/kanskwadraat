@@ -16,6 +16,7 @@ use Coachview\Cron\Cron;
 use Coachview\Presentation\Components\RegisterForm;
 use Coachview\Presentation\Components\RegisterFormHandler;
 use Coachview\Presentation\Components\TrainingAgenda;
+use Coachview\Presentation\Components\TrainingSimpleSearch;
 use Coachview\Presentation\Components\TrainingTypeCTA;
 use Coachview\Presentation\Components\TrainingTypeSearch;
 use Coachview\Presentation\Components\TrainingTypeStartDates;
@@ -30,6 +31,7 @@ add_action('plugins_loaded', function () {
     new CustomACF();
 
     // Training Type + Training
+    new TrainingSimpleSearch();
     new TrainingTypeSearch();
     new TrainingTypeStartDates();
     new TrainingTypeCTA();
