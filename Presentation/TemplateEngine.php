@@ -13,6 +13,7 @@ class TemplateEngine
     {
         $loader = new FilesystemLoader([
             'search' =>  plugin_dir_path(__FILE__) . '../assets/tpls/search/',
+            'simple-search' =>  plugin_dir_path(__FILE__) . '../assets/tpls/simple-search/',
             'register' =>  plugin_dir_path(__FILE__) . '../assets/tpls/register/',
             'training' =>  plugin_dir_path(__FILE__) . '../assets/tpls/training/',
         ]);
