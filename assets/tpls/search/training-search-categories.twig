@@ -1,20 +1,19 @@
 
 <div id="filter-category-accordion" class="accordion">
     {% for parent in categories %}
-        <div class="accordion-item">
-            <div class="accordion-header">
-                <button class="accordion-button collapsed p-0 my-3"
-                        data-bs-target="#category-{{ loop.index }}"
-                        data-bs-toggle="collapse"
-                        aria-expanded="false"
-                        aria-controls="collapseCat{{ loop.index }}">
-                    <h5 class="coachview-search__category-parent">
-                        {{ parent.name }}
-                    </h5>
-                </button>
-            </div>
-
-            {% if parent.child_categories %}
+        {% if parent.child_categories | length > 0 %}
+            <div class="accordion-item">
+                <div class="accordion-header">
+                    <button class="accordion-button collapsed p-0 my-3"
+                            data-bs-target="#category-{{ loop.index }}"
+                            data-bs-toggle="collapse"
+                            aria-expanded="false"
+                            aria-controls="collapseCat{{ loop.index }}">
+                        <h5 class="coachview-search__category-parent">
+                            {{ parent.name }}
+                        </h5>
+                    </button>
+                </div>
                 <div id="category-{{ loop.index }}"
                      class="accordion-collapse collapse coachview-search__category-children pb-3">
                     {% for child in parent.child_categories %}
@@ -27,7 +26,7 @@
                     </div>
                     {% endfor %}
                 </div>
-            {% endif %}
             </div>
+        {% endif %}
     {% endfor %}
 </div>

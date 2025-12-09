@@ -11,14 +11,16 @@ jQuery(document).ready(function($) {
     const $filtersWrapper = $('.coachview-search__filters-wrapper');
     const $activeFilters = $('.coachview-search__bar-active_filters');
     const $filterCount = $('.coachview-search__filter-count');
+    const $moreItems = $('.coachview-search__more-items');
+    const $loadMoreItems = $('.coachview-search__load-more-items');
 
     /* ---------- Helpers ---------- */
-
     function getUrlParams() {
         const params = new URLSearchParams(window.location.search);
         return {
             search: params.get('search') || '',
-            categories: params.getAll('category') || []
+            categories: params.getAll('category') || [],
+            limit: params.get('limit') || 12
         };
     }
 
@@ -28,11 +30,12 @@ jQuery(document).ready(function($) {
         updateUrl(searchValue, categories);
     }
 
-    function updateUrl(search, categories) {
+    function updateUrl(search, categories, limit = 12) {
         const url = new URL(window.location);
         url.searchParams.delete('search');
         url.searchParams.delete('category');
 
+        if (limit) url.searchParams.set('limit', limit);
         if (search) url.searchParams.set('search', search);
         categories.forEach(c => url.searchParams.append('category', c));
 
@@ -54,7 +57,6 @@ jQuery(document).ready(function($) {
     }
 
     /* ---------- UI Sync ---------- */
-
     function applyFiltersFromUrl() {
         const params = getUrlParams();
         $search.val(params.search || '');
@@ -66,18 +68,21 @@ jQuery(document).ready(function($) {
     }
 
     /* ---------- Fetching ---------- */
-
     function fetchProducts() {
         $spinner.show();
-        const { search, categories } = getUrlParams();
+        $moreItems.hide();
+        const { search, categories, limit } = getUrlParams();
 
         $.ajax({
             url: '/wp-json/coachview/v1/products/filter',
             method: 'POST',
             contentType: 'application/json',
-            data: JSON.stringify({ search, categories }),
+            data: JSON.stringify({ search, categories, limit }),
             success: function(response) {
-                $results.html(response);
+                if (response.limit < response.total_count) {
+                    $moreItems.show();
+                }
+                $results.html(response.items);
                 $spinner.hide();
             }
         });
@@ -187,6 +192,13 @@ jQuery(document).ready(function($) {
         $checkboxes.prop('checked', false);
         updateUrl('', []);
         syncUIFromUrl();
+    });
+
+    $loadMoreItems.on('click', function(e) {
+        e.preventDefault();
+        const { search, categories, limit } = getUrlParams();
+        updateUrl(search, categories, parseInt(limit) * 2);
+        fetchProducts();
     });
 
     $openFilters.on('click', e => { e.preventDefault(); $filtersWrapper.show(); });

@@ -105,9 +105,9 @@ class TrainingTypeSearch
     {
         $search = $request->get_param('search') ?? '';
         $cats = $request->get_param('categories') ?? [];
+        $limit = $request->get_param('limit') ?? 12;
 
         $args = [
-            'limit' => 12,
             'status' => 'publish',
             's' => $search,
         ];
@@ -123,7 +123,9 @@ class TrainingTypeSearch
             ];
         }
 
-        $products = wc_get_products($args);
+        $count = wc_get_products(array_merge($args, ['return' => 'ids', 'limit' => -1]));
+        error_log(print_r($count, true));
+        $products = wc_get_products(array_merge($args, ['limit' => $limit]));
         $this->templateEngine = new TemplateEngine();
 
         $html = '';
@@ -135,6 +137,10 @@ class TrainingTypeSearch
             }
         }
 
-        return new WP_REST_Response($html, 200);
+        return new WP_REST_Response([
+            'total_count' => count($count),
+            'limit' => $limit,
+            'items' => $html,
+        ], 200);
     }
 }

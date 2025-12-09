@@ -1,7 +1,7 @@
 <div class="coachview-search">
 
     <!-- Filter bar -->
-    <div class="coachview-search__bar d-flex mb-4">
+    <div class="coachview-search__bar d-flex mb-4 align-items-center gap-2">
         <button class="coachview-search__open-filters btn btn-filter btn-no-after">
             <i class="fa-thin fa-sliders-up"></i>
             Filter trainingen <span class="coachview-search__filter-count"></span>
@@ -16,6 +16,11 @@
     </div>
 
     <section class="coachview-search__results row"></section>
+    <div class="coachview-search__more-items mt-4 d-flex justify-content-center">
+        <button class="btn btn-secondary coachview-search__load-more-items">
+            Laad meer trainingen
+        </button>
+    </div>
 
     <!-- Filters -->
     <div class="coachview-search__filters-wrapper position-fixed top-0 start-0 w-100 h-100 bg-dark bg-opacity-50 p-4" style="display: none;">
