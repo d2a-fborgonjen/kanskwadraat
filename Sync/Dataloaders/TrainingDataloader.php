@@ -88,7 +88,6 @@ class TrainingDataloader
             ->build();
         $trainings = collect(ApiClient::trainings()->get($query));
 
-//        error_log(print_r($trainings->toArray(), true));
         return $trainings
             ->map(function($data) {
                 $training_components = self::__load_training_components($data['id']);

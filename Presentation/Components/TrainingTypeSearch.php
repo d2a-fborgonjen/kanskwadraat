@@ -124,7 +124,6 @@ class TrainingTypeSearch
         }
 
         $count = wc_get_products(array_merge($args, ['return' => 'ids', 'limit' => -1]));
-        error_log(print_r($count, true));
         $products = wc_get_products(array_merge($args, ['limit' => $limit]));
         $this->templateEngine = new TemplateEngine();
 
