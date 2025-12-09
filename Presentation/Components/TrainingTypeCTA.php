@@ -28,12 +28,12 @@ class TrainingTypeCTA {
 
         if ($product->is_type('variable')) {
             if ($registration_type === RegistrationType::ENLIST) {
-                return $this->create_primary_button('Aanmelden wachtlijst', $register_link);
+                return $this->create_primary_button('Inschrijven wachtlijst', $register_link);
             } else {
                 return $this->create_primary_button('Bekijk startdata', '#training-start-dates');
             }
         } else {
-            return $this->create_primary_button('Aanmelden', $register_link);
+            return $this->create_primary_button('Inschrijven', $register_link);
         }
     }
 
