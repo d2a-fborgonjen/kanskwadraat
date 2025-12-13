@@ -36,13 +36,13 @@ class TrainingAgenda
             return $cached_agenda_items;
         }
 
-        $now = strtotime('-6 month');
+        $tomorrow = strtotime('tomorrow 00:00:00');
         $trainings = wc_get_products([
             'limit'      => -1,
             'status'     => 'publish',
             'type'       => 'variation',
             'meta_query' => [
-                ['key' => 'start_date', 'compare' => '>', date('Y-m-d', $now)]
+                ['key' => 'start_date', 'compare' => '>', date('Y-m-d', $tomorrow)]
             ]
         ]);
 
