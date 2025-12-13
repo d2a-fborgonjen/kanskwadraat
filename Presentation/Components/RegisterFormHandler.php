@@ -65,7 +65,7 @@ class RegisterFormHandler
         delete_transient($key);
 
         $order_data = $this->to_coachview_order_data($data);
-        error_log('Processing form submission for training registration.' . print_r($order_data, true));
+//        error_log('Processing form submission for training registration.' . print_r($order_data, true));
 
         $order = $this->create_coachview_order($order_data);
         error_log('Response from CoachView: ' . print_r($order, true));

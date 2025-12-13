@@ -53,18 +53,6 @@ class TrainingType {
         return normalize_enums($this->training_type_components->toArray());
     }
 
-    // return an array of unique start dates from the trainings plus their locations (city)
-    public function get_training_start_dates(): array {
-        return $this->trainings->map(function(Training $training) {
-            return [
-                'training_id' => $training->id,
-                'start_date' => $training->start_date,
-                'display_date' => date_i18n('j F', strtotime($training->start_date)),
-                'city' => $training->city
-            ];
-        })->unique('start_date')->toArray();
-    }
-
     public function get_locations(): array {
         return $this->trainings->pluck('locations')->flatten()->filter(fn($value) => !empty($value))->unique()->toArray();
     }

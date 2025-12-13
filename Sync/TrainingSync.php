@@ -143,7 +143,6 @@ class TrainingSync {
         $product->update_meta_data('num_locations', count($training_type->get_locations()));
 
         $product->update_meta_data('training_cities', $training_type->get_training_cities());
-        $product->update_meta_data('training_start_dates', $training_type->get_training_start_dates());
         $product->update_meta_data('training_type_components', $training_type->get_training_type_components());
 
         // one of: elearning, klassikaal, blended

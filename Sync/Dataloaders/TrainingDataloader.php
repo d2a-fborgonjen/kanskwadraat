@@ -21,7 +21,7 @@ class TrainingDataloader
             ->where('publicatieWebsite', 'true')
             ->where('opleidingssoortStatusId', 'Definitief')
             ->where('inactief', 'false')
-//            ->where('code', 'WIJZR-COMBI')
+//            ->where('code', 'BSO-1')
             ->includeFreeFields()
             ->includeExtraFields()
             ->includeDirectRelations()

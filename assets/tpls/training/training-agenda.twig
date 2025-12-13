@@ -1,7 +1,7 @@
 <section class="bc-calendar">
     <div class="accordion" id="accordion-agenda">
 
-        {%  if trainings|length == 0 %}
+        {%  if agenda_items|length == 0 %}
             <div class="accordion-item mb-3">
                 <div class="accordion-header">
                     <div class="accordion-button">
@@ -22,7 +22,7 @@
                 </div>
             </div>
         {%  endif %}
-        {% for training in trainings %}
+        {% for item in agenda_items %}
             <div class="accordion-item mb-3">
                 <div class="accordion-header" id="agenda-item-header--{{ loop.index }}">
                     <div class="accordion-button">
@@ -31,10 +31,10 @@
                                 <div class="col-xl-6">
                                     <div class="d-flex flex-row align-items-center">
                                         <div class="accordion-button-inner__image">
-                                            <img width="200" height="133" src="{{ training.image_url }}"
+                                            <img width="200" height="133" src="{{ item.training_type.image_url }}"
                                                  class="attachment-post-thumbnail size-post-thumbnail wp-post-image"></div>
                                         <div class="accordion-button-inner__training ps-3">
-                                            <h3 class="mb-0">{{ training.name }}</h3>
+                                            <h3 class="mb-0">{{ item.training_type.name }}</h3>
                                         </div>
                                     </div>
                                 </div>
@@ -42,7 +42,7 @@
                                     <div class="accordion-button-inner-wrapper py-3 py-xl-0 ps-xl-0 w-100 d-lg-flex flex-row align-items-center justify-content-between">
                                         <div class="accordion-button-inner-wrapper__next d-flex flex-row align-items-center">
                                             <i class="fa-thin fa-circle-calendar me-2" aria-hidden="true"></i>
-                                            Volgende startdatum: {{ training.display_date }}
+                                            Volgende startdatum: {{ item.trainings[0].start_date_display }}
                                         </div>
 
                                         <div class="accordion-button-inner-wrapper__show px-lg-2">
@@ -60,8 +60,9 @@
                                             </button>
                                         </div>
                                         <div class="accordion-button-inner-wrapper__button mt-3 mt-lg-0">
-                                            <a href="{{ training.product_url }}" class="btn btn-secondary small">Meer
-                                                info</a>
+                                            <a href="{{ item.training_type.permalink }}" class="btn btn-secondary small">
+                                                Meer info
+                                            </a>
                                         </div>
                                     </div>
                                 </div>
@@ -75,14 +76,14 @@
                     <div class="accordion-body">
                         <div class="row">
                             <div class="col-lg-6">
-                                {% for item in training.all_start_dates %}
+                                {% for training in item.trainings %}
                                 <div class="bc-calendar__item pt-2 pb-3 pb-md-2 d-block d-md-flex align-items-center justify-content-between">
                                     <div class="bc-calendar__item-content d-flex align-items-center">
                                         <i class="fa-thin fa-circle-calendar me-2"
-                                           aria-hidden="true"></i> {{ item.display_date }} - {{ item.city }}
+                                           aria-hidden="true"></i> {{ training.start_date_display }} - {{ training.city }}
                                     </div>
                                     <div class="bc-calendar__item-btn d-flex justify-content-md-end mt-2 mt-md-0">
-                                        <a href="{{ item.register_url }}" class="btn btn-primary small">Inschrijven</a>
+                                        <a href="{{ training.register_url }}" class="btn btn-primary small">Inschrijven</a>
                                     </div>
                                 </div>
 

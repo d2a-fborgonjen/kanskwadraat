@@ -1,7 +1,7 @@
 <?php
 
 namespace Coachview\Sync;
-use Exception;
+use Coachview\Presentation\Components\TrainingAgenda;
 
 class SyncRunner
 {
@@ -25,6 +25,8 @@ class SyncRunner
 
     private static function onSynchronizationFinished(): void
     {
+        TrainingAgenda::clear_cached_agenda_data();
+
         update_option('coachview_sync_running', false);
         update_option('coachview_sync_finished', current_time('mysql'));
         error_log('Coachview sync finished at ' . current_time('mysql'));

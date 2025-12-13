@@ -35,8 +35,6 @@ class TokenManager {
         ];
         $response = wp_remote_post($url, ['body' => $body]);
 
-//        error_log('Coachview token request: ' . print_r($response, true));
-
         if (is_wp_error($response)) {
             log_cv_exception('Request[token]', new Exception($response->get_error_message()));
             return null;

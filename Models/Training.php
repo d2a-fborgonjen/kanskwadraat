@@ -88,7 +88,7 @@ class Training {
             id: $data['id'],
             code: $data['code'],
             name: $data['naam'],
-            city: $city,
+            city: $city ?? '',
             status: $data['opleidingStatusId'],
             start_day: $data['startDag'],
             start_date: $data['startDatum'], // DateTime::createFromFormat("Y-m-d\TH:i:s", $data['startDatum']),
