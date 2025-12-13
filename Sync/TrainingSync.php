@@ -104,6 +104,9 @@ class TrainingSync {
         }
         TrainingSync::__set_product_info($product, $training_type);
         $product->save();
+
+        TrainingSync::__set_acf_repeaters($product, $training_type);
+
         return $product;
     }
 
@@ -127,6 +130,8 @@ class TrainingSync {
         $product->set_attributes([$training_attribute]);
         $product->save();
 
+        TrainingSync::__set_acf_repeaters($product, $training_type);
+
         return $product;
     }
 
@@ -137,18 +142,12 @@ class TrainingSync {
         $product->set_regular_price($training_type->price);
         $product->set_manage_stock(false);
         $product->set_stock_status('instock');
+        $product->update_meta_data('cv_last_sync', time());
         $product->update_meta_data('training_goal', $training_type->goal);
         $product->update_meta_data('training_duration', $training_type->num_half_days);
-        $product->update_meta_data('locations', $training_type->get_locations());
-        $product->update_meta_data('num_locations', count($training_type->get_locations()));
-
-        $product->update_meta_data('training_cities', $training_type->get_training_cities());
-        $product->update_meta_data('training_type_components', $training_type->get_training_type_components());
 
         // one of: elearning, klassikaal, blended
         $product->update_meta_data('training_type_category', $training_type->get_course_format()->value);
-        // one of: default, elearning, list
-//        $product->update_meta_data('registration_type', $training_type->get_registration_type());
 
         if ($product->get_id() === 0) {
             $product->set_virtual(true);
@@ -178,6 +177,7 @@ class TrainingSync {
             $variation->set_regular_price($product->get_regular_price());
             $variation->set_stock_quantity($training->num_seats_available);
 
+            $variation->update_meta_data('cv_last_sync', time());
             $variation->update_meta_data('location',  firstNonEmpty($training->components->pluck('location')));
             $variation->update_meta_data('address', firstNonEmpty($training->components->pluck('address')));
             $variation->update_meta_data('zipcode', firstNonEmpty($training->components->pluck('zipcode')));
@@ -223,6 +223,11 @@ class TrainingSync {
                 log_cv_info("Archived stale training. Product variation ID [$variation_id] code: [$training_code]");
             }
         }
+    }
+
+    private static function __set_acf_repeaters(WC_Product_Variable|WC_Product $product, TrainingType $training_type)
+    {
+        update_field('training_type_components', $training_type->get_training_type_components(), $product->get_id());
     }
 
 }

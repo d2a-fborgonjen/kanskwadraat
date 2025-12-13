@@ -86,6 +86,15 @@ function get_registration_type(WC_Product $training_type): RegistrationType
     return RegistrationType::DEFAULT;
 }
 
+function get_display_date(int $timestamp): string {
+    $now = time();
+    if (date('Y', $timestamp) != date('Y', $now)) {
+        return wp_date('j F Y', $timestamp);
+    } else {
+        return wp_date('j F', $timestamp);
+    }
+}
+
 function get_hierarchical_categories(): array {
     $parent_cats = get_terms([
         'taxonomy' => 'product_cat',

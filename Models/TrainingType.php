@@ -57,17 +57,6 @@ class TrainingType {
         return $this->trainings->pluck('locations')->flatten()->filter(fn($value) => !empty($value))->unique()->toArray();
     }
 
-    public function get_training_cities(): array {
-        return $this->trainings->pluck('city')->unique()->toArray();
-    }
-
-    public function get_location(): string {
-        if ($this->get_course_format() == CourseFormat::E_LEARNING) {
-            return 'Online';
-        }
-        $locations = $this->get_locations();
-        return count($locations) > 0 ? $locations[0] : '';
-    }
 
     public function get_course_format(): CourseFormat {
         $course_formats = $this->training_type_components->pluck('course_format')->unique()->toArray();

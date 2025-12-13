@@ -49,11 +49,12 @@ class TrainingAgenda
         $agenda_items = [];
         foreach ($trainings as $training) {
             $parent_id = $training->get_parent_id();
+            if (!$this->can_show_training_type($parent_id)) {
+                continue;
+            }
+
             if (!isset($agenda_items[$parent_id])) {
                 $training_type = $this->get_training_type_data($parent_id);
-                if (!$training_type) {
-                    continue;
-                }
                 $agenda_items[$parent_id] = [
                     'trainings' => [],
                     'training_type' => $training_type
@@ -79,6 +80,18 @@ class TrainingAgenda
     }
 
     /**
+     * @param $id
+     * @return bool
+     */
+    private function can_show_training_type($id): bool {
+        $training_type = wc_get_product($id);
+        if (!$training_type || get_post_meta($id, 'cv_hide_from_search', true) === 'yes') {
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * Gets the training (Opleiding) data
      * @param $training  The product variation that represents the training
      * @return array
@@ -89,21 +102,18 @@ class TrainingAgenda
         return [
             'city' => get_post_meta($id, 'city', true),
             'start_date_ts' => $start_date_ts,
-            'start_date_display' => $this->get_display_date($start_date_ts),
+            'start_date_display' => get_display_date($start_date_ts),
             'register_link' => coachview_register_page_url(['woo_vid' => $id]), // woo_vid = WooCommerce Variation ID
         ];
     }
 
     /**
      * Gets the training type (Opleidingssoort) data
-     * @param $id           The ID of the product that represents the training type
-     * @return array|null
+     * @param $id - The ID of the product that represents the training type
+     * @return array
      */
-    private function get_training_type_data($id): array | null {
+    private function get_training_type_data($id): array {
         $training_type = wc_get_product($id);
-        if (!$training_type) {
-            return null;
-        }
         $image_id = $training_type->get_image_id();
         $image_url = $image_id
             ? wp_get_attachment_image_url($image_id, 'woocommerce_thumbnail')
@@ -145,14 +155,5 @@ class TrainingAgenda
 
     public static function clear_cached_agenda_data(): void {
         delete_option(TrainingAgenda::$agenda_data_key);
-    }
-
-    private function get_display_date($timestamp): string {
-        $now = time();
-        if (date('Y', $timestamp) != date('Y', $now)) {
-            return wp_date('j F Y', $timestamp);
-        } else {
-            return wp_date('j F', $timestamp);
-        }
     }
 }

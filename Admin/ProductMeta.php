@@ -2,6 +2,8 @@
 
 namespace Coachview\Admin;
 
+use Coachview\Presentation\Components\TrainingAgenda;
+
 class ProductMeta
 {
     public function __construct()
@@ -36,15 +38,15 @@ class ProductMeta
         if (!get_post_meta($post->ID, 'coachview_id', true)) {
             return;
         }
-        $value = get_post_meta($post->ID, 'form_type', true);
-        $participantHeaderValue = get_post_meta($post->ID, 'form_participant_header', true);
-        $contactPersonHeaderValue = get_post_meta($post->ID, 'form_contact_person_header', true);
+        $value = get_post_meta($post->ID, 'cv_form_type', true);
+        $participantHeaderValue = get_post_meta($post->ID, 'cv_form_participant_header', true);
+        $contactPersonHeaderValue = get_post_meta($post->ID, 'cv_form_contact_person_header', true);
         wp_nonce_field('cv_save_meta', 'cv_meta_nonce');
         ?>
         <p><?php _e('Gebruik een aangepaste of versimpelde inschrijfformulier voor deze cursus.', 'coachview'); ?></p>
 
-        <label for="form_type"><?php esc_html_e('Formulier variatie', 'coachview'); ?></label>
-        <select name="form_type" id="form_type" class="widefat">
+        <label for="cv_form_type"><?php esc_html_e('Formulier variatie', 'coachview'); ?></label>
+        <select name="cv_form_type" id="cv_form_type" class="widefat">
             <option value=""><?php esc_html_e('Kies een optie', 'coachview'); ?></option>
             <option value="default" <?php selected($value, 'default'); ?>><?php esc_html_e('Standaard formulier', 'coachview'); ?></option>
             <option value="contact-person" <?php selected($value, 'contact-person'); ?>><?php esc_html_e('Formulier met contactpersoon', 'coachview'); ?></option>
@@ -52,17 +54,17 @@ class ProductMeta
         </select>
 
         <p><?php esc_html_e('Stel hier aangepaste kopteksten in voor deelnemer en pedagogisch medewerker/contactpersoon', 'coachview'); ?></p>
-        <label for="form_participant_header"><?php esc_html_e('Deelnemer titel', 'coachview'); ?></label>
+        <label for="cv_form_participant_header"><?php esc_html_e('Deelnemer titel', 'coachview'); ?></label>
         <input type="text"
-               id="form_participant_header"
-               name="form_participant_header"
+               id="cv_form_participant_header"
+               name="cv_form_participant_header"
                placeholder="Deelnemer aan..."
                class="widefat" value="<?php echo esc_attr($participantHeaderValue); ?>">
 
-        <label for="form_contact_person_header"><?php esc_html_e('Contactpersoon titel', 'coachview'); ?></label>
+        <label for="cv_form_contact_person_header"><?php esc_html_e('Contactpersoon titel', 'coachview'); ?></label>
         <input type="text"
-               id="form_contact_person_header"
-               name="form_contact_person_header"
+               id="cv_form_contact_person_header"
+               name="cv_form_contact_person_header"
                placeholder="Pedagogisch medewerker die je gaat coachen"
                class="widefat" value="<?php echo esc_attr($contactPersonHeaderValue); ?>">
         <?php
@@ -73,16 +75,15 @@ class ProductMeta
         if (!get_post_meta($post->ID, 'coachview_id', true)) {
             return;
         }
-
-        $value = get_post_meta($post->ID, 'hide_from_search', true);
+        $value = get_post_meta($post->ID, 'cv_hide_from_search', true) ?: 0;
         ?>
         <p><?php esc_html_e('Verberg deze training van de zoekresultaten', 'coachview'); ?></p>
         <label>
-            <input type="radio" name="hide_from_search" value="1" <?php checked($value, '1'); ?>>
+            <input type="radio" name="cv_hide_from_search" value="1" <?php checked($value, 1); ?>>
             <?php esc_html_e('Ja', 'coachview'); ?>
         </label><br>
         <label>
-            <input type="radio" name="hide_from_search" value="0" <?php checked($value, '0'); ?>>
+            <input type="radio" name="cv_hide_from_search" value="0" <?php checked($value, 0); ?>>
             <?php esc_html_e('Nee', 'coachview'); ?>
         </label>
         <?php
@@ -102,20 +103,30 @@ class ProductMeta
             return;
         }
 
-        if (isset($_POST['form_type'])) {
-            update_post_meta($post_id, 'form_type', sanitize_text_field($_POST['form_type']));
+        if (isset($_POST['cv_form_type'])) {
+            update_post_meta($post_id, 'cv_form_type', sanitize_text_field($_POST['cv_form_type']));
+        } else {
+            delete_post_meta($post_id, 'cv_form_type');
         }
 
-        if (isset($_POST['form_participant_header'])) {
-            update_post_meta($post_id, 'form_participant_header', sanitize_text_field($_POST['form_participant_header']));
+        if (isset($_POST['cv_form_participant_header'])) {
+            update_post_meta($post_id, 'cv_form_participant_header', sanitize_text_field($_POST['cv_form_participant_header']));
+        } else {
+            delete_post_meta($post_id, 'cv_form_participant_header');
         }
 
-        if (isset($_POST['form_contact_person_header'])) {
-            update_post_meta($post_id, 'form_contact_person_header', sanitize_text_field($_POST['form_contact_person_header']));
+        if (isset($_POST['cv_form_contact_person_header'])) {
+            update_post_meta($post_id, 'cv_form_contact_person_header', sanitize_text_field($_POST['cv_form_contact_person_header']));
+        } else {
+            delete_post_meta($post_id, 'cv_form_contact_person_header');
         }
 
-        if (isset($_POST['form_hide_from_search'])) {
-            update_post_meta($post_id, 'form_hide_from_search', sanitize_text_field($_POST['form_hide_from_search']));
+        if (isset($_POST['cv_hide_from_search']) && $_POST['cv_hide_from_search'] === '1') {
+            update_post_meta($post_id, 'cv_hide_from_search', 1);
+        } else {
+            delete_post_meta($post_id, 'cv_hide_from_search');
         }
+
+        TrainingAgenda::clear_cached_agenda_data();
     }
 }

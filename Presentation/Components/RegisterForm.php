@@ -68,7 +68,7 @@ class RegisterForm
 
     private function render_form(WC_Product $training_type, ?WC_Product_Variation $training, bool $with_header_and_footer): string
     {
-        $form_type = get_post_meta($training_type->get_id(), 'form_type', true) ?? 'default';
+        $form_type = get_post_meta($training_type->get_id(), 'cv_form_type', true) ?? 'default';
         $registration_type = get_registration_type($training_type);
         $participant_header = get_post_meta(get_the_ID(), 'participant_header', true) ?? null;
         $contact_person_header = get_post_meta(get_the_ID(), 'contact_person_header', true) ?? null;

@@ -15,9 +15,6 @@ class TrainingTypeSearch
         add_action('rest_api_init', [$this, 'register_rest_routes']);
         add_shortcode('cv_training_type_search', [$this, 'training_type_search_shortcode']);
 
-        // Always enqueue styles since they are often ignored when rendering the shortcode
-//        wp_enqueue_style('coachview-common', cv_assets_url('css/common.css'));
-//        wp_enqueue_style('coachview-search', cv_assets_url('css/training-search.css'));
     }
 
     public function training_type_search_shortcode(): string
@@ -72,6 +69,7 @@ class TrainingTypeSearch
         $duration = get_post_meta($product->get_id(), 'training_duration', true);
         $training_cities = get_post_meta($product->get_id(), 'training_cities', true);
         $training_type_category = get_post_meta($product->get_id(), 'training_type_category', true);
+        $cv_hide_from_search = get_post_meta($product->get_id(), 'cv_hide_from_search', true);
         $product_url = get_permalink($product->get_id());
 
         $is_online = $training_type_category === CourseFormat::E_LEARNING->value;
@@ -87,6 +85,7 @@ class TrainingTypeSearch
         $data = [
             'image_url' => $image_url ?: wc_placeholder_img_src('woocommerce_thumbnail'),
             'name' => $product->get_name(),
+            'cv_hide_from_search' => $cv_hide_from_search,
             'description' => substr($product->get_description(), 0, 200) . (strlen($product->get_description()) > 200 ? '...' : ''),
             'training_url' => $product_url,
             'training_type_category' => $training_type_category,
@@ -104,29 +103,44 @@ class TrainingTypeSearch
     public function coachview_filter_products($request): WP_REST_Response
     {
         $search = $request->get_param('search') ?? '';
-        $cats = $request->get_param('categories') ?? [];
-        $limit = $request->get_param('limit') ?? 12;
+        $cats   = $request->get_param('categories') ?? [];
+        $limit  = $request->get_param('limit') ?? 12;
 
-        $args = [
-            'status' => 'publish',
-            's' => $search,
+        // Get all matching product IDs with meta_query
+        $query_args = [
+            'post_type'      => 'product',
+            'post_status'    => 'publish',
+            's'              => $search,
+            'fields'         => 'ids',
+            'posts_per_page' => -1,
+            'meta_query'     => [
+                [
+                    'key'     => 'cv_hide_from_search',
+                    'compare' => 'NOT EXISTS',
+                ],
+            ],
         ];
 
         if (!empty($cats)) {
-            $args['tax_query'] = [
+            $query_args['tax_query'] = [
                 [
                     'taxonomy' => 'product_cat',
-                    'field' => 'term_id',
-                    'terms' => $cats,
+                    'field'    => 'term_id',
+                    'terms'    => $cats,
                     'operator' => 'AND',
                 ],
             ];
         }
 
-        $count = wc_get_products(array_merge($args, ['return' => 'ids', 'limit' => -1]));
-        $products = wc_get_products(array_merge($args, ['limit' => $limit]));
-        $this->templateEngine = new TemplateEngine();
+        $all_ids = get_posts($query_args);
+        $total_count = count($all_ids);
 
+        $products = wc_get_products([
+            'include' => array_slice($all_ids, 0, $limit),
+            'limit'   => $limit,
+        ]);
+
+        $this->templateEngine = new TemplateEngine();
         $html = '';
         if (empty($products)) {
             $html = $this->templateEngine->render('training-search-no-results');
@@ -137,9 +151,9 @@ class TrainingTypeSearch
         }
 
         return new WP_REST_Response([
-            'total_count' => count($count),
-            'limit' => $limit,
-            'items' => $html,
+            'total_count' => $total_count,
+            'limit'       => $limit,
+            'items'       => $html,
         ], 200);
     }
 }

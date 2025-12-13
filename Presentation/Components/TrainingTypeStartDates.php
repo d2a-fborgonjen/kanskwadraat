@@ -29,8 +29,7 @@ class TrainingTypeStartDates
             return '';
         }
 
-        // TODO: Filter based on dates?
-        $variations = $product->get_available_variations('products');
+        $variations = $this->get_future_variations($product);
 
         wp_enqueue_script('coachview-training-type-start-dates', cv_assets_url('js/training-type-start-dates.js'), array('jquery'), null, true);
 
@@ -45,14 +44,28 @@ class TrainingTypeStartDates
         return $template_engine->render('training-start-dates', $template_data);
     }
 
+    private function get_future_variations($product): array {
+        $variation_ids = $product->get_children();
+        $variations = [];
+        $tomorrow = strtotime('tomorrow 00:00:00');
+        foreach ( $variation_ids as $variation_id ) {
+            $variation = wc_get_product($variation_id);
+            $startDate = strtotime(get_post_meta($variation_id, 'start_date', true));
+
+            if ( $startDate && $startDate >= $tomorrow ) {
+                $variations[] = $variation;
+            }
+        }
+        return $variations;
+    }
+
     private function prepare_variations_data(array $variations): array
     {
         $prepared_variations = [];
-        
         foreach ($variations as $variation) {
             $variation_id = $variation->get_id();
             $startDate = get_post_meta($variation_id, 'start_date', true);
-            $date = date_i18n('j F', strtotime($startDate));
+            $date = get_display_date(strtotime($startDate));
             $link = coachview_register_page_url(['woo_vid' => $variation_id]);
 
             $prepared_variations[] = [
