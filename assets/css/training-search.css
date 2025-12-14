@@ -32,9 +32,52 @@
     animation: coachview-spin 0.8s linear infinite;
 }
 
-
 .coachview-search__more-items {
     display: flex;
+}
+
+.coachview-search__bar {
+    flex-wrap: wrap;
+}
+
+.coachview-search__bar button {
+    white-space: nowrap;
+}
+
+.coachview-search__filter-pill {
+    pointer-events: none;
+    position: relative;
+    padding: .75rem 1rem;
+    border: 1px solid var(--bc-blue-grey);
+    border-radius: 4px;
+    color: var(--bc-blue-grey);
+    font-size: 14px;
+    line-height: 14px;
+    white-space: nowrap;
+}
+
+.coachview-search__filter-pill-button {
+    pointer-events: auto;
+    position: absolute;
+    top: -.5rem;
+    right: -.5rem;
+    background: var(--bc-blue-grey);
+    width: 1rem;
+    height: 1rem;
+    color: white;
+    border-radius: 50%;
+    padding: 0;
+    margin: 0;
+    outline: 0;
+    font-size: 0.4rem;
+    text-align: center;
+}
+
+.coachview-search__filter-pill-button:hover,
+.coachview-search__filter-pill-button:active {
+    color: var(--bc-blue-grey-light);
+    background: var(--bc-blue-grey);
+    border: 1px solid var(--bc-blue-grey);
 }
 
 @keyframes coachview-spin {

@@ -51,9 +51,9 @@ jQuery(document).ready(function($) {
     function syncUIFromUrl() {
         applyFiltersFromUrl();
         fetchProducts();
+        displayActiveFilters();
         displayActiveFilterCount();
         toggleResetButton();
-        // displayActiveFilters();
     }
 
     /* ---------- UI Sync ---------- */
@@ -97,29 +97,31 @@ jQuery(document).ready(function($) {
 
     function displayActiveFilters() {
         const params = getUrlParams();
-        let html = '';
+        $('.coachview-search__filter-pill').remove();
 
         if (params.search) {
-            html += `
-                <button class="btn btn-secondary small" data-filter-type="search">
+            $resetFilters.before($(`
+                <div class="coachview-search__filter-pill" data-filter-type="search">
                     Search:${$('<div>').text(params.search).html()}
-                    <i class="fa-thin fa-times"></i>
-                </button>`;
+                    <button class="coachview-search__filter-pill-button btn btn-no-after">
+                        <i class="fa-regular fa-times"></i>
+                    </button> 
+                </div>`));
         }
 
         params.categories.forEach(function(id) {
-            html += `
-                <button class="btn btn-secondary small search-filter-remove"
+            $resetFilters.before($(`
+                <div class="coachview-search__filter-pill" 
                         data-filter-type="category"
                         data-category-id="${id}">
                     ${$('<div>').text(getCategoryName(id)).html()}
-                    <i class="fa-thin fa-times"></i>
-                </button>`;
+                    <button class="coachview-search__filter-pill-button btn btn-no-after">
+                        <i class="fa-regular fa-times"></i>
+                    </button>
+                </div>`));
         });
 
-        $activeFilters.html(html);
-
-        $activeFilters.find('button').on('click', onRemoveFilterClick);
+        $('.coachview-search__filter-pill-button').on('click', onRemoveFilterClick);
     }
 
     function getFilterCount() {
@@ -143,14 +145,15 @@ jQuery(document).ready(function($) {
 
     function onRemoveFilterClick() {
         const $btn = $(this);
+        const $pill = $btn.closest('.coachview-search__filter-pill');
         const params = getUrlParams();
-        const type = $btn.data('filter-type');
+        const type = $pill.data('filter-type');
 
         if (type === 'search') {
             updateUrl('', params.categories);
             $search.val('');
         } else {
-            const id = String($btn.data('category-id'));
+            const id = String($pill.data('category-id'));
             const filtered = params.categories.filter(c => c !== id);
             updateUrl(params.search, filtered);
 
