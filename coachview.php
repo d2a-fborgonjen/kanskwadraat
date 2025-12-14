@@ -11,6 +11,7 @@ use Coachview\Admin\Admin;
 use Coachview\Admin\CustomACF;
 use Coachview\Admin\ProductList;
 use Coachview\Admin\ProductMeta;
+use Coachview\Admin\SearchForms;
 use Coachview\Admin\Settings;
 use Coachview\Cron\Cron;
 use Coachview\Presentation\Components\RegisterForm;
@@ -28,6 +29,7 @@ add_action('plugins_loaded', function () {
     new Settings();
     new ProductList();
     new ProductMeta();
+    new SearchForms();
     new CustomACF();
 
     // Training Type + Training

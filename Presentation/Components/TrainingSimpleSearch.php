@@ -16,17 +16,44 @@ class TrainingSimpleSearch
         add_shortcode('cv_simple_search', [$this, 'render_shortcode']);
     }
 
-    public function render_shortcode(): string
+    public function render_shortcode($atts): string
     {
+        $atts = shortcode_atts([
+            'name' => 'not-set',
+            'orientation' => 'horizontal'
+        ], $atts, 'cv_simple_search');
+
+        $form_name = sanitize_text_field($atts['name']);
+        $orientation = sanitize_text_field($atts['orientation']);
+
         wp_enqueue_script('coachview-register-wizard', cv_assets_url('js/simple-search.js'), ['jquery'], '1.0', true);
         $templateEngine = new TemplateEngine();
 
-        $data = [
-            '_coachview_form_token' => $this->generate_form_token(),
-            'search_page_url' => coachview_search_page_url(),
-            'categories' => $this->get_search_categories()
-        ];
-        return $templateEngine->render('simple-search', $data);
+        // If form name is provided, use form settings
+        if (!empty($form_name)) {
+            $form = coachview_get_search_form_by_name($form_name);
+            if ($form) {
+                // Build search page URL from form data
+                $search_page_url = '';
+                if (!empty($form['coachview_search_page'])) {
+                    $page_id = absint($form['coachview_search_page']);
+                    $search_page_url = get_permalink($page_id);
+                }
+                if (empty($search_page_url)) {
+                    $search_page_url = coachview_get_default_search_url();
+                }
+
+                $data = [
+                    '_coachview_form_token' => $this->generate_form_token(),
+                    'name' => $form_name,
+                    'orientation' => $orientation,
+                    'search_page_url' => $search_page_url,
+                    'categories' => $this->get_search_categories_from_form($form)
+                ];
+                return $templateEngine->render('simple-search', $data);
+            }
+        }
+        return '<div class="cv-simple-search-error">Zoekformulier met naam "'. $form_name .'" niet gevonden.</div>';
     }
 
     private function get_search_categories(): array
@@ -39,6 +66,24 @@ class TrainingSimpleSearch
         foreach ($cat_ids as $cat_id) {
             if ($cat_id > 0) {
                 $result[] = get_category_with_children($cat_id);
+            }
+        }
+        return $result;
+    }
+
+    private function get_search_categories_from_form(array $form): array
+    {
+        $cat_ids = [
+            isset($form['category_1']) ? absint($form['category_1']) : 0,
+            isset($form['category_2']) ? absint($form['category_2']) : 0
+        ];
+        $result = [];
+        foreach ($cat_ids as $cat_id) {
+            if ($cat_id > 0) {
+                $category = get_category_with_children($cat_id);
+                if ($category) {
+                    $result[] = $category;
+                }
             }
         }
         return $result;

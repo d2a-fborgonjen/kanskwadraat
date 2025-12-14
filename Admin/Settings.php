@@ -34,9 +34,6 @@ class Settings
         register_setting('coachview_sync_settings', 'coachview_training_import_limit');
         register_setting('coachview_sync_settings', 'coachview_register_page');
         register_setting('coachview_sync_settings', 'coachview_order_success_redirect_url');
-        register_setting('coachview_sync_settings', 'coachview_search_page');
-        register_setting('coachview_sync_settings', 'coachview_search_page_category_1');
-        register_setting('coachview_sync_settings', 'coachview_search_page_category_2');
     }
 
     public function refresh_api_token_on_save($option): void
@@ -105,68 +102,6 @@ class Settings
                         <td><input type="text" name="coachview_training_import_limit"
                                    value="<?php echo esc_attr(get_option('coachview_training_import_limit')); ?>"
                                    class="regular-text"></td>
-                    </tr>
-                </table>
-
-
-                <h1>Zoeken</h1>
-                <table class="form-table">
-                    <tr>
-                        <th scope="row">Zoek pagina</th>
-                        <td>
-                            <?php
-                            wp_dropdown_pages([
-                                    'name' => 'coachview_search_page',
-                                    'show_option_none' => '— Selecteer een pagina —',
-                                    'option_none_value' => '0',
-                                    'selected' => get_option('coachview_search_page')
-                            ]);
-                            ?>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th scope="row">Categorieen in simple search</th>
-                        <td>
-                            <?php
-                            $categories = get_hierarchical_categories();
-
-                            for ($i = 1; $i <= 2; $i++) {
-                                $selected_category = get_option('coachview_search_page_category_' . $i);
-                                echo '<select name="coachview_search_page_category_' . $i . '" id="coachview_search_page_category_' . $i . '" class="postform">';
-                                echo '<option value="0"' . ($selected_category == 0 ? ' selected="selected"' : '') . '>— Selecteer een categorie —</option>';
-                                foreach ($categories as $category) {
-                                    $category_id = $category['term_id'];
-                                    $selected = ($selected_category == $category_id) ? ' selected="selected"' : '';
-                                    echo '<option value="' . $category_id . '"' . $selected . '>' . esc_html($category['name']) . "</option>";
-                                }
-                                echo '</select> ';
-                            }
-
-//
-//                            wp_dropdown_categories([
-//                                    'taxonomy' => 'product_cat',
-//                                    'name' => 'coachview_search_page_category_1',
-//                                    'show_option_none' => '— Selecteer een categorie —',
-//                                    'option_none_value' => '0',
-//                                    'selected' => get_option('coachview_search_page_category_1'),
-////                                    'hide_empty' => 1,
-////                                    'hierarchical' => false,
-////                                    'depth' => 1,
-//                                    'parent'       => 0
-//                            ]);
-//                            wp_dropdown_categories([
-//                                    'name' => 'coachview_search_page_category_2',
-//                                    'taxonomy' => 'product_cat',
-////                                    'show_option_none' => '— Selecteer een categorie —',
-////                                    'option_none_value' => '0',
-////                                    'selected' => get_option('coachview_search_page_category_2'),
-////                                    'hide_empty' => 1,
-//                                    'hierarchical' => false,
-//                                    'depth' => 1
-//                            ]);
-                            ?>
-
-                        </td>
                     </tr>
                 </table>
 

@@ -4,8 +4,8 @@
 
     <form class="simple-search-form" action="{{ search_page_url }}">
         <div class="gform-body gform_body">
-            <div id="gform_fields_1"
-                 class="gform_fields top_label form_sublabel_below description_below validation_below">
+            <div id="gform_fields_{{ name }}"
+                 class="gform_fields top_label form_sublabel_below description_below validation_below {{ orientation == 'vertical' ? 'flex-column' : '' }}">
                 <div id="field_1_1"
                      class="gfield gfield--type-text gfield--input-type-text gfield--width-quarter gfield_error field_sublabel_below gfield--no-description field_description_below hidden_label field_validation_below gfield_visibility_visible">
                     <label class="gfield_label gform-field-label" for="input_1_1">Ik zoek</label>

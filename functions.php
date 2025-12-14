@@ -176,3 +176,31 @@ function normalize_enums(mixed $data): mixed
 
     return $data;
 }
+
+/**
+ * Get all search forms
+ *
+ * @return array Array of search forms indexed by form ID
+ */
+function coachview_get_search_forms(): array
+{
+    $forms = get_option('coachview_search_forms', []);
+    return is_array($forms) ? $forms : [];
+}
+
+/**
+ * Get a specific search form by name
+ *
+ * @param string $form_name The form name
+ * @return array|null The search form data or null if not found
+ */
+function coachview_get_search_form_by_name(string $form_name): ?array
+{
+    $forms = coachview_get_search_forms();
+    foreach ($forms as $form) {
+        if (isset($form['name']) && $form['name'] === $form_name) {
+            return $form;
+        }
+    }
+    return null;
+}
