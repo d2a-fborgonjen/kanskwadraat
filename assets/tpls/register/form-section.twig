@@ -1,7 +1,7 @@
 {% if description %}
     <p class="form-section__description">{{ description }}</p>
 {% endif %}
-<div class="form-section__content">
+<div class="form-section__content" data-title="{{ title }}">
     {% for item in items %}
         {{ item | raw }}
     {% endfor %}

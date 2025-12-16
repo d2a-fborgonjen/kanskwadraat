@@ -18,7 +18,7 @@
                                         </div>
                                         <div class="accordion-button-inner-wrapper__next d-flex flex-row align-items-center px-lg-4">
                                             <i class="fa-thin fa-euro me-2"></i>
-                                            {{ variation.price | raw }}
+                                            {{ variation.price }}
                                         </div>
                                         <div class="accordion-button-inner-wrapper__next d-flex flex-row align-items-center px-lg-4">
                                             <i class="fa-thin fa-location-dot me-2"></i>
@@ -35,9 +35,11 @@
                                                     data-bs-target="#collapse--{{ loop.index }}"
                                                     aria-expanded="false"
                                                     aria-controls="collapse--{{ loop.index }}">
-                                                <i class="fa-thin fa-circle-calendar me-2" aria-hidden="true"></i>
-                                                Toon planning
-                                                <i class="fa-light fa-chevron-down ms-1" aria-hidden="true"></i>
+                                                <div class="accordion-button-inner d-flex flex-row align-items-center text-nowrap">
+                                                    <i class="fa-thin fa-circle-calendar me-2" aria-hidden="true"></i>
+                                                    Toon planning
+                                                    <i class="fa-light fa-chevron-down ms-1" aria-hidden="true"></i>
+                                                </div>
                                             </button>
                                         </div>
                                         <div class="accordion-button-inner-wrapper__button mt-3 mt-lg-0">
@@ -63,7 +65,7 @@
 
                         <div class="training__planning">
 
-                            <h3>Lesdagen en planning</h3>
+                            <h3 class="bc-color-blue">Lesdagen en planning</h3>
                             <ul class="training__planning-lessons">
                                 {% for entry in variation.planning %}
                                     <li>

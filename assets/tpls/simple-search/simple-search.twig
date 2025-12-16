@@ -4,14 +4,14 @@
             <div id="search_field" class="flex-grow-1">
                 <input name="search"
                        type="text"
-                       class="cv_form-input"
+                       class="form-field__input"
                        placeholder="Zoek opleidingen...">
             </div>
             {% for category in categories %}
                 <div id="category_field_{{ loop.index }}" class="flex-grow-1">
                     <select name="category_{{ loop.index }}"
                             id="category_{{ category.term_id }}"
-                            class="cv_form-select">
+                            class="form-field__select">
                         <option value="" selected="selected" class="gf_placeholder">{{ category.name }}</option>
                         {% for child in category['child_categories'] %}
                             <option value="{{ child.term_id }}">{{ child.name }}</option>

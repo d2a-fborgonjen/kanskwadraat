@@ -45,22 +45,20 @@
                                             Volgende startdatum: {{ item.trainings[0].start_date_display }}
                                         </div>
 
-                                        <div class="accordion-button-inner-wrapper__show px-lg-2">
-                                            <button class="accordion-button collapsed"
+                                        <div class="px-lg-2">
+                                            <button class="accordion-button collapsed text-nowrap"
                                                     type="button"
                                                     data-bs-toggle="collapse"
                                                     data-bs-target="#agenda-item--{{ loop.index }}"
                                                     aria-controls="agenda-item--{{ loop.index }}"
                                                     aria-expanded="false">
-                                                <div class="accordion-button-inner d-flex flex-row align-items-center">
                                                     <i class="fa-thin fa-circle-calendar me-2" aria-hidden="true"></i>
                                                     Toon data
                                                     <i class="fa-light fa-chevron-down ms-1" aria-hidden="true"></i>
-                                                </div>
                                             </button>
                                         </div>
                                         <div class="accordion-button-inner-wrapper__button mt-3 mt-lg-0">
-                                            <a href="{{ item.training_type.permalink }}" class="btn btn-secondary small">
+                                            <a href="{{ item.training_type.permalink }}" class="btn btn-secondary small text-nowrap">
                                                 Meer info
                                             </a>
                                         </div>

@@ -110,30 +110,6 @@
     border-top: 1px solid var(--bc-blue);
 }
 
-
-/* Form Group */
-.form-group {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: .5rem;
-    align-items: start;
-}
-
-.form-field__input--error {
-    border: 1px solid var(--red) !important;
-    box-shadow: 0 0 0 3px rgba(211, 47, 47, 0.1) !important;
-}
-
-.form-field__input--error:focus {
-    border: 1px solid var(--red) !important;
-    box-shadow: 0 0 0 3px rgba(211, 47, 47, 0.2) !important;;
-}
-
-.form-field__input--textarea {
-    min-height: 120px;
-    resize: vertical;
-}
-
 /** form summary */
 .register-form__summary-item-label {
     color: var(--bc-blue-grey)

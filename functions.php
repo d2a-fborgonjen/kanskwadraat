@@ -75,7 +75,10 @@ function get_registration_type(WC_Product $training_type): RegistrationType
     $training_type_category = get_post_meta($training_type->get_id(), 'training_type_category', true);
 
     // Published but hidden training types are only available for in-company registrations
-    if ($training_type->get_status() == ProductStatus::PUBLISH && !$training_type->is_visible()) {
+    if ($training_type->get_status() == ProductStatus::PUBLISH &&
+        // TODO: ASK johan about in company trainings
+        (get_post_meta($training_type->get_id() , '_yoast_wpseo_meta-robots-noindex', true) === '1'
+            || get_post_meta($training_type->get_id() , 'cv_hide_from_search', true) === 'yes')) {
         return RegistrationType::IN_COMPANY;
     } else if ($training_type_category === CourseFormat::E_LEARNING->value) {
         return RegistrationType::OPEN_ENROLLMENT;

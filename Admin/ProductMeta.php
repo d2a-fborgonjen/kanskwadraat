@@ -75,15 +75,15 @@ class ProductMeta
         if (!get_post_meta($post->ID, 'coachview_id', true)) {
             return;
         }
-        $value = get_post_meta($post->ID, 'cv_hide_from_search', true) ?: 0;
+        $value = get_post_meta($post->ID, 'cv_hide_from_search', true) ?: 'no';
         ?>
         <p><?php esc_html_e('Verberg deze training van de zoekresultaten', 'coachview'); ?></p>
         <label>
-            <input type="radio" name="cv_hide_from_search" value="1" <?php checked($value, 1); ?>>
+            <input type="radio" name="cv_hide_from_search" value="yes" <?php checked($value, 'yes'); ?>>
             <?php esc_html_e('Ja', 'coachview'); ?>
         </label><br>
         <label>
-            <input type="radio" name="cv_hide_from_search" value="0" <?php checked($value, 0); ?>>
+            <input type="radio" name="cv_hide_from_search" value="no" <?php checked($value, 'no'); ?>>
             <?php esc_html_e('Nee', 'coachview'); ?>
         </label>
         <?php
@@ -121,8 +121,8 @@ class ProductMeta
             delete_post_meta($post_id, 'cv_form_contact_person_header');
         }
 
-        if (isset($_POST['cv_hide_from_search']) && $_POST['cv_hide_from_search'] === '1') {
-            update_post_meta($post_id, 'cv_hide_from_search', 1);
+        if (isset($_POST['cv_hide_from_search']) && $_POST['cv_hide_from_search'] === 'yes') {
+            update_post_meta($post_id, 'cv_hide_from_search', 'yes');
         } else {
             delete_post_meta($post_id, 'cv_hide_from_search');
         }

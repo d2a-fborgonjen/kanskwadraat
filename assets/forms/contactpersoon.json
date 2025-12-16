@@ -1,40 +1,44 @@
 {
-    "id": "contactperson",
-    "title": "Pedagogisch medewerker die je gaat coachen",
-    "rules": {
-        "onlyForForm": "contactPersonForm"
-    },
-    "items": [
+  "id": "contactperson",
+  "title": "Pedagogisch medewerker die je gaat coachen",
+  "rules": {
+    "onlyForForm": "contact-person"
+  },
+  "items": [
+    {
+      "fields": [
         {
-            "field": "contactpersoon[voornaam]",
-            "label": "Voornaam",
-            "type": "text",
-            "required": true
+          "field": "contactpersoon[voornaam]",
+          "label": "Voornaam",
+          "type": "text",
+          "required": true
         },
         {
-            "field": "contactpersoon[tussenvoegsel]",
-            "label": "Tussenvoegsel",
-            "type": "text",
-            "optional": true
+          "field": "contactpersoon[tussenvoegsel]",
+          "label": "Tussenvoegsel",
+          "type": "text",
+          "optional": true
         },
         {
-            "field": "contactpersoon[achternaam]",
-            "label": "Achternaam",
-            "type": "text",
-            "required": true
-        },
-        {
-            "field": "contactpersoon[emailadres]",
-            "label": "E-mailadres",
-            "type": "email",
-            "required": true
-        },
-        {
-            "field": "contactpersoon[telefoonnummer]",
-            "label": "Telefoonnummer",
-            "type": "tel",
-            "required": true,
-            "placeholder": "06-12345678"
+          "field": "contactpersoon[achternaam]",
+          "label": "Achternaam",
+          "type": "text",
+          "required": true
         }
-    ]
+      ]
+    },
+    {
+      "field": "contactpersoon[emailadres]",
+      "label": "E-mailadres",
+      "type": "email",
+      "required": true
+    },
+    {
+      "field": "contactpersoon[telefoonnummer]",
+      "label": "Telefoonnummer",
+      "type": "text",
+      "required": true,
+      "placeholder": "06-12345678"
+    }
+  ]
 }

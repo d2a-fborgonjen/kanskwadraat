@@ -25,7 +25,6 @@ class TrainingTypeSearch
         $data = [
             'category_list' => $this->renderCategorySidebar(),
             'style_urls' => [
-                'common' => cv_assets_url('css/common.css'),
                 'search' => cv_assets_url('css/training-search.css'),
             ]
         ];
@@ -69,12 +68,10 @@ class TrainingTypeSearch
         $duration = get_post_meta($product->get_id(), 'training_duration', true);
         $training_cities = get_post_meta($product->get_id(), 'training_cities', true);
         $training_type_category = get_post_meta($product->get_id(), 'training_type_category', true);
-        $cv_hide_from_search = get_post_meta($product->get_id(), 'cv_hide_from_search', true);
         $product_url = get_permalink($product->get_id());
 
         $is_online = $training_type_category === CourseFormat::E_LEARNING->value;
         $location = $is_online ? 'Online' : join(", ", $training_cities ?: []);
-
 
         // Get product image URL properly
         $image_id = $product->get_image_id();
@@ -85,7 +82,6 @@ class TrainingTypeSearch
         $data = [
             'image_url' => $image_url ?: wc_placeholder_img_src('woocommerce_thumbnail'),
             'name' => $product->get_name(),
-            'cv_hide_from_search' => $cv_hide_from_search,
             'description' => substr($product->get_description(), 0, 200) . (strlen($product->get_description()) > 200 ? '...' : ''),
             'training_url' => $product_url,
             'training_type_category' => $training_type_category,

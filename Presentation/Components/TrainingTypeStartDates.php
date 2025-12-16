@@ -24,10 +24,10 @@ class TrainingTypeStartDates
     public function render_start_dates($product_id): string {
         global $post;
         $product = wc_get_product($product_id ?: $post->ID);
+
         if (!$product || !$product->is_type('variable')) {
             return 'Geen startdata beschikbaar.';
         }
-
         $variations = $this->get_future_variations($product);
 
         wp_enqueue_script('coachview-training-type-start-dates', cv_assets_url('js/training-type-start-dates.js'), array('jquery'), null, true);
@@ -72,7 +72,7 @@ class TrainingTypeStartDates
                 'date' => $date,
                 'link' => $link,
                 'is_in_stock' => $variation->is_in_stock(),
-                'price' => wc_price($variation->get_price(), ['currency' => '']),
+                'price' => number_format_i18n($variation->get_price()),
                 'location' => get_post_meta($variation_id, 'location', true),
                 'city' => get_post_meta($variation_id, 'city', true),
                 'address' => get_post_meta($variation_id, 'address', true),

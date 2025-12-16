@@ -70,8 +70,8 @@ class RegisterForm
     {
         $form_type = get_post_meta($training_type->get_id(), 'cv_form_type', true) ?? 'default';
         $registration_type = get_registration_type($training_type);
-        $participant_header = get_post_meta(get_the_ID(), 'participant_header', true) ?? null;
-        $contact_person_header = get_post_meta(get_the_ID(), 'contact_person_header', true) ?? null;
+        $participant_header = get_post_meta($training_type->get_id(), 'cv_form_participant_header', true) ?? null;
+        $contact_person_header = get_post_meta($training_type->get_id(), 'cv_form_contact_person_header', true) ?? null;
 
 
         $form_sections = [
@@ -100,7 +100,6 @@ class RegisterForm
 
             // Include styles in the html since wp_enqueue_style is sometimes ignored on shotcode rendering
             'style_urls' => [
-                'common' => cv_assets_url('css/common.css'),
                 'register-page' => cv_assets_url('css/register-page.css'),
             ],
 

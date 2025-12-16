@@ -45,6 +45,8 @@ add_action('plugins_loaded', function () {
 
     new Cron();
     new Sync();
+
+    wp_enqueue_style('coachview-common', cv_assets_url('css/common.css'), array(), null);
 });
 
 register_activation_hook(__FILE__, function() {
