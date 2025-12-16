@@ -1,5 +1,9 @@
 <section class="bc-calendar">
     <div class="accordion" id="training-start-dates">
+        {% if variations|length == 0 %}
+            <p>Er zijn momenteel geen startdata beschikbaar voor deze opleiding.</p>
+        {%  endif %}
+
         {% for variation in variations %}
             <div class="accordion-item mb-3">
                 <div class="accordion-header" id="heading--{{ loop.index }}">
@@ -7,7 +11,7 @@
                         <div class="accordion-button-inner">
                             <div class="row">
                                 <div class="col-xl-6">
-                                    <div class="accordion-button-inner-wrapper py-3 w-100 d-flex flex-row align-items-center justify-content-between">
+                                    <div class="accordion-button-inner-wrapper py-3 w-100 d-flex flex-row align-items-center">
                                         <div class="accordion-button-inner-wrapper__next d-flex flex-row align-items-center px-lg-4 ps-lg-4">
                                             <i class="fa-thin fa-calendar me-2"></i>
                                             {{ variation.date }}
@@ -17,13 +21,13 @@
                                             {{ variation.price | raw }}
                                         </div>
                                         <div class="accordion-button-inner-wrapper__next d-flex flex-row align-items-center px-lg-4">
-                                            <i class="fa-thin fa-location me-2"></i>
+                                            <i class="fa-thin fa-location-dot me-2"></i>
                                             {{ variation.city }}
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-xl-6 d-flex flex-row align-items-center justify-content-end">
-                                    <div class="accordion-button-inner-wrapper py-3 py-xl-0 ps-xl-0 w-100 d-lg-flex flex-row align-items-center justify-content-between justify-content-xl-end">
+                                    <div class="accordion-button-inner-wrapper py-3 py-xl-0 ps-xl-0 w-100 d-lg-flex flex-row align-items-center justify-content-xl-end">
                                         <div class="accordion-button-inner-wrapper__button px-lg-4">
                                             <button class="accordion-button collapsed d-flex flex-row align-items-center"
                                                     type="button"
@@ -37,9 +41,13 @@
                                             </button>
                                         </div>
                                         <div class="accordion-button-inner-wrapper__button mt-3 mt-lg-0">
-                                            <a href="{{ variation.link }}" class="btn btn-primary training__register">
-                                                {{ variation.is_in_stock ? 'Inschrijven' : 'Wachtlijst' }}
-                                            </a>
+                                            {% if variation.is_in_stock %}
+                                                <a href="{{ variation.link }}" class="btn btn-primary training__register">
+                                                    Inschrijven
+                                                </a>
+                                            {% else %}
+                                                <div class="btn btn-primary">Vol</div>
+                                            {% endif %}
                                         </div>
                                     </div>
                                 </div>

@@ -1,44 +1,28 @@
-<div class="gf_browser_gecko gform_wrapper gform-theme gform-theme--foundation gform-theme--framework gform-theme--orbital search-training_wrapper align-self-center gform_validation_error"
-     data-form-theme="orbital" data-form-index="0" id="gform_wrapper_1">
-    <div id="gf_1" class="gform_anchor" tabindex="-1"></div>
-
+<div id="cv_simple_search_{{ name }}" class="cv_block_wrapper">
     <form class="simple-search-form" action="{{ search_page_url }}">
-        <div class="gform-body gform_body">
-            <div id="gform_fields_{{ name }}"
-                 class="gform_fields top_label form_sublabel_below description_below validation_below {{ orientation == 'vertical' ? 'flex-column' : '' }}">
-                <div id="field_1_1"
-                     class="gfield gfield--type-text gfield--input-type-text gfield--width-quarter gfield_error field_sublabel_below gfield--no-description field_description_below hidden_label field_validation_below gfield_visibility_visible">
-                    <label class="gfield_label gform-field-label" for="input_1_1">Ik zoek</label>
-                    <div class="ginput_container ginput_container_text"><input name="search" id="input_1_1" type="text"
-                                                                               value="" class="large"
-                                                                               aria-describedby="validation_message_1_1"
-                                                                               placeholder="Zoek opleidingen..."
-                                                                               aria-invalid="true"></div>
-                </div>
-                {% for category in categories %}
-                <div id="category_field_{{ loop.index }}"
-                     class="gfield gfield--type-select gfield--input-type-select gfield--width-quarter gfield_error field_sublabel_below gfield--no-description field_description_below hidden_label field_validation_below gfield_visibility_visible">
-                    <label class="gfield_label gform-field-label" for="input_1_3">{{ category['name'] }}</label>
-                    <div class="ginput_container ginput_container_select"><select name="category_{{ loop.index }}"
-                                                                                  id="category_{{ category.term_id }}"
-                                                                                  class="large gfield_select">
-                            <option value="" selected="selected" class="gf_placeholder">{{  category.name }}</option>
-                            {%  for child in category['child_categories'] %}
-                             <option value="{{  child.term_id }}">{{ child.name }}</option>
-                            {%  endfor %}
-                        </select>
-                    </div>
-                </div>
-                {%  endfor %}
-
-                <div id="field_submit"
-                     class="gfield gfield--type-submit gfield--width-quarter field_sublabel_below gfield--no-description field_description_below field_validation_below gfield_visibility_visible"
-                     data-field-class="gform_editor_submit_container" data-field-position="inline">
-                    <button id="gform_submit_button_1" class="gform_button btn btn-primary" data-label="Zoek in aanbod">
-                        Zoek in aanbod
-                    </button>
-                </div>
+        <div class="d-flex flex-column flex-xl-row gap-4 {{ orientation == 'vertical' ? 'flex-column' : '' }}">
+            <div id="search_field" class="flex-grow-1">
+                <input name="search"
+                       type="text"
+                       class="cv_form-input"
+                       placeholder="Zoek opleidingen...">
             </div>
+            {% for category in categories %}
+                <div id="category_field_{{ loop.index }}" class="flex-grow-1">
+                    <select name="category_{{ loop.index }}"
+                            id="category_{{ category.term_id }}"
+                            class="cv_form-select">
+                        <option value="" selected="selected" class="gf_placeholder">{{ category.name }}</option>
+                        {% for child in category['child_categories'] %}
+                            <option value="{{ child.term_id }}">{{ child.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            {% endfor %}
+
+            <button class="btn btn-primary text-nowrap flex-grow-1" data-label="Zoek in aanbod">
+                Zoek in aanbod
+            </button>
         </div>
     </form>
 </div>

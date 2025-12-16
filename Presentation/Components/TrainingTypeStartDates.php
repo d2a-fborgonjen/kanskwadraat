@@ -22,11 +22,10 @@ class TrainingTypeStartDates
     }
 
     public function render_start_dates($product_id): string {
-        global $product;
-
-        $product = wc_get_product($product_id) ?? $product;
+        global $post;
+        $product = wc_get_product($product_id ?: $post->ID);
         if (!$product || !$product->is_type('variable')) {
-            return '';
+            return 'Geen startdata beschikbaar.';
         }
 
         $variations = $this->get_future_variations($product);

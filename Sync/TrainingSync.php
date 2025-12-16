@@ -31,7 +31,7 @@ class TrainingSync {
                 } else {
                     $product = TrainingSync::__save_variable_product($training_type);
                     $variations = TrainingSync::__save_variations($product, $training_type->trainings);
-//                    TrainingSync::__archive_stale_variations($product, $training_type->trainings);
+                    TrainingSync::__archive_stale_variations($product, $training_type->trainings);
 
                     $product_id = $product->get_id();
                     $num_variations = $variations->count();
@@ -199,28 +199,26 @@ class TrainingSync {
     }
 
     /**
-     * TODO: Ask johan
+     * Archive variations that are no longer active
      */
-    private static function __archive_stale_variations(WC_Product_Variable $product, Collection $current_trainings): void
+    private static function __archive_stale_variations(WC_Product_Variable $product, Collection $active_trainings): void
     {
-        $training_codes = $current_trainings->pluck('code')->toArray();
-
+        $training_codes = $active_trainings->pluck('code')->toArray();
+        $training_type_name = $product->get_name();
         foreach ($product->get_children() as $variation_id) {
             $variation = wc_get_product($variation_id);
             if (!$variation instanceof WC_Product_Variation) {
                 continue;
             }
-
             $attributes = $variation->get_attributes();
             $training_code = $attributes['training_code'] ?? null;
-
             if (!$training_code || !in_array($training_code, $training_codes)) {
                 $variation->set_status('private');
                 $variation->set_stock_quantity(0);
                 $variation->set_manage_stock(true);
                 $variation->save();
 
-                log_cv_info("Archived stale training. Product variation ID [$variation_id] code: [$training_code]");
+                log_cv_info("Archived stale training. Variation ID [$variation_id] code: [$training_code] TrainingType: $training_type_name");
             }
         }
     }
