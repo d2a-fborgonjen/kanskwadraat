@@ -8,8 +8,10 @@ class SyncRunner
     public static function run(): void
     {
         SyncRunner::onSynchronizationStart();
+        PaymentMethodSync::run();
         CategorySync::run();
         TrainingSync::run();
+        CategorySync::cleanup_after_sync();
         SyncRunner::onSynchronizationFinished();
     }
 

@@ -30,7 +30,7 @@ class TrainingTypeCTA {
             if ($registration_type === RegistrationType::ENLIST) {
                 return $this->create_primary_button('Inschrijven wachtlijst', $register_link);
             } else {
-                return $this->create_primary_button('Bekijk startdata', '#training-start-dates');
+                return $this->create_primary_button('Bekijk startdata', '#startdata');
             }
         } else {
             return $this->create_primary_button('Inschrijven', $register_link);

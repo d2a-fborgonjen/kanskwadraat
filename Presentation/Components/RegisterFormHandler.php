@@ -30,9 +30,10 @@ class RegisterFormHandler
             $payload = $request->get_body_params();
         }
 
-        $result = coachview_test_mode_enabled()
-            ? $this->handle_submission($payload ?? [])
-            : $this->blocked_submission_response();
+//        $result = coachview_test_mode_enabled()
+//            ? $this->handle_submission($payload ?? [])
+//            : $this->blocked_submission_response();
+        $result = $this->handle_submission($payload ?? []);
 
         if (!$result['success']) {
             return new WP_REST_Response([
@@ -44,6 +45,7 @@ class RegisterFormHandler
             'message'       => $result['message'],
             'redirect_url'  => $result['redirect_url'],
             'order'         => $result['order'],
+
         ], $result['status']);
     }
 
@@ -68,7 +70,7 @@ class RegisterFormHandler
 //        error_log('Processing form submission for training registration.' . print_r($order_data, true));
 
         $order = $this->create_coachview_order($order_data);
-        error_log('Response from CoachView: ' . print_r($order, true));
+//        error_log('Response from CoachView: ' . print_r($order, true));
 
         if (is_wp_error($order) || !$order) {
             $statusCode = 500;

@@ -27,8 +27,15 @@ class ProductList {
 
             // Training type category
             $training_type_category = get_post_meta($post_id, 'training_type_category', true);
-            if ($training_type_category) {
+            if (is_string($training_type_category) && $training_type_category !== '') {
                 $data .= '<strong>Type:</strong> ' . ucfirst($training_type_category) . '<br>';
+            }
+
+            // Registration type
+            $product = wc_get_product($post_id);
+            $registration_type = get_registration_type($product);
+            if (is_string($registration_type) && $registration_type !== '') {
+                $data .= '<strong>Registratie type:</strong> ' . ucfirst($registration_type) . '<br>';
             }
 
             // Last sync
@@ -44,6 +51,12 @@ class ProductList {
                 if ($num_trainings > 0) {
                     $data .= '<strong>Aantal trainingen:</strong> ' . $num_trainings . '<br>';
                 }
+            }
+
+            // Source
+            $source = get_post_meta($post_id, 'coachview_source', true) ?: 'Onbekend';
+            if (is_string($source) && $source !== '') {
+                $data .= '<strong>Coachview bron:</strong> ' . ucfirst(strtolower($source)) . '<br>';
             }
 
             echo $data;

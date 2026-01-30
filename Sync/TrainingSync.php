@@ -31,6 +31,7 @@ class TrainingSync {
                 } else {
                     $product = TrainingSync::__save_variable_product($training_type);
                     $variations = TrainingSync::__save_variations($product, $training_type->trainings);
+
                     TrainingSync::__archive_stale_variations($product, $training_type->trainings);
 
                     $product_id = $product->get_id();
@@ -74,8 +75,8 @@ class TrainingSync {
         $product_cat_ids = [];
         $location_category_id = get_or_create_category('Locatie');
         if ($location_category_id !== null) {
-            foreach ($training_type->get_locations() as $location) {
-                $product_cat_ids[] = get_or_create_category($location, $location_category_id);
+            foreach ($training_type->get_cities() as $city) {
+                $product_cat_ids[] = get_or_create_category($city, $location_category_id);
             }
         }
 
@@ -213,11 +214,11 @@ class TrainingSync {
             $attributes = $variation->get_attributes();
             $training_code = $attributes['training_code'] ?? null;
             if (!$training_code || !in_array($training_code, $training_codes)) {
-                $variation->set_status('private');
-                $variation->set_stock_quantity(0);
-                $variation->set_manage_stock(true);
-                $variation->save();
-
+                wp_delete_post($variation_id, true);
+//                $variation->set_status('private');
+//                $variation->set_stock_quantity(0);
+//                $variation->set_manage_stock(true);
+//                $variation->save();
                 log_cv_info("Archived stale training. Variation ID [$variation_id] code: [$training_code] TrainingType: $training_type_name");
             }
         }

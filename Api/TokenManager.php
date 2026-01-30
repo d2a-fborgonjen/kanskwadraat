@@ -36,7 +36,7 @@ class TokenManager {
         $response = wp_remote_post($url, ['body' => $body]);
 
         if (is_wp_error($response)) {
-            log_cv_exception('Request[token]', new Exception($response->get_error_message()));
+            log_cv_exception('Request[token]', new \Exception($response->get_error_message()));
             return null;
         }
 
@@ -46,8 +46,7 @@ class TokenManager {
         if ($code === 200 && isset($data['access_token'])) {
             return $data['access_token'];
         }
-
-        error_log('Coachview token error: ' . print_r($data, true));
+        log_cv_exception('Request[token]', new \Exception('Token refresh error' . print_r($data, true)));
         return null;
     }
 }

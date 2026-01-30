@@ -15,12 +15,21 @@ class ProductMeta
     public function add_metaboxes()
     {
         add_meta_box(
-            'form_type',
-            __('Coachview Formulier Opties', 'coachview'),
-            [$this, 'render_form_type_metabox'],
-            'product',
-            'side',
-            'core'
+                'form_type',
+                __('Coachview Formulier Opties', 'coachview'),
+                [$this, 'render_form_type_metabox'],
+                'product',
+                'side',
+                'core'
+        );
+
+        add_meta_box(
+                'payment_types',
+                __('Coachview Betaalwijzen', 'coachview'),
+                [$this, 'render_payment_types_metabox'],
+                'product',
+                'side',
+                'core'
         );
 
         add_meta_box(
@@ -68,6 +77,32 @@ class ProductMeta
                placeholder="Pedagogisch medewerker die je gaat coachen"
                class="widefat" value="<?php echo esc_attr($contactPersonHeaderValue); ?>">
         <?php
+    }
+
+    public function render_payment_types_metabox($post)
+    {
+        ?>
+        <p><?php _e('Selecteer welke betaalwijzen ondersteund worden voor dit product.', 'coachview'); ?></p>
+
+        <label for="cv_payment_methods"><?php esc_html_e('Betaalwijzen', 'coachview'); ?></label>
+
+        <?php
+        $savedMethods = get_post_meta($post->ID, 'cv_payment_methods', true);
+        foreach (coachview_get_payment_methods() as $method)
+        {
+            $checked = '';
+            if (is_array($savedMethods) && in_array($method['id'], $savedMethods, true)) {
+                $checked = 'checked';
+            }
+            ?>
+            <div>
+                <label>
+                    <input type="checkbox" name="cv_payment_methods[]" value="<?php echo esc_attr($method['id']); ?>" <?php echo $checked; ?>>
+                    <?php echo esc_html($method['name']); ?>
+                </label>
+            </div>
+            <?php
+        }
     }
 
     public function render_hide_option_metabox($post)
@@ -125,6 +160,13 @@ class ProductMeta
             update_post_meta($post_id, 'cv_hide_from_search', 'yes');
         } else {
             delete_post_meta($post_id, 'cv_hide_from_search');
+        }
+
+        if (isset($_POST['cv_payment_methods']) && is_array($_POST['cv_payment_methods'])) {
+            $methods = array_map('sanitize_text_field', $_POST['cv_payment_methods']);
+            update_post_meta($post_id, 'cv_payment_methods', $methods);
+        } else {
+            delete_post_meta($post_id, 'cv_payment_methods');
         }
 
         TrainingAgenda::clear_cached_agenda_data();

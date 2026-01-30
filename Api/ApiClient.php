@@ -34,8 +34,8 @@ class ApiClient {
         return self::$instance;
     }
 
-    public static function category_groups(): ApiEndpoint {
-        return ApiClient::instance()->create_endpoint('/v1/Opleidingssoortcategoriegroepen');
+    public static function payment_methods(): ApiEndpoint {
+        return ApiClient::instance()->create_endpoint('/v1/Betaalwijzen');
     }
 
     public static function categories(): ApiEndpoint {

@@ -57,6 +57,10 @@ class TrainingType {
         return $this->trainings->pluck('locations')->flatten()->filter(fn($value) => !empty($value))->unique()->toArray();
     }
 
+    public function get_cities(): array {
+        return $this->trainings->pluck('city')->flatten()->filter(fn($value) => !empty($value))->unique()->toArray();
+    }
+
 
     public function get_course_format(): CourseFormat {
         $course_formats = $this->training_type_components->pluck('course_format')->unique()->toArray();

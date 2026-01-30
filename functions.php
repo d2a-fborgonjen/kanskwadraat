@@ -13,7 +13,7 @@ function coachview_test_mode_enabled(): bool {
 function coachview_api_url(): string {
     return coachview_test_mode_enabled() ?
         'https://training.coachview.net' :
-        'https://secure.coachview.net';
+        'https://kanskwadraat.coachview.com';
 }
 
 function coachview_api_client_id(): string {
@@ -30,20 +30,6 @@ function coachview_api_secret(): string {
 
 function coachview_api_token(bool $refresh = false): string {
     return TokenManager::instance()->getToken($refresh);
-}
-
-
-function coachview_search_page_url(array $params = []): string {
-    $url = coachview_get_default_search_url();
-    if (has_custom_search_page()) {
-        $url = get_permalink(get_option('coachview_search_page'));
-    }
-    return empty($params) ? $url : $url . '?' . http_build_query($params);
-}
-
-function has_custom_search_page(): bool {
-    $register_page_id = get_option('coachview_search_page', 0);
-    return $register_page_id && get_post_status($register_page_id) === 'publish';
 }
 
 function coachview_get_default_search_url(): string {
@@ -178,6 +164,19 @@ function normalize_enums(mixed $data): mixed
     }
 
     return $data;
+}
+
+function coachview_get_payment_methods(): array {
+    return get_option('cv_payment_methods', []);
+}
+
+function coachview_get_product_payment_methods(WC_Product $product): array {
+    $all_methods = coachview_get_payment_methods();
+    $product_methods = get_post_meta($product->get_id(), 'cv_payment_methods', true);
+    if (is_array($product_methods)) {
+        return array_filter($all_methods, fn($method) => in_array($method['id'], $product_methods));
+    }
+    return $all_methods;
 }
 
 /**

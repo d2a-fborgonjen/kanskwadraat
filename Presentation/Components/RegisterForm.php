@@ -88,7 +88,7 @@ class RegisterForm
                     'id' => $section->id,
                     'title' => $section->title,
                     'description' => $section->description,
-                    'form' => $section->render($form_type, $registration_type),
+                    'form' => $section->render($form_type, $registration_type)
                 ];
             }
         }
@@ -110,6 +110,9 @@ class RegisterForm
             // Form contents
             'hidden_inputs' => $this->render_hidden_inputs($training_type, $training),
             'form_sections' => $rendered_sections,
+
+            // Payment methods
+            'payment_methods' => coachview_get_product_payment_methods($training_type),
         ];
 
         if ($training) {

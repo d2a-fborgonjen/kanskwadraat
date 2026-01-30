@@ -65,21 +65,21 @@
 
                         <div class="training__planning">
 
-                            <h3 class="bc-color-blue">Lesdagen en planning</h3>
+                            <h5 class="header-color-blue">Lesdagen en planning</h5>
                             <ul class="training__planning-lessons">
                                 {% for entry in variation.planning %}
                                     <li>
-                                        <div>
-                                            <span class="training__planning-lessons-description">{{ entry.name }}</span>
-                                            <span class="training__planning-lessons-date">{{ entry.formatted_date }}</span>
-                                            <span class="training__planning-lessons-time">{{ entry.time }} uur</span>
-                                            <span class="training__planning-lessons-city">{{ entry.city }}</span>
+                                        <div class="d-flex mb-2">
+                                            <span style="flex-basis: 40%" class="training__planning-lessons-description">{{ entry.name }}</span>
+                                            <span style="flex-basis: 20%" class="training__planning-lessons-date">{{ entry.formatted_date }}</span>
+                                            <span style="flex-basis: 20%" class="training__planning-lessons-time">{{ entry.time }} uur</span>
+                                            <span style="flex-basis: 20%" class="training__planning-lessons-city">{{ entry.city }}</span>
                                         </div>
                                     </li>
                                 {% endfor %}
                             </ul>
 
-                            <h3>Locatiegegevens</h3>
+                            <h5 class="header-color-blue">Locatiegegevens</h5>
                             <p class="training__planning-location-details">
                                 {% if variation.location %}
                                     {{ variation.location }}<br/>

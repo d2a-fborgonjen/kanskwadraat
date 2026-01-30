@@ -56,8 +56,6 @@ class Settings
                 ?>
                 <h1>Coachview API </h1>
 
-                <h1>Register page: <?php echo get_option('coachview_register_page'); ?></h1>
-
                 <table class="form-table">
                     <tr>
                         <th scope="row">Api mode</th>
@@ -119,12 +117,6 @@ class Settings
                             ]);
                             ?>
                         </td>
-                    </tr>
-                    <tr>
-                        <th scope="row">Aanvraag success pagina</th>
-                        <td><input type="text" name="coachview_order_success_redirect_url"
-                                   value="<?php echo esc_attr(get_option('coachview_order_success_redirect_url')); ?>"
-                                   class="regular-text"></td>
                     </tr>
                 </table>
                 <?php submit_button('Instellingen opslaan'); ?>

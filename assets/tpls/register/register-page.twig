@@ -43,6 +43,7 @@
                          {{ section.form | raw }}
                         {% endif %}
 
+
                         <div class="register-form__actions d-flex justify-content-between my-4">
                             {% if loop.first %}
                             <button type="button" class="register-form__add_participant btn btn-secondary">Deelnemer toevoegen</button>
@@ -60,11 +61,27 @@
                     </div>
                     {% endfor %}
 
-
                     <div class="form-section__step register-form--summary" data-label="Controleer gegevens">
                         <!-- summarize the form input -->
                         <div class="register-form__summary-details row">
                         </div>
+
+                        <!-- payment method -->
+                        {% if payment_methods | length > 1 %}
+                            <h3 class="register-form__payment-method-title mb-4 gap-1">Betaalmethode</h3>
+                            <div class="register-form__payment-method d-flex flex-column mb-3">
+                                <label for="payment_method" class="register-form__payment-method--title mb-1">Kies uw betaalmethode:</label>
+                                <select id="payment_method" name="debiteur[betaalwijzeId]" class="form-select mt-1 w-50" required>
+                                    <option value="">-- Selecteer een betaalmethode --</option>
+                                    {% for method in payment_methods %}
+                                        <option value="{{ method.id }}">{{ method.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        {% elseif payment_methods | length == 1 %}
+                            <input type="hidden" name="debiteur[betaalwijzeId]" value="{{ payment_methods[0].id }}">
+                        {% endif %}
+
 
                         <div class="register-form__actions d-flex justify-content-between my-4">
                             <button type="button" class="register-form__previous btn btn-tertiary btn-no-after">&lt; Vorige</button>

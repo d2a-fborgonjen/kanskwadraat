@@ -22,7 +22,8 @@
     transform: rotate(0);
 }
 
-.bc-color-blue {
+.header-color-blue,
+.bc-bg-blue h5.header-color-blue {
     color: var(--bc-blue) !important;
 }
 

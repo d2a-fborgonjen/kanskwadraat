@@ -55,6 +55,14 @@ class TrainingTypeStartDates
                 $variations[] = $variation;
             }
         }
+
+        // sort by start date
+        usort($variations, function($a, $b) {
+            $startDateA = strtotime(get_post_meta($a->get_id(), 'start_date', true));
+            $startDateB = strtotime(get_post_meta($b->get_id(), 'start_date', true));
+            return $startDateA <=> $startDateB;
+        });
+
         return $variations;
     }
 
