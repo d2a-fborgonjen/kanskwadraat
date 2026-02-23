@@ -1,11 +1,22 @@
 <div class="coachview-search">
 
     <!-- Filter bar -->
-    <div class="coachview-search__bar d-flex mb-4 align-items-center gap-4">
+    <div class="coachview-search__bar d-flex align-items-center gap-4">
         <button class="coachview-search__open-filters btn btn-filter btn-no-after">
             <i class="fa-thin fa-sliders-up"></i>
-            Filter trainingen <span class="coachview-search__filter-count"></span>
+            Filter trainingen
+            <span class="coachview-search__filter-count"></span>
         </button>
+
+        <div class="coachview-search__input-wrapper d-flex my-2">
+            <input type="text" class="coachview-search__input flex-grow-1" placeholder="Zoek trainingen..." aria-invalid="false">
+            <button type="button" class="coachview-search__submit-btn">
+                <i class="fa-thin fa-magnifying-glass"></i>
+            </button>
+        </div>
+    </div>
+
+    <div class="coachview-search__bar d-flex mb-4 align-items-center gap-4">
         <button class="coachview-search__reset-filters btn">
             Reset filters
         </button>
@@ -14,7 +25,7 @@
         </div>
     </div>
 
-    <section class="coachview-search__results row"></section>
+    <section class="coachview-search__results"></section>
 
     <div class="coachview-search__more-items mt-4 justify-content-center" style="display: none;">
         <button class="btn btn-secondary coachview-search__load-more-items">
@@ -34,16 +45,7 @@
             </h3>
 
             <div class="overflow-y-auto flex-grow-1 px-3">
-
-                <div class="coachview-search__input-wrapper d-flex my-2 w-100">
-                    <input type="text" class="coachview-search__input flex-grow-1" placeholder="Zoek opleidingen..." aria-invalid="false">
-                    <button type="button" class="coachview-search__submit-btn">
-                        <i class="fa-thin fa-magnifying-glass"></i>
-                    </button>
-                </div>
-
                 {{ category_list|raw }}
-
             </div>
 
             <div class="coachview-search__filters-bottom d-flex justify-content-center pt-2 p-3">

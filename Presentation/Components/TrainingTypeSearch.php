@@ -24,9 +24,7 @@ class TrainingTypeSearch
         $this->templateEngine = new TemplateEngine();
         $data = [
             'category_list' => $this->renderCategorySidebar(),
-            'style_urls' => [
-                'search' => cv_assets_url('css/training-search.css'),
-            ]
+            'style_urls' => [cv_assets_url('css/training-search.css')]
         ];
         return $this->templateEngine->render('training-search', $data);
     }
@@ -75,18 +73,16 @@ class TrainingTypeSearch
 
         // Get product image URL properly
         $image_id = $product->get_image_id();
-        $image_url = $image_id
-            ? wp_get_attachment_image_url($image_id, 'woocommerce_thumbnail')
-            : cv_assets_url('img/example_training4.png');
+        $image_url = $image_id ? wp_get_attachment_image_url($image_id, 'full') : null;
 
         $data = [
-            'image_url' => $image_url ?: wc_placeholder_img_src('woocommerce_thumbnail'),
+            'image_url' => $image_url ?: wc_placeholder_img_src('full'),
             'name' => $product->get_name(),
             'description' => substr($product->get_description(), 0, 200) . (strlen($product->get_description()) > 200 ? '...' : ''),
             'training_url' => $product_url,
             'training_type_category' => $training_type_category,
             'location' => $location,
-            'product_price' => $product->get_price() > 0 ? $product->get_price() : '',
+            'product_price' => $product->get_price() > 0 ? number_format_i18n($product->get_price(), 2) : null,
             'num_locations' => $num_locations > 0 ? $num_locations : null,
             'duration' => $duration ?: null,
             'start_date_day' => $startDate ? date_i18n('l', $startDate) : null,

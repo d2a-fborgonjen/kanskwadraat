@@ -1,127 +1,96 @@
 :root {
-    --start-dates-gap: 12px;
+    --start-dates-gap: 20px;
+    --start-dates-padding: 20px;
     --start-dates-icon-width: 20px;
     --start-dates-icon-to-txt-gap: 12px;
+    --start-dates-font-size: 16px;
+    --start-dates-header-font-size: 18px;
+    --border-color: rgba(86, 155, 161, .25);
 }
 
 .training-start-dates {
     display: flex;
-    background: var(--e-global-color-primary);
     justify-content: center;
     padding: 2em;
 }
 
-.training-type {
-    flex-grow: 1;
-    max-width: 1200px;
+.training-start-dates__header {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.training-start-dates__header-left,
+.training-start-dates__header-right {
+    padding: var(--start-dates-padding);
+}
+
+.training-start-dates__header-left {
+    display: grid;
+    column-gap: var(--start-dates-gap);
+    grid-template-columns: 1fr 1fr 1fr;
+    padding: var(--start-dates-padding);
+}
+
+.training-start-dates__header-right {
     display: flex;
-    flex-direction: column;
+    justify-content: flex-end;
     gap: var(--start-dates-gap);
-    padding: 16px;
-    box-sizing: border-box;
 }
 
-.training {
-    background: #fff;
-    border-radius: 10px;
-    width: 100%;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    padding: 1.5rem;
+.accordion-button {
+    width: unset;
 }
 
-.training__header {
-    display: flex;
-    color: var(--e-global-color-primary);
-}
-
-.training__header-left,
-.training__header-right {
-    flex-basis: 50%;
+.training-start-dates__header-info {
+    color: var(--bc-blue);
+    font-size: var(--start-dates-header-font-size);
+    font-weight: 500;
     display: flex;
     align-items: center;
-    gap: 2rem;
 }
 
-.training-right {
-    justify-content: space-between;
+
+.training__planning-header {
+    font-size: 1.25rem;
+    color: var(--bc-blue);
+    font-weight: 600;
+    margin-bottom: 0.7rem;
+}
+.training__planning-lessons li {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    column-gap: 0.5rem;
+    font-size: var(--start-dates-font-size);
 }
 
-.training__show-planning {
-    background: none;
-    border: 0;
-    text-decoration: none;
+
+@media (max-width: 1000px) {
+    :root {
+        --start-dates-padding: 12px 20px;
+        --start-dates-header-font-size: 16px;
+    }
+    .training-start-dates__header {
+        grid-template-columns: 1fr;
+    }
+
+    .training-start-dates__header-right {
+        border-top: 1px solid var(--border-color);
+        justify-content: space-between;
+    }
 }
 
-.training__date,
-.training__price,
-.training__location,
-.training__show-planning {
-    font-size: var(--cv-font-size-base);
-    font-weight: var(--cv-font-weight-semibold);
-    color: inherit;
-    flex-basis: 25%;
-    display: flex;
-    gap: var(--start-dates-icon-to-txt-gap);
-    align-items: center;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-.training__icon {
-     width: var(--start-dates-icon-width);
-}
+@media (max-width: 768px) {
+    .training__planning-lessons li {
+        grid-template-columns: auto;
+    }
 
-.training__register-image {
-    width: 16px;
-}
+    .training__planning-lessons-description {
+        grid-column: span 2;
+    }
 
-/** Show planning buttons **/
-a.training__show-planning {
-    flex-basis: 50%;
-}
-
-a.training__show-planning:hover {
-    text-decoration: underline;
-}
-
-.training__show-planning-icon {
-    transform-origin: center;
-    transition: transform 0.3s ease;
-    width: 16px;
-}
-
-.training.opened .training__show-planning-icon {
-    transform: rotate(180deg);
-}
-
-.training__planning {
-    display: none;
-    border-top: 1px solid var(--cv-color-teal-light);
-    margin-top: 0.5rem;
-    padding-top: 0.5rem;
-    color: var(--e-global-color-primary);
-    font-size: var(--cv-font-size-base);
-}
-
-.training__planning h3 {
-    font-size: var(--cv-font-size-lg);
-    font-weight: var(--cv-font-weight-semibold);
-    margin: 0.5rem 0;
-}
-.training__planning-lessons {
-    margin: 0 0 var(--cv-space-md) 0;
-}
-.training__planning-lessons li div {
-    display: flex;
-    margin-bottom: 4px;
-}
-.training__planning-lessons li div > span {
-    flex-basis: 25%;
-}
-.training__planning-lessons li div > span.training__planning-lessons-description {
-    flex-basis: 40%;
-}
-
-.flex-grow {
-    flex-grow: 1;
+    .training__planning-lessons-date,
+    .training__planning-lessons-time {
+        grid-row: 2;
+        margin-bottom: 0.5rem;
+    }
 }

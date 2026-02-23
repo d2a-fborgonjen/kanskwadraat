@@ -99,9 +99,7 @@ class RegisterForm
             'footer' => $with_header_and_footer ? $this->captureFooter() : '',
 
             // Include styles in the html since wp_enqueue_style is sometimes ignored on shotcode rendering
-            'style_urls' => [
-                'register-page' => cv_assets_url('css/register-page.css'),
-            ],
+            'style_urls' => [cv_assets_url('css/register-page.css')],
 
             // Order details
             'training_type_title' => $training_type->get_title(),

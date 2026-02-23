@@ -1,9 +1,9 @@
-<div class="training-type-search-item col-sm-12 col-md-6 col-lg-4 mb-4">
+<div class="training-type-search-item">
     <div class="bc-wrapper" aria-label="{{ product_name }}" aria-description="{{ description }}">
         <div class="bc-wrapper-inner">
             <a href="{{ training_url }}" tabindex="0">
                 <div class="bc-wrapper-inner__image">
-                    <img width="400" height="266" src="{{ image_url }}">
+                    <img src="{{ image_url }}">
                     <div class="bc-wrapper-inner__curve">
                         <svg viewBox="0 0 1440 120" preserveAspectRatio="none">
                             <path d="M0,0 C300,120 1140,120 1440,0 L1440,120 L0,120 Z"></path>
@@ -33,10 +33,13 @@
                         {{ duration }}
                     </div>
                     {% endif %}
-                    <div class="price meta d-flex flex-row align-items-center gap-1 gap-md-2">
-                        <i class="fa-thin fa-circle-euro" aria-hidden="true"></i>
-                        {{ product_price|number_format(2, '.', ',') }}
-                    </div>
+
+                    {%  if product_price %}
+                        <div class="price meta d-flex flex-row align-items-center gap-1 gap-md-2">
+                            <i class="fa-thin fa-circle-euro" aria-hidden="true"></i>
+                            {{ product_price }}
+                        </div>
+                    {% endif %}
                 </div>
             </a>
         </div>

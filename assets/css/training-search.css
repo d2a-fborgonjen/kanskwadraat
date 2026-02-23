@@ -1,6 +1,58 @@
+.coachview-search__results {
+    display: grid;
+    box-sizing: border-box;
+    overflow: visible;
+    column-gap: 24px;
+    row-gap: 24px;
+    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+}
+
+@media (min-width: 1200px) {
+    .coachview-search__results {
+        column-gap: 48px;
+        row-gap: 48px;
+    }
+}
+
 .coachview-search__filters-wrapper {
     z-index: 1030;
     display: none;
+}
+
+.coachview-search__input-wrapper {
+    flex: 1 1 auto;
+    position: relative;
+}
+
+.coachview-search__input-wrapper input {
+    font-size: 14px;
+    height: 50px;
+    width: 100%;
+    border-radius: 4px;
+    border: 1px solid #569ba1;
+    padding: 14px 12px !important;
+    box-shadow: none;
+    background-color: #fff;
+}
+
+.coachview-search__input-wrapper button {
+    position: absolute;
+    right: 0;
+    width: 50px;
+    height: 50px;
+    color: #fff;
+    border: none;
+    box-shadow: none;
+    background-color: #569ba1;
+    border-radius: 0 4px 4px 0;
+    padding: 0;
+}
+
+
+.training-type-search-item {
+    background-color: #fff;
+    border-radius: 8px;
+    overflow: hidden;
 }
 
 .training-type-search-item .bc-wrapper-inner__title {

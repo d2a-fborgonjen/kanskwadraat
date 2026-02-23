@@ -99,15 +99,15 @@ jQuery(document).ready(function($) {
         const params = getUrlParams();
         $('.coachview-search__filter-pill').remove();
 
-        if (params.search) {
-            $resetFilters.before($(`
-                <div class="coachview-search__filter-pill" data-filter-type="search">
-                    Search:${$('<div>').text(params.search).html()}
-                    <button class="coachview-search__filter-pill-button btn btn-no-after">
-                        <i class="fa-regular fa-times"></i>
-                    </button> 
-                </div>`));
-        }
+        // if (params.search) {
+        //     $resetFilters.before($(`
+        //         <div class="coachview-search__filter-pill" data-filter-type="search">
+        //             Search:${$('<div>').text(params.search).html()}
+        //             <button class="coachview-search__filter-pill-button btn btn-no-after">
+        //                 <i class="fa-regular fa-times"></i>
+        //             </button>
+        //         </div>`));
+        // }
 
         params.categories.forEach(function(id) {
             $resetFilters.before($(`
@@ -126,7 +126,8 @@ jQuery(document).ready(function($) {
 
     function getFilterCount() {
         const params = getUrlParams();
-        return (params.search ? 1 : 0) + params.categories.length;
+        return params.categories.length;
+        // return (params.search ? 1 : 0) + params.categories.length;
     }
 
     function displayActiveFilterCount() {

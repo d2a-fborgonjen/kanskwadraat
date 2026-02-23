@@ -2,79 +2,65 @@
     <div class="accordion" id="training-start-dates">
         {% if variations|length == 0 %}
             <p>Er zijn momenteel geen startdata beschikbaar voor deze opleiding.</p>
-        {%  endif %}
+        {% endif %}
 
         {% for variation in variations %}
             <div class="accordion-item mb-3">
                 <div class="accordion-header" id="heading--{{ loop.index }}">
-                    <div class="accordion-button">
-                        <div class="accordion-button-inner">
-                            <div class="row">
-                                <div class="col-xl-6">
-                                    <div class="accordion-button-inner-wrapper py-3 w-100 d-flex flex-row align-items-center">
-                                        <div class="accordion-button-inner-wrapper__next d-flex flex-row align-items-center px-lg-4 ps-lg-4">
-                                            <i class="fa-thin fa-calendar me-2"></i>
-                                            {{ variation.date }}
-                                        </div>
-                                        <div class="accordion-button-inner-wrapper__next d-flex flex-row align-items-center px-lg-4">
-                                            <i class="fa-thin fa-euro me-2"></i>
-                                            {{ variation.price }}
-                                        </div>
-                                        <div class="accordion-button-inner-wrapper__next d-flex flex-row align-items-center px-lg-4">
-                                            <i class="fa-thin fa-location-dot me-2"></i>
-                                            {{ variation.city }}
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-xl-6 d-flex flex-row align-items-center justify-content-end">
-                                    <div class="accordion-button-inner-wrapper py-3 py-xl-0 ps-xl-0 w-100 d-lg-flex flex-row align-items-center justify-content-xl-end">
-                                        <div class="accordion-button-inner-wrapper__button px-lg-4">
-                                            <button class="accordion-button collapsed d-flex flex-row align-items-center"
-                                                    type="button"
-                                                    data-bs-toggle="collapse"
-                                                    data-bs-target="#collapse--{{ loop.index }}"
-                                                    aria-expanded="false"
-                                                    aria-controls="collapse--{{ loop.index }}">
-                                                <div class="accordion-button-inner d-flex flex-row align-items-center text-nowrap">
-                                                    <i class="fa-thin fa-circle-calendar me-2" aria-hidden="true"></i>
-                                                    Toon planning
-                                                    <i class="fa-light fa-chevron-down ms-1" aria-hidden="true"></i>
-                                                </div>
-                                            </button>
-                                        </div>
-                                        <div class="accordion-button-inner-wrapper__button mt-3 mt-lg-0">
-                                            {% if variation.is_in_stock %}
-                                                <a href="{{ variation.link }}" class="btn btn-primary training__register">
-                                                    Inschrijven
-                                                </a>
-                                            {% else %}
-                                                <div class="btn btn-primary">Vol</div>
-                                            {% endif %}
-                                        </div>
-                                    </div>
-                                </div>
+
+                    <div class="training-start-dates__header">
+                        <div class="training-start-dates__header-left">
+                            <div class="training-start-dates__header-info">
+                                <i class="fa-thin fa-calendar me-2"></i>
+                                {{ variation.date }}
                             </div>
+                            <div class="training-start-dates__header-info">
+                                <i class="fa-thin fa-euro me-2"></i>
+                                {{ variation.price }}
+                            </div>
+                            <div class="training-start-dates__header-info">
+                                <i class="fa-thin fa-location-dot me-2"></i>
+                                {{ variation.city }}
+                            </div>
+                        </div>
+                        <div class="training-start-dates__header-right">
+                            <button class="accordion-button collapsed text-nowrap"
+                                    type="button"
+                                    data-bs-toggle="collapse"
+                                    data-bs-target="#collapse--{{ loop.index }}"
+                                    aria-expanded="false"
+                                    aria-controls="collapse--{{ loop.index }}">
+                                <i class="fa-thin fa-circle-calendar me-2" aria-hidden="true"></i>
+                                Toon planning
+                                <i class="fa-light fa-chevron-down ms-1" aria-hidden="true"></i>
+                            </button>
+
+                            {% if variation.is_in_stock %}
+                                <a href="{{ variation.link }}" class="btn btn-primary training__register">
+                                    Inschrijven
+                                </a>
+                            {% else %}
+                                <div class="btn btn-primary">Vol</div>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
 
                 <!-- COLLAPSE CONTENT -->
-                <div id="collapse--{{ loop.index }}" class="accordion-collapse collapse"
-                     data-bs-parent="#start-dates">
+                <div id="collapse--{{ loop.index }}" class="accordion-collapse collapse" data-bs-parent="#start-dates">
                     <div class="accordion-body">
 
                         <div class="training__planning">
-
-                            <h5 class="header-color-blue">Lesdagen en planning</h5>
+                            <h5 class="training__planning-header">Lesdagen en planning</h5>
                             <ul class="training__planning-lessons">
                                 {% for entry in variation.planning %}
                                     <li>
-                                        <div class="d-flex mb-2">
-                                            <span style="flex-basis: 40%" class="training__planning-lessons-description">{{ entry.name }}</span>
-                                            <span style="flex-basis: 20%" class="training__planning-lessons-date">{{ entry.formatted_date }}</span>
-                                            <span style="flex-basis: 20%" class="training__planning-lessons-time">{{ entry.time }} uur</span>
-                                            <span style="flex-basis: 20%" class="training__planning-lessons-city">{{ entry.city }}</span>
-                                        </div>
+                                        <span style="flex-basis: 40%"
+                                              class="training__planning-lessons-description">{{ entry.name }}</span>
+                                            <span style="flex-basis: 20%"
+                                                  class="training__planning-lessons-date">{{ entry.formatted_date }}</span>
+                                            <span style="flex-basis: 20%"
+                                                  class="training__planning-lessons-time">{{ entry.time }} uur</span>
                                     </li>
                                 {% endfor %}
                             </ul>
@@ -89,13 +75,14 @@
                                 {% endif %}
                                 {{ variation.zipcode }} {{ variation.city }}
                             </p>
-
                         </div>
 
                     </div>
                 </div>
-
             </div>
         {% endfor %}
     </div>
+    {% for style_url in style_urls %}
+        <link rel="stylesheet" href="{{ style_url }}">
+    {% endfor %}
 </section>

@@ -36,7 +36,7 @@ class TrainingTypeStartDates
         $template_data = [
             'product_id' => $product->get_id(),
             'variations' => $this->prepare_variations_data($variations),
-            'assets_url' => cv_assets_url()
+            'style_urls' => [cv_assets_url('css/training-type-start-dates.css')]
         ];
 
         $template_engine = new TemplateEngine();
@@ -50,8 +50,7 @@ class TrainingTypeStartDates
         foreach ( $variation_ids as $variation_id ) {
             $variation = wc_get_product($variation_id);
             $startDate = strtotime(get_post_meta($variation_id, 'start_date', true));
-
-            if ( $startDate && $startDate >= $tomorrow ) {
+            if ($startDate && $startDate >= $tomorrow ) {
                 $variations[] = $variation;
             }
         }
@@ -95,6 +94,9 @@ class TrainingTypeStartDates
     {
         $planningJson = get_post_meta($variation->get_id(), 'planning', true);
         $planningEvents = json_decode($planningJson, true) ?? [];
+        $planningEvents = array_filter($planningEvents, function($event) {
+            return $event['course_format'] != CourseFormat::E_LEARNING->value;
+        });
 
         $first_date = collect($planningEvents)->pluck('date')->filter()->sort()->first();
         return array_map(function($event) use ($first_date) {
@@ -111,11 +113,11 @@ class TrainingTypeStartDates
 
             if (!empty($event['date'])) {
                 $entry['formatted_date'] = date_i18n('D. j M. Y', strtotime($event['date']));
-            } else if ($event['course_format'] == CourseFormat::E_LEARNING->value && !empty($first_date)) {
+            } /*else if ($event['course_format'] == CourseFormat::E_LEARNING->value && !empty($first_date)) {
                 $elearning_date = date('Y-m-d', strtotime($first_date . ' -1 day'));;
                 $entry['formatted_date'] = date_i18n('D. j M. Y', strtotime($elearning_date));
                 $entry['time'] = '23:00';
-            }
+            }*/
             return $entry;
         }, $planningEvents);
     }

@@ -27,7 +27,7 @@ class TrainingSync {
                 if ($training_type->get_course_format() == CourseFormat::E_LEARNING) {
                     $product = TrainingSync::__save_single_product($training_type);
                     $product_id = $product->get_id();
-                    log_cv_info("Saved single product [$training_type->code] WP ID [$product_id]");
+                    log_cv_info("Saved [$training_type->code] WP ID [$product_id]");
                 } else {
                     $product = TrainingSync::__save_variable_product($training_type);
                     $variations = TrainingSync::__save_variations($product, $training_type->trainings);
@@ -36,11 +36,11 @@ class TrainingSync {
 
                     $product_id = $product->get_id();
                     $num_variations = $variations->count();
-                    log_cv_info("Saved variable Product [$training_type->code] WP ID [$product_id] Num variations: [$num_variations] Price: [{$training_type->price}]");
+                    log_cv_info("Saved [$training_type->code] WP ID [$product_id] Num variations: [$num_variations] Price: [{$training_type->price}]");
                 }
                 TrainingSync::__save_product_categories($product, $training_type);
             } catch (Exception $e) {
-                log_cv_exception("Save[TrainingType::" . $training_type->code . "]", $e);
+                log_cv_exception("Save[TrainingType::" . $training_type->code . "] CV id [" . $training_type->id . "]", $e);
             }
         });
     }
@@ -49,26 +49,6 @@ class TrainingSync {
     {
         $progress = round(($done / $total) * 100, 2);
         update_option('coachview_sync_progress', $progress);
-    }
-
-    private static function __ensure_term_exists(string $term, ?int $parent, string $taxonomy): ?int {
-        $term_exists = term_exists($term, $taxonomy);
-        if ($term_exists && is_array($term_exists) && $term_exists['taxonomy'] === $taxonomy) {
-            return $term_exists['term_id'];
-        }
-
-        $args = ['slug' => sanitize_title($term)];
-        if ($parent) {
-            $args['parent'] = $parent;
-        }
-
-        $new_term = wp_insert_term($term, $taxonomy, $args);
-        if (is_wp_error($new_term)) {
-            error_log("Error inserting term '$term' in taxonomy '$taxonomy': " . $new_term->get_error_message());
-            return null;
-        }
-
-        return is_array($new_term) ? $new_term['term_id'] : (int)$new_term;
     }
 
     private static function __save_product_categories(WC_Product $product, TrainingType $training_type): void {
@@ -114,6 +94,7 @@ class TrainingSync {
     public static function __save_variable_product(TrainingType $training_type): WC_Product_Variable
     {
         $product = get_product_by_cv_id($training_type->id) ?? new WC_Product_Variable();
+//        $product = get_product_by_sku($training_type->code) ?? new WC_Product_Variable();
         if (!($product instanceof WC_Product_Variable)) {
             log_cv_info('Product type mismatch: expected Variable, got Simple. Deleting and recreating as Variable.');
             $product->delete(true);
