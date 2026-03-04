@@ -64,7 +64,6 @@ register_deactivation_hook(__FILE__, function() {
     Cron::deactivate();
 });
 
-// enqueue styles and scripts
 add_action('wp_enqueue_scripts', function () {
     wp_enqueue_style('coachview-common', cv_assets_url('css/common.css'), array(), null);
 });

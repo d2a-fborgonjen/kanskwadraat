@@ -21,7 +21,6 @@ class TrainingAgenda extends ShortCodeComponent
 
     public function enqueue_styles(): void
     {
-        error_log("Enqueueing styles for " . self::get_shortcode());
         wp_enqueue_style(self::get_shortcode(), cv_assets_url('css/training-agenda.css'), [], null);
     }
 
