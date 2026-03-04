@@ -31,10 +31,15 @@
                                 <div class="col-xl-6">
                                     <div class="d-flex flex-row align-items-center">
                                         <div class="accordion-button-inner__image">
+                                            <a href="{{ item.training_type.permalink }}">
                                             <img width="200" height="133" src="{{ item.training_type.image_url }}"
-                                                 class="attachment-post-thumbnail size-post-thumbnail wp-post-image"></div>
+                                                 class="attachment-post-thumbnail size-post-thumbnail wp-post-image">
+                                            </a>
+                                        </div>
                                         <div class="accordion-button-inner__training ps-3">
-                                            <h3 class="mb-0">{{ item.training_type.name }}</h3>
+                                            <a href="{{ item.training_type.permalink }}" style="text-decoration: none;">
+                                                <h3 class="mb-0">{{ item.training_type.name }}</h3>
+                                            </a>
                                         </div>
                                     </div>
                                 </div>

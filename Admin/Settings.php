@@ -54,8 +54,9 @@ class Settings
                 do_settings_sections('coachview_sync_settings');
                 $mode = get_option('coachview_api_mode', 'test');
                 ?>
-                <h1>Coachview API </h1>
+                <h1>Coachview Instellingen</h1>
 
+                <h2>API instellingen</h2>
                 <table class="form-table">
                     <tr>
                         <th scope="row">Api mode</th>
@@ -93,25 +94,28 @@ class Settings
                     </tr>
                 </table>
 
-                <h1>Synchronisatie instellingen</h1>
+                <h2>Synchronisatie instellingen</h2>
                 <table class="form-table">
                     <tr>
                         <th scope="row">Limiteer import</th>
-                        <td><input type="text" name="coachview_training_import_limit"
+                        <td>
+                            <input type="text" name="coachview_training_import_limit"
                                    value="<?php echo esc_attr(get_option('coachview_training_import_limit')); ?>"
-                                   class="regular-text"></td>
+                                   class="regular-text">
+                            <p class="description">
+                                Geef hier aan hoeveel trainingen er vanuit coachview gesynchoniseerd worden tijdens
+                                een import. Gebruik deze optie bijvoorbeeld om sneller te kunnen testen met een beperkte
+                                dataset.
+                            </p>
+                        </td>
                     </tr>
                 </table>
 
-                <h1>Betaalmethodes</h1>
+                <h2>Betaalmethodes</h2>
                 <table class="form-table">
                     <tr>
                         <th scope="row">Standaard betaalmethodes</th>
                         <td>
-                            <p>
-                                Selecteer de betaalmethodes die standaard ingesteld staan bij nieuwe producten. <br />
-                                Om een afwijkende selectie in te stellen per training, kun je gebruik maken van instellingen bij de training zelf.
-                            </p>
                             <?php
                             $payment_methods = coachview_get_payment_methods();
                             $saved_method_ids = coachview_get_default_payment_method_ids();
@@ -120,11 +124,15 @@ class Settings
                                 echo "<label><input type='checkbox' name='cv_default_payment_method_ids[]' value='{$method['id']}' $checked> {$method['name']}</label><br />";
                             }
                             ?>
+                            <p class="description">
+                                Selecteer de betaalmethodes die standaard ingesteld staan bij nieuwe producten. <br />
+                                Om een afwijkende selectie in te stellen per training, kun je gebruik maken van instellingen bij de training zelf.
+                            </p>
                         </td>
                     </tr>
                 </table>
 
-                <h1>Webaanvragen</h1>
+                <h1>Registratie pagina</h1>
                 <table class="form-table">
                     <tr>
                         <th scope="row">Registratie pagina</th>
@@ -137,6 +145,11 @@ class Settings
                                     'selected' => get_option('coachview_register_page')
                             ]);
                             ?>
+                            <p class="description">
+                                Selecteer de wordpress pagina die ingericht is als registratie pagina.
+                                Op deze pagina dient de [cv_register_form] shortcode geplaatst te zijn,
+                                zodat gebruikers zich kunnen registreren / aanmelden voor een training.
+                            </p>
                         </td>
                     </tr>
                 </table>
