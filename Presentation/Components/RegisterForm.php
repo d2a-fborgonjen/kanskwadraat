@@ -11,13 +11,30 @@ use WC_Product_Simple;
 use WC_Product_Variable;
 use WC_Product_Variation;
 
-class RegisterForm
+class RegisterForm extends ShortCodeComponent
 {
     private $templateEngine;
 
+    public static function get_shortcode(): string
+    {
+        return 'cv_register_form';
+    }
+
+    public function enqueue_styles(): void
+    {
+        wp_enqueue_style(self::get_shortcode(), cv_assets_url('css/register-form.css'), [], null);
+    }
+
+    public function enqueue_scripts(): void
+    {
+        wp_enqueue_script(self::get_shortcode() . '-wizard', cv_assets_url('js/register-page-wizard.js'), ['jquery'], '1.0', true);
+        wp_enqueue_script(self::get_shortcode() . '-participants', cv_assets_url('js/register-page-participants.js'), ['jquery'], '1.0', true);
+        wp_enqueue_script(self::get_shortcode(), cv_assets_url('js/register-page.js'), ['jquery', self::get_shortcode().'-wizard', self::get_shortcode().'-participants'], '1.0', true);
+    }
+
     public function __construct()
     {
-        add_shortcode('cv_register_form', [$this, 'render_shortcode']);
+        parent::__construct();
         add_filter('query_vars', [$this, 'parse_query_vars']);
 
         if (!has_custom_register_page()) {
@@ -59,10 +76,6 @@ class RegisterForm
         if (!$training_type) {
             return '<p>' . esc_html__('Ongeldige training.', 'coachview') . '</p>';
         }
-
-        wp_enqueue_script('coachview-register-wizard', cv_assets_url('js/register-page-wizard.js'), ['jquery'], '1.0', true);
-        wp_enqueue_script('coachview-register-participants', cv_assets_url('js/register-page-participants.js'), ['jquery'], '1.0', true);
-        wp_enqueue_script('coachview-register', cv_assets_url('js/register-page.js'), ['jquery', 'coachview-register-wizard', 'coachview-register-participants'], '1.0', true);
         return $this->render_form($training_type, $training, $with_header_and_footer);
     }
 
@@ -192,14 +205,14 @@ class RegisterForm
         return [null, null];
     }
 
-    public function capture_header(): false | string
+    public function capture_header(): false|string
     {
         ob_start();
         get_header();
         return ob_get_clean();
     }
 
-    public function captureFooter(): false | string
+    public function captureFooter(): false|string
     {
         ob_start();
         get_footer();

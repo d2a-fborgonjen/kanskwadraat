@@ -3,19 +3,29 @@
 namespace Coachview\Presentation\Components;
 
 use Coachview\Presentation\TemplateEngine;
+use Coachview\Constants;
 
 /**
  * Lists the available trainings (product variations) for the given training type (product)
  */
-class TrainingAgenda
+class TrainingAgenda extends ShortCodeComponent
 {
     private static $agenda_data_key = 'cv_training_agenda_data';
 
-    public function __construct() {
-        add_shortcode('cv_training_agenda', [$this, 'render_training_agenda']);
+    public static function get_shortcode(): string
+    {
+        return 'cv_training_agenda';
     }
 
-    public function render_training_agenda($atts): string
+    public function enqueue_scripts(): void {}
+
+    public function enqueue_styles(): void
+    {
+        error_log("Enqueueing styles for " . self::get_shortcode());
+        wp_enqueue_style(self::get_shortcode(), cv_assets_url('css/training-agenda.css'), [], null);
+    }
+
+    public function render_shortcode($atts): string
     {
         $agenda_items = $this->get_agenda_items();
         if (isset($atts['max_items']) && is_numeric($atts['max_items'])) {

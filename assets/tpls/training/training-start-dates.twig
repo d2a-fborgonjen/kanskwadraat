@@ -36,7 +36,7 @@
                             </button>
 
                             {% if variation.is_in_stock %}
-                                <a href="{{ variation.link }}" class="btn btn-primary training__register">
+                                <a href="{{ variation.link }}" class="btn btn-primary training__register text-nowrap">
                                     Inschrijven
                                 </a>
                             {% else %}
@@ -82,7 +82,4 @@
             </div>
         {% endfor %}
     </div>
-    {% for style_url in style_urls %}
-        <link rel="stylesheet" href="{{ style_url }}">
-    {% endfor %}
 </section>

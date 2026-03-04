@@ -7,16 +7,19 @@ use Coachview\Models\RegistrationType;
 /**
  * Shortcode to display Call to Action (CTA)
  */
-class TrainingTypeCTA {
-    public function __construct() {
-        add_shortcode('cv_training_type_call_to_action', [$this, 'render_cta_button']);
-    }
+class TrainingTypeCTA extends ShortCodeComponent {
 
-    public function render_cta_button($atts): string {
+    public static function get_shortcode(): string {
+        return 'cv_training_type_call_to_action';
+    }
+    public function enqueue_scripts(): void {}
+    public function enqueue_styles(): void {}
+
+    public function render_shortcode($atts): string {
         global $product;
         $atts = shortcode_atts([
             'id' => $product ? $product->get_id() : 0,
-        ], $atts, 'cv_training_call_to_action');
+        ], $atts, self::get_shortcode());
 
         $product = wc_get_product($atts['id']);
         if (!$product) {

@@ -9,24 +9,30 @@ use WC_Product_Simple;
 use WC_Product_Variable;
 use WC_Product_Variation;
 
-class TrainingSimpleSearch
+class TrainingSimpleSearch extends ShortCodeComponent
 {
-    public function __construct()
+    public static function get_shortcode(): string
     {
-        add_shortcode('cv_simple_search', [$this, 'render_shortcode']);
+        return 'cv_simple_search';
     }
+
+    public function enqueue_scripts(): void
+    {
+        wp_enqueue_script(self::get_shortcode(), cv_assets_url('js/simple-search.js'), ['jquery'], '1.0', true);
+    }
+
+    public function enqueue_styles(): void {}
 
     public function render_shortcode($atts): string
     {
         $atts = shortcode_atts([
             'name' => 'not-set',
             'orientation' => 'horizontal'
-        ], $atts, 'cv_simple_search');
+        ], $atts, self::get_shortcode());
 
         $form_name = sanitize_text_field($atts['name']);
         $orientation = sanitize_text_field($atts['orientation']);
 
-        wp_enqueue_script('coachview-register-wizard', cv_assets_url('js/simple-search.js'), ['jquery'], '1.0', true);
         $templateEngine = new TemplateEngine();
 
         // If form name is provided, use form settings

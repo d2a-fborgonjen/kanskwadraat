@@ -9,15 +9,26 @@ use WC_Product_Variation;
 /**
  * Lists the available trainings (product variations) for the given training type (product)
  */
-class TrainingTypeStartDates
+class TrainingTypeStartDates extends ShortCodeComponent
 {
-    public function __construct() {
-        add_shortcode('cv_training_type_start_dates', [$this, 'apply_start_dates_shortcode']);
+    public static function get_shortcode(): string
+    {
+        return 'cv_training_type_start_dates';
     }
 
-    public function apply_start_dates_shortcode($atts): string
+    public function enqueue_styles(): void
     {
-        $atts = shortcode_atts(['id' => null], $atts, 'cv_training_type_start_dates');
+        wp_enqueue_style(self::get_shortcode(), cv_assets_url('css/training-type-start-dates.css'), [], null);
+    }
+
+    public function enqueue_scripts(): void
+    {
+        wp_enqueue_script(self::get_shortcode(), cv_assets_url('js/training-type-start-dates.js'), ['jquery'], '1.0', true);
+    }
+
+    public function render_shortcode($atts): string
+    {
+        $atts = shortcode_atts(['id' => null], $atts, self::get_shortcode());
         return $this->render_start_dates($atts['id']);
     }
 
@@ -30,13 +41,10 @@ class TrainingTypeStartDates
         }
         $variations = $this->get_future_variations($product);
 
-        wp_enqueue_script('coachview-training-type-start-dates', cv_assets_url('js/training-type-start-dates.js'), array('jquery'), null, true);
-
         // Prepare data for template
         $template_data = [
             'product_id' => $product->get_id(),
-            'variations' => $this->prepare_variations_data($variations),
-            'style_urls' => [cv_assets_url('css/training-type-start-dates.css')]
+            'variations' => $this->prepare_variations_data($variations)
         ];
 
         $template_engine = new TemplateEngine();

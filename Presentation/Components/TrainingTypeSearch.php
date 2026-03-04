@@ -7,25 +7,36 @@ use Coachview\Presentation\TemplateEngine;
 use WP_REST_Response;
 use WP_Query;
 
-class TrainingTypeSearch
+class TrainingTypeSearch extends ShortCodeComponent
 {
     private $templateEngine;
 
-    function __construct()
+    public static function get_shortcode(): string
     {
-        add_action('rest_api_init', [$this, 'register_rest_routes']);
-        add_shortcode('cv_training_type_search', [$this, 'training_type_search_shortcode']);
-
+        return 'cv_training_type_search';
     }
 
-    public function training_type_search_shortcode(): string
+    public function enqueue_styles(): void
     {
-        wp_enqueue_script('coachview-search', cv_assets_url('js/training-search.js'), array('jquery'), null, true);
+        wp_enqueue_style(self::get_shortcode(), cv_assets_url('css/training-search.css'), [], null);
+    }
 
+    public function enqueue_scripts(): void
+    {
+        wp_enqueue_script(self::get_shortcode(), cv_assets_url('js/training-search.js'), ['jquery'], '1.0', true);
+    }
+
+    public function __construct()
+    {
+        parent::__construct();
+        add_action('rest_api_init', [$this, 'register_rest_routes']);
+    }
+
+    public function render_shortcode($atts): string
+    {
         $this->templateEngine = new TemplateEngine();
         $data = [
-            'category_list' => $this->renderCategorySidebar(),
-            'style_urls' => [cv_assets_url('css/training-search.css')]
+            'category_list' => $this->renderCategorySidebar()
         ];
         return $this->templateEngine->render('training-search', $data);
     }
