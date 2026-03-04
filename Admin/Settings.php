@@ -33,7 +33,7 @@ class Settings
         register_setting('coachview_sync_settings', 'coachview_test_secret');
         register_setting('coachview_sync_settings', 'coachview_training_import_limit');
         register_setting('coachview_sync_settings', 'coachview_register_page');
-        register_setting('coachview_sync_settings', 'coachview_order_success_redirect_url');
+        register_setting('coachview_sync_settings', 'cv_default_payment_method_ids');
     }
 
     public function refresh_api_token_on_save($option): void
@@ -100,6 +100,27 @@ class Settings
                         <td><input type="text" name="coachview_training_import_limit"
                                    value="<?php echo esc_attr(get_option('coachview_training_import_limit')); ?>"
                                    class="regular-text"></td>
+                    </tr>
+                </table>
+
+                <h1>Betaalmethodes</h1>
+                <table class="form-table">
+                    <tr>
+                        <th scope="row">Standaard betaalmethodes</th>
+                        <td>
+                            <p>
+                                Selecteer de betaalmethodes die standaard ingesteld staan bij nieuwe producten. <br />
+                                Om een afwijkende selectie in te stellen per training, kun je gebruik maken van instellingen bij de training zelf.
+                            </p>
+                            <?php
+                            $payment_methods = coachview_get_payment_methods();
+                            $saved_method_ids = coachview_get_default_payment_method_ids();
+                            foreach ($payment_methods as $method) {
+                                $checked = in_array($method['id'], $saved_method_ids) ? 'checked' : '';
+                                echo "<label><input type='checkbox' name='cv_default_payment_method_ids[]' value='{$method['id']}' $checked> {$method['name']}</label><br />";
+                            }
+                            ?>
+                        </td>
                     </tr>
                 </table>
 

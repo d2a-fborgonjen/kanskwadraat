@@ -138,8 +138,6 @@ class TrainingSync {
             $product->add_meta_data('coachview_source', coachview_test_mode_enabled() ? 'TEST' : 'PRODUCTION');
             $product->set_description($training_type->description);
         }
-
-//        $product->set_status('publish');
     }
 
     private static function __save_variations(WC_Product_Variable $product, Collection $trainings): Collection

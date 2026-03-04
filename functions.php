@@ -170,11 +170,18 @@ function coachview_get_payment_methods(): array {
     return get_option('cv_payment_methods', []);
 }
 
+function coachview_get_default_payment_method_ids(): array {
+    return get_option('cv_default_payment_method_ids', []);
+}
+
 function coachview_get_product_payment_methods(WC_Product $product): array {
     $all_methods = coachview_get_payment_methods();
-    $product_methods = get_post_meta($product->get_id(), 'cv_payment_methods', true);
-    if (is_array($product_methods)) {
-        return array_filter($all_methods, fn($method) => in_array($method['id'], $product_methods));
+    $default_method_ids = coachview_get_default_payment_method_ids();
+    $product_method_ids = get_post_meta($product->get_id(), 'cv_payment_methods', true);
+    if (is_array($product_method_ids)) {
+        return array_filter($all_methods, fn($method) => in_array($method['id'], $product_method_ids));
+    } else if (!empty($default_method_ids)) {
+        return array_filter($all_methods, fn($method) => in_array($method['id'], $default_method_ids));
     }
     return $all_methods;
 }
