@@ -5,6 +5,7 @@ namespace Coachview\Presentation\Components;
 use Coachview\Models\CourseFormat;
 use Coachview\Presentation\TemplateEngine;
 use WP_REST_Response;
+use WP_Query;
 
 class TrainingTypeSearch
 {
@@ -98,7 +99,18 @@ class TrainingTypeSearch
         $cats   = $request->get_param('categories') ?? [];
         $limit  = $request->get_param('limit') ?? 12;
 
-        // Get all matching product IDs with meta_query
+        $relevance_filter = function($clauses) use ($search) {
+            global $wpdb;
+            $like = '%' . $wpdb->esc_like($search) . '%';
+
+            $clauses['orderby'] = $wpdb->prepare(
+                "CASE WHEN {$wpdb->posts}.post_title LIKE %s THEN 2 ELSE 1 END DESC, {$wpdb->posts}.post_date DESC",
+                $like
+            );
+
+            return $clauses;
+        };
+
         $query_args = [
             'post_type'      => 'product',
             'post_status'    => 'publish',
@@ -124,12 +136,22 @@ class TrainingTypeSearch
             ];
         }
 
-        $all_ids = get_posts($query_args);
+        if (!empty($search)) {
+            add_filter('posts_clauses', $relevance_filter);
+        }
+        $query = new WP_Query($query_args);
+
+        if (!empty($search)) {
+            remove_filter('posts_clauses', $relevance_filter);
+        }
+
+        $all_ids     = $query->posts;
         $total_count = count($all_ids);
 
         $products = wc_get_products([
             'include' => array_slice($all_ids, 0, $limit),
             'limit'   => $limit,
+            'orderby' => 'post__in',
         ]);
 
         $this->templateEngine = new TemplateEngine();

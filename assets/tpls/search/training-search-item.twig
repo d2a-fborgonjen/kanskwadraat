@@ -24,7 +24,7 @@
                     {% if location %}
                     <div class="location meta d-flex flex-row align-items-center gap-1 gap-md-2">
                         <i class="fa-thin fa-location-dot" aria-hidden="true"></i>
-                        {{  location }}
+                        {{ location }}
                     </div>
                     {%  endif %}
                     {% if duration %}
@@ -34,7 +34,7 @@
                     </div>
                     {% endif %}
 
-                    {%  if product_price %}
+                    {% if product_price %}
                         <div class="price meta d-flex flex-row align-items-center gap-1 gap-md-2">
                             <i class="fa-thin fa-circle-euro" aria-hidden="true"></i>
                             {{ product_price }}
