@@ -110,17 +110,13 @@ class TrainingTypeSearch extends ShortCodeComponent
         $cats   = $request->get_param('categories') ?? [];
         $limit  = $request->get_param('limit') ?? 12;
 
-        $relevance_filter = function($clauses) use ($search) {
-            global $wpdb;
-            $like = '%' . $wpdb->esc_like($search) . '%';
+        $search_trimmed = trim((string) $search);
 
-            $clauses['orderby'] = $wpdb->prepare(
-                "CASE WHEN {$wpdb->posts}.post_title LIKE %s THEN 2 ELSE 1 END DESC, {$wpdb->posts}.post_date DESC",
-                $like
-            );
-
-            return $clauses;
-        };
+        $relevance_filter = null;
+        if ($search_trimmed !== '') {
+            $relevance_filter = $this->build_relevance_filter_for_search($search_trimmed);
+            add_filter('posts_clauses', $relevance_filter);
+        }
 
         $query_args = [
             'post_type'      => 'product',
@@ -147,12 +143,9 @@ class TrainingTypeSearch extends ShortCodeComponent
             ];
         }
 
-        if (!empty($search)) {
-            add_filter('posts_clauses', $relevance_filter);
-        }
         $query = new WP_Query($query_args);
 
-        if (!empty($search)) {
+        if ($relevance_filter !== null) {
             remove_filter('posts_clauses', $relevance_filter);
         }
 
@@ -181,4 +174,42 @@ class TrainingTypeSearch extends ShortCodeComponent
             'items'       => $html,
         ], 200);
     }
+
+    /**
+     * Build a posts_clauses filter that scores relevance based on per-word matches
+     * of the search term in post_title.
+     */
+    private function build_relevance_filter_for_search(string $search): callable
+    {
+        $words = preg_split('/\s+/', $search) ?: [];
+        $words = array_values(array_filter(array_map('trim', $words)));
+
+        return function (array $clauses) use ($words): array {
+            global $wpdb;
+
+            if (empty($words)) {
+                return $clauses;
+            }
+
+            $score_parts = [];
+            foreach ($words as $word) {
+                $like = '%' . $wpdb->esc_like($word) . '%';
+                $score_parts[] = $wpdb->prepare(
+                    'CASE WHEN ' . $wpdb->posts . '.post_title LIKE %s THEN 1 ELSE 0 END',
+                    $like
+                );
+            }
+
+            if (empty($score_parts)) {
+                return $clauses;
+            }
+
+            $score_sql = implode(' + ', $score_parts);
+
+            $clauses['orderby'] = $score_sql . ' DESC, ' . $wpdb->posts . '.post_date DESC';
+
+            return $clauses;
+        };
+    }
 }
+

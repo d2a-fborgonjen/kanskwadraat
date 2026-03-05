@@ -115,7 +115,7 @@ jQuery(document).ready(function($) {
                         data-filter-type="category"
                         data-category-id="${id}">
                     ${$('<div>').text(getCategoryName(id)).html()}
-                    <button class="coachview-search__filter-pill-button btn btn-no-after">
+                    <button class="coachview-search__filter-pill-button">
                         <i class="fa-regular fa-times"></i>
                     </button>
                 </div>`));
