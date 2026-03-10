@@ -4,6 +4,7 @@ use Automattic\WooCommerce\Enums\ProductStatus;
 use Coachview\Api\TokenManager;
 use Coachview\Constants;
 use Coachview\Models\CourseFormat;
+use Coachview\Models\RegistrationFormType;
 use Coachview\Models\RegistrationType;
 
 function coachview_test_mode_enabled(): bool {
@@ -56,7 +57,28 @@ function coachview_get_default_register_url(): string {
     return home_url("/$slug");
 }
 
-function get_registration_type(WC_Product $training_type): RegistrationType
+/**
+ * @param $training_type_id
+ * Returns one of 'partou-baby', 'partou', 'default'
+ * Used to include / exclude registration form fields
+ */
+function cv_get_register_form_type($training_type_id): RegistrationFormType {
+    $type = get_post_meta($training_type_id, 'cv_form_type', true) ?: 'default';
+    error_log("TYYYYYOPPPPEEEE" . $type);
+    return RegistrationFormType::from($type);
+}
+
+function cv_get_course_format($training_type_id): CourseFormat {
+    $format = get_post_meta($training_type_id, 'training_type_category', true) ?: CourseFormat::BLENDED->value;
+    return CourseFormat::from($format);
+}
+
+/**
+ * @param WC_Product $training_type
+ *
+ * Returns one of 'in_company', 'open_enrollment', 'enlist', 'default'
+ */
+function cv_get_registration_type(WC_Product $training_type): RegistrationType
 {
     $training_type_category = get_post_meta($training_type->get_id(), 'training_type_category', true);
 
@@ -73,6 +95,21 @@ function get_registration_type(WC_Product $training_type): RegistrationType
         return RegistrationType::ENLIST;
     }
     return RegistrationType::DEFAULT;
+}
+
+function cv_get_register_success_message(RegistrationFormType $form_type, CourseFormat $course_format): string {
+    $success_message_type = 'default';
+    if (in_array($form_type, [RegistrationFormType::PARTOU, RegistrationFormType::PARTOU_BABY])) {
+        $success_message_type = 'partou';
+    } else if ($course_format == CourseFormat::E_LEARNING) {
+        $success_message_type = 'elearning';
+    }
+    return get_option('cv_register_success_message_' . $success_message_type, 'Dankjewel voor je aanmelding.');
+}
+
+function cv_get_register_success_redirect_message(): string {
+    $fallback_message =  esc_html__('Dankjewel voor je aanmelding. Je wordt over enkele ogenblikken doorgestuurd naar de betaalpagina.', 'coachview');
+    return get_option('cv_register_success_redirect_message', $fallback_message);
 }
 
 function get_display_date(int $timestamp): string {

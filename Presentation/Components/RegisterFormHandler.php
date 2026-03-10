@@ -2,6 +2,8 @@
 
 namespace Coachview\Presentation\Components;
 
+use Coachview\Models\CourseFormat;
+use Coachview\Models\RegistrationFormType;
 use WP_Error;
 use WP_Http;
 use WP_REST_Request;
@@ -95,10 +97,16 @@ class RegisterFormHandler
 
         $this->update_total_participants($data);
 
+        $form_type = RegistrationFormType::from($data['_coachview_form_type'] ?: RegistrationFormType::DEFAULT->value);
+        $course_format = CourseFormat::from($data['_coachview_course_format'] ?: CourseFormat::BLENDED->value);
+        set_transient('register_success_form_type_' . $order->nummer, $form_type->value, 1 * HOUR_IN_SECONDS);
+        set_transient('register_success_course_format_' . $order->nummer, $course_format->value, 1 * HOUR_IN_SECONDS);
+
         $redirectUrl = $order['betaalproviderRedirectUrl'];
+
         $message = $redirectUrl
-            ? esc_html__('Dankjewel voor je aanmelding. Je wordt over enkele ogenblikken doorgestuurd naar de betaalpagina.', 'coachview')
-            : esc_html__('Dankjewel voor je aanmelding.', 'coachview');
+            ? cv_get_register_success_redirect_message()
+            : cv_get_register_success_message($form_type, $course_format);
 
         return [
             'success'      => true,

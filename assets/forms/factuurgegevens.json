@@ -3,7 +3,7 @@
     "title": "Factuurgegevens",
     "rules": {
         "excludeType": "in_company",
-        "excludeForm": "contact-person"
+        "onlyForForm": "default"
     },
     "items": [
         {

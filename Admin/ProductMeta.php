@@ -2,6 +2,7 @@
 
 namespace Coachview\Admin;
 
+use Coachview\Models\RegistrationFormType;
 use Coachview\Presentation\Components\TrainingAgenda;
 
 class ProductMeta
@@ -57,9 +58,11 @@ class ProductMeta
         <label for="cv_form_type"><?php esc_html_e('Formulier variatie', 'coachview'); ?></label>
         <select name="cv_form_type" id="cv_form_type" class="widefat">
             <option value=""><?php esc_html_e('Kies een optie', 'coachview'); ?></option>
-            <option value="default" <?php selected($value, 'default'); ?>><?php esc_html_e('Standaard formulier', 'coachview'); ?></option>
-            <option value="contact-person" <?php selected($value, 'contact-person'); ?>><?php esc_html_e('Formulier met contactpersoon', 'coachview'); ?></option>
-            <option value="partou" <?php selected($value, 'partou'); ?>><?php esc_html_e('Partou formulier', 'coachview'); ?></option>
+            <?php foreach (RegistrationFormType::cases() as $type): ?>
+                <option value="<?php echo esc_attr($type->value); ?>" <?php selected($value, $type->value); ?>>
+                    <?php esc_html_e($type->label(), 'coachview'); ?>
+                </option>
+            <?php endforeach; ?>
         </select>
 
         <p><?php esc_html_e('Stel hier aangepaste kopteksten in voor deelnemer en pedagogisch medewerker/contactpersoon', 'coachview'); ?></p>

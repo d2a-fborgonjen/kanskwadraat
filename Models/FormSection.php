@@ -15,7 +15,7 @@ class FormSection extends FormElement {
         parent::__construct($rules);
     }
 
-    public function render(string $form_type, RegistrationType $registration_type): string {
+    public function render(RegistrationFormType $form_type, RegistrationType $registration_type): string {
         if (!$this->canShow($form_type, $registration_type)) {
             return '';
         }

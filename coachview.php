@@ -17,6 +17,7 @@ use Coachview\Admin\Settings;
 use Coachview\Cron\Cron;
 use Coachview\Presentation\Components\RegisterForm;
 use Coachview\Presentation\Components\RegisterFormHandler;
+use Coachview\Presentation\Components\RegisterCallback;
 use Coachview\Presentation\Components\TrainingAgenda;
 use Coachview\Presentation\Components\TrainingSimpleSearch;
 use Coachview\Presentation\Components\TrainingTypeCTA;
@@ -44,6 +45,7 @@ add_action('plugins_loaded', function () {
     // Register form
     new RegisterForm();
     new RegisterFormHandler();
+    new RegisterCallback();
 
     // Sync hooks
     new Sync();
@@ -52,7 +54,6 @@ add_action('plugins_loaded', function () {
 
 register_activation_hook(__FILE__, function() {
     Cron::activate();
-
     if (has_custom_register_page()) {
         return;
     }

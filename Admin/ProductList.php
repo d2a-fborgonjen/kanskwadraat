@@ -33,7 +33,7 @@ class ProductList {
 
             // Registration type
             $product = wc_get_product($post_id);
-            $registration_type = get_registration_type($product);
+            $registration_type = cv_get_registration_type($product);
             if (is_string($registration_type) && $registration_type !== '') {
                 $data .= '<strong>Registratie type:</strong> ' . ucfirst($registration_type) . '<br>';
             }

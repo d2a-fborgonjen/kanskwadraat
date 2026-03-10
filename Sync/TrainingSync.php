@@ -14,7 +14,6 @@ use WC_Product_Simple;
 use WC_Product_Variable;
 use WC_Product_Variation;
 
-
 class TrainingSync {
 
     public static function run(): void

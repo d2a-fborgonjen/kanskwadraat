@@ -2,6 +2,8 @@
 
 namespace Coachview\Admin;
 
+use Coachview\Models\RegistrationFormType;
+
 class Settings
 {
 
@@ -34,6 +36,10 @@ class Settings
         register_setting('coachview_sync_settings', 'coachview_training_import_limit');
         register_setting('coachview_sync_settings', 'coachview_register_page');
         register_setting('coachview_sync_settings', 'cv_default_payment_method_ids');
+        register_setting('coachview_sync_settings', 'cv_register_success_message_default');
+        register_setting('coachview_sync_settings', 'cv_register_success_message_partou');
+        register_setting('coachview_sync_settings', 'cv_register_success_message_elearning');
+        register_setting('coachview_sync_settings', 'cv_register_success_message_redirect');
     }
 
     public function refresh_api_token_on_save($option): void
@@ -46,6 +52,13 @@ class Settings
 
     public function settings_page()
     {
+        $success_messages = [
+                'default' => 'Trainnig/opleiding',
+                'elearning' => 'E-learning',
+                'partou' => 'Partou',
+                'redirect' => 'Registratie gelukt, doorsturen naar betaalpagina'
+        ];
+
         ?>
         <div class="wrap">
             <form method="post" action="options.php">
@@ -132,7 +145,7 @@ class Settings
                     </tr>
                 </table>
 
-                <h1>Registratie pagina</h1>
+                <h2>Aanmelden / Registratie</h2>
                 <table class="form-table">
                     <tr>
                         <th scope="row">Registratie pagina</th>
@@ -152,6 +165,34 @@ class Settings
                             </p>
                         </td>
                     </tr>
+                </table>
+
+                <h2>Succesberichten</h2>
+                <table class="form-table">
+                    <tbody>
+                    <?php
+                    foreach ($success_messages as $type => $label) {
+                        echo '<tr>';
+                        echo '<th scope="row">' . $label . '</th>';
+                        echo "<td>";
+                        $editor_id = 'cv_register_success_message_' . $type;
+                        $value = get_option($editor_id, 'Dankjewel voor je inschrijving');
+                        $settings = [
+                            'textarea_name' => $editor_id,
+                            'textarea_rows' => 5,
+                            'media_buttons' => false,
+                            'tinymce' => [
+                                'toolbar1' => 'bold italic underline | alignleft aligncenter alignright | bulletlist numlist | removeformat',
+                                'toolbar2' => '',
+                                'toolbar3' => '',
+                            ],
+                        ];
+                        wp_editor($value, $editor_id, $settings);
+
+                        echo "</td></tr>";
+                    }
+                    ?>
+                    </tbody>
                 </table>
                 <?php submit_button('Instellingen opslaan'); ?>
             </form>

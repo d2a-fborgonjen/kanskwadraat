@@ -57,7 +57,7 @@
           "required": true,
           "rules": {
             "excludeType": "in_company",
-            "excludeForm": "contact-person"
+            "excludeForm": "partou-baby"
           }
         },
         {
@@ -67,7 +67,7 @@
           "required": true,
           "rules": {
             "excludeType": "in_company",
-            "excludeForm": "contact-person"
+            "excludeForm": "partou-baby"
           }
         }
       ]
@@ -78,7 +78,7 @@
       "type": "text",
       "rules": {
         "excludeType": "in_company",
-        "excludeForm": "contact-person"
+        "excludeForm": "partou-baby"
       }
     },
     {

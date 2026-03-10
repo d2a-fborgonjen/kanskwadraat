@@ -9,7 +9,7 @@ const REGISTER_PAGE = {
         submitting: 'Bezig met verzenden...',
         defaultSuccess: 'Dankjewel voor je aanmelding.',
         defaultError: 'Er is iets misgegaan bij het verwerken van je aanmelding. Probeer het later opnieuw.',
-        successTitleDefault: 'Aanmelding afgerond',
+        successTitleDefault: 'Inschrijving gelukt',
     },
 };
 
@@ -37,7 +37,7 @@ jQuery(document).ready(function($) {
         $feedbackContainer
             .removeClass(REGISTER_PAGE.FEEDBACK_RESET_CLASSES)
             .addClass(`alert-${type}`)
-            .text(message)
+            .html(message)
             .show();
 
         // scroll to feedback

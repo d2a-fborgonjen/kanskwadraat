@@ -26,7 +26,7 @@ class TrainingTypeCTA extends ShortCodeComponent {
             return '<span class="d-none">cv_training_type_call_to_action not used on product page or invalid product ID.</span>';
         }
 
-        $registration_type = get_registration_type($product);
+        $registration_type = cv_get_registration_type($product);
         $register_link = coachview_register_page_url(['woo_pid' => $product->get_id()]);
 
         if ($product->is_type('variable')) {

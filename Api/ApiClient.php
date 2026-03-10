@@ -65,6 +65,11 @@ class ApiClient {
         return ApiClient::instance()->create_endpoint("training_types/{$id}");
     }
 
+    public static function web_registrations(): ApiEndpoint {
+        return ApiClient::instance()->create_endpoint('/v1/Webaanvragen');
+    }
+
+
     public static function sales_rules(): ApiEndpoint {
         return ApiClient::instance()->create_endpoint('/v1/Verkoopregels');
     }

@@ -3,7 +3,10 @@
 namespace Coachview\Presentation\Components;
 
 use Coachview\Constants;
+use Coachview\Models\CourseFormat;
 use Coachview\Models\FormSection;
+use Coachview\Models\RegistrationFormType;
+use Coachview\Models\RegistrationType;
 use Coachview\Presentation\TemplateEngine;
 
 use WC_Product;
@@ -81,11 +84,12 @@ class RegisterForm extends ShortCodeComponent
 
     private function render_form(WC_Product $training_type, ?WC_Product_Variation $training, bool $with_header_and_footer): string
     {
-        $form_type = get_post_meta($training_type->get_id(), 'cv_form_type', true) ?? 'default';
-        $registration_type = get_registration_type($training_type);
+        // Registration form variation
+        $registration_form_type = cv_get_register_form_type($training_type->get_id());
+        // Type of registration (in_company, open_enrollment, enlist, )
+        $registration_type = cv_get_registration_type($training_type);
         $participant_header = get_post_meta($training_type->get_id(), 'cv_form_participant_header', true) ?? null;
         $contact_person_header = get_post_meta($training_type->get_id(), 'cv_form_contact_person_header', true) ?? null;
-
 
         $form_sections = [
             FormSection::load('deelnemer.json')->with_title($participant_header),
@@ -96,12 +100,12 @@ class RegisterForm extends ShortCodeComponent
         // Render form sections as HTML strings
         $rendered_sections = [];
         foreach ($form_sections as $section) {
-            if ($section->canShow($form_type, $registration_type)) {
+            if ($section->canShow($registration_form_type, $registration_type)) {
                 $rendered_sections[] = [
                     'id' => $section->id,
                     'title' => $section->title,
                     'description' => $section->description,
-                    'form' => $section->render($form_type, $registration_type)
+                    'form' => $section->render($registration_form_type, $registration_type)
                 ];
             }
         }
@@ -116,7 +120,7 @@ class RegisterForm extends ShortCodeComponent
             'price' => $training_type->get_price(),
 
             // Form contents
-            'hidden_inputs' => $this->render_hidden_inputs($training_type, $training),
+            'hidden_inputs' => $this->render_hidden_inputs($training_type, $training, $registration_form_type),
             'form_sections' => $rendered_sections,
 
             // Payment methods
@@ -144,10 +148,15 @@ class RegisterForm extends ShortCodeComponent
         return $token;
     }
 
-    public function render_hidden_inputs($training_type, $training = null)
+    public function render_hidden_inputs(WC_Product $training_type,
+                                         ?WC_Product_Variation $training,
+                                         RegistrationFormType $form_type)
     {
+        // Training type category
         $hidden_form_data = [
             '_coachview_form_token' => $this->generate_form_token(),
+            '_coachview_form_type' => $form_type->value,
+            '_coachview_course_format' => cv_get_course_format($training_type->get_id())->value,
             'action' => 'coachview_training_form',
             'opleidingen[opleidingssoortId]' => get_post_meta($training_type->get_id(), 'coachview_id', true),
             'debiteur[verzendwijzeFactuur]' => 'Email'
