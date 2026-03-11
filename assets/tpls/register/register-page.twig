@@ -67,7 +67,7 @@
                         </div>
 
                         <!-- payment method -->
-                        {% if payment_methods | length > 1 %}
+                        {% if payment_methods | length > 1 and price > 0 %}
                             <h3 class="register-form__payment-method-title mb-4 gap-1">Betaalmethode</h3>
                             <div class="register-form__payment-method d-flex flex-column mb-3">
                                 <label for="payment_method" class="register-form__payment-method--title mb-1">Kies uw betaalmethode:</label>

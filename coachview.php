@@ -1,8 +1,8 @@
 <?php
 /*
 Plugin Name: Coachview
-Description: Koppeling met Coachview API
-Version: 1.26.3
+Description: Koppeling met Coachview API. Laatste update 2026-03-11 09:55
+Version: 1.26.3.11
 Author: Frank Borgonjen
 */
 require_once __DIR__ . '/vendor/autoload.php';

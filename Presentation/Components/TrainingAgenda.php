@@ -44,21 +44,19 @@ class TrainingAgenda extends ShortCodeComponent
         if ($cached_agenda_items) {
             return $cached_agenda_items;
         }
-
-        $tomorrow = strtotime('tomorrow 00:00:00');
         $trainings = wc_get_products([
             'limit'      => -1,
             'status'     => 'publish',
-            'type'       => 'variation',
-            'meta_query' => [
-                ['key' => 'start_date', 'compare' => '>', date('Y-m-d', $tomorrow)]
-            ]
+            'type'       => 'variation'
         ]);
 
         $agenda_items = [];
+        $tomorrow = strtotime('tomorrow 00:00:00');
         foreach ($trainings as $training) {
             $parent_id = $training->get_parent_id();
-            if (!$this->can_show_training_type($parent_id)) {
+            $start_date = get_post_meta($training->get_id(), 'start_date', true);
+
+            if (strtotime($start_date) < $tomorrow || !$this->can_show_training_type($parent_id)) {
                 continue;
             }
 
@@ -108,6 +106,7 @@ class TrainingAgenda extends ShortCodeComponent
     private function get_training_data($training): array {
         $id = $training->get_id();
         $start_date_ts = strtotime(get_post_meta($id, 'start_date', true));
+        error_log($id . ' - ' . get_display_date($start_date_ts));
         return [
             'city' => get_post_meta($id, 'city', true),
             'start_date_ts' => $start_date_ts,

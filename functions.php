@@ -208,7 +208,11 @@ function coachview_get_payment_methods(): array {
 }
 
 function coachview_get_default_payment_method_ids(): array {
-    return get_option('cv_default_payment_method_ids', []);
+    $saved_method_ids = get_option('cv_default_payment_method_ids', []);
+    if (is_string($saved_method_ids)) {
+        $saved_method_ids = json_decode($saved_method_ids, true) ?? [];
+    }
+    return $saved_method_ids;
 }
 
 function coachview_get_product_payment_methods(WC_Product $product): array {
