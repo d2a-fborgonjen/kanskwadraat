@@ -14,6 +14,7 @@ use Coachview\Admin\Products\ProductMeta;
 use Coachview\Admin\Settings\Main;
 use Coachview\Admin\Settings\SearchForms;
 use Coachview\Admin\Settings\Settings;
+use Coachview\Constants;
 use Coachview\Cron\Cron;
 use Coachview\Presentation\Components\RegisterCallback;
 use Coachview\Presentation\Components\RegisterForm;
@@ -67,5 +68,5 @@ register_deactivation_hook(__FILE__, function() {
 });
 
 add_action('wp_enqueue_scripts', function () {
-    wp_enqueue_style('coachview-common', cv_assets_url('css/common.css'), array(), null);
+    wp_enqueue_style(Constants::STYLE_HANDLE_COMMON, cv_assets_url('css/common.css'), array(), null);
 });
