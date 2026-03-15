@@ -2,6 +2,7 @@
 
 namespace Coachview\Sync;
 
+use Coachview\Constants;
 use Coachview\Models\Enums\CourseFormat;
 use Coachview\Models\Training;
 use Coachview\Models\TrainingType;
@@ -19,7 +20,7 @@ class TrainingSync {
     public static function run(): void
     {
         TrainingSync::report_progress(0, 1);
-        $take = get_option('coachview_training_import_limit', 1000);
+        $take = get_option(Constants::TRAINING_IMPORT_LIMIT, 1000);
         $training_types = TrainingDataloader::load_training_types($take, [TrainingSync::class, 'report_progress']);
         $training_types->each(function(TrainingType $training_type, $idx) {
             try {

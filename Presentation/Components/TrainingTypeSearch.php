@@ -2,20 +2,13 @@
 
 namespace Coachview\Presentation\Components;
 
+use Coachview\Constants;
 use Coachview\Models\Enums\CourseFormat;
 use WP_Query;
 use WP_REST_Response;
 
 class TrainingTypeSearch extends ShortCodeComponent
 {
-    private const META_KEY_HIDE = 'cv_hide_from_search';
-    private const WEIGHT_TAG     = 10;
-    private const WEIGHT_TITLE   = 5;
-    private const WEIGHT_EXCERPT = 2;
-
-    private const MIN_WORD_LENGTH = 3;
-
-
     /** @var callable|null */
     private $relevanceFilter = null;
 
@@ -222,7 +215,7 @@ class TrainingTypeSearch extends ShortCodeComponent
 
         $words = preg_split('/\s+/', $search) ?: [];
         $words = array_map('trim', $words);
-        $words = array_filter($words, static fn(string $w): bool => mb_strlen($w) >= self::MIN_WORD_LENGTH);
+        $words = array_filter($words, static fn(string $w): bool => mb_strlen($w) >= Constants::SEARCH_MIN_WORD_LENGTH);
 
         return array_values($words);
     }
@@ -283,9 +276,9 @@ class TrainingTypeSearch extends ShortCodeComponent
             foreach ($words as $word) {
                 $like = '%' . $wpdb->esc_like($word) . '%';
 
-                $wTitle   = self::WEIGHT_TITLE;
-                $wTag     = self::WEIGHT_TAG;
-                $wExcerpt = self::WEIGHT_EXCERPT;
+                $wTitle   = Constants::SEARCH_WEIGHT_TITLE;
+                $wTag     = Constants::SEARCH_WEIGHT_TAG;
+                $wExcerpt = Constants::SEARCH_WEIGHT_EXCERPT;
 
                 $score_parts[] = $wpdb->prepare(
                     "CASE WHEN {$wpdb->posts}.post_title LIKE %s THEN {$wTitle} ELSE 0 END",

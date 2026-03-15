@@ -41,6 +41,12 @@ class Constants {
     public const ASSETS_BASE_DIR = 'assets';
     public const STYLE_HANDLE_COMMON = 'coachview-common';
 
+    // Search relevance weights
+    public const SEARCH_WEIGHT_TAG = 10;
+    public const SEARCH_WEIGHT_TITLE = 5;
+    public const SEARCH_WEIGHT_EXCERPT = 2;
+    public const SEARCH_MIN_WORD_LENGTH = 3;
+
     // Misc
     public const TEXT_DOMAIN = 'coachview';
 }

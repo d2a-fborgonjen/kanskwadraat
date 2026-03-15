@@ -91,7 +91,7 @@ class TrainingAgenda extends ShortCodeComponent
      */
     private function can_show_training_type($id): bool {
         $training_type = wc_get_product($id);
-        if (!$training_type || get_post_meta($id, 'cv_hide_from_search', true) === 'yes') {
+        if (!$training_type || get_post_meta($id, Constants::META_TRAINING_TYPE_HIDE_FROM_SEARCH, true) === 'yes') {
             return false;
         }
         return true;
