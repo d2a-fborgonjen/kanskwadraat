@@ -2,7 +2,7 @@
 
 namespace Coachview\Sync;
 
-use Coachview\Models\CourseFormat;
+use Coachview\Models\Enums\CourseFormat;
 use Coachview\Models\Training;
 use Coachview\Models\TrainingType;
 use Coachview\Sync\Dataloaders\TrainingDataloader;

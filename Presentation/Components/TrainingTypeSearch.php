@@ -2,10 +2,9 @@
 
 namespace Coachview\Presentation\Components;
 
-use Coachview\Models\CourseFormat;
-use Coachview\Presentation\TemplateEngine;
-use WP_REST_Response;
+use Coachview\Models\Enums\CourseFormat;
 use WP_Query;
+use WP_REST_Response;
 
 class TrainingTypeSearch extends ShortCodeComponent
 {
@@ -13,9 +12,9 @@ class TrainingTypeSearch extends ShortCodeComponent
     private const WEIGHT_TAG     = 10;
     private const WEIGHT_TITLE   = 5;
     private const WEIGHT_EXCERPT = 2;
+
     private const MIN_WORD_LENGTH = 3;
 
-    private ?TemplateEngine $templateEngine = null;
 
     /** @var callable|null */
     private $relevanceFilter = null;
@@ -46,11 +45,10 @@ class TrainingTypeSearch extends ShortCodeComponent
 
     public function render_shortcode($atts): string
     {
-        $this->templateEngine = new TemplateEngine();
         $data = [
             'category_list' => $this->renderCategorySidebar(),
         ];
-        return $this->templateEngine->render('training-search', $data);
+        return $this->render_template($data);
     }
 
     public function register_rest_routes(): void
@@ -82,7 +80,7 @@ class TrainingTypeSearch extends ShortCodeComponent
     private function renderCategorySidebar(): string
     {
         $categories = get_hierarchical_categories();
-        return $this->templateEngine->render('training-search-categories', ['categories' => $categories]);
+        return $this->render_template(['categories' => $categories], 'categories');
     }
 
     private function render_training_type($product): string
@@ -118,7 +116,7 @@ class TrainingTypeSearch extends ShortCodeComponent
             'assets_url'             => cv_assets_url(),
         ];
 
-        return $this->templateEngine->render('training-search-item', $data);
+        return $this->render_template($data, 'item');
     }
 
     public function coachview_filter_products($request): WP_REST_Response
@@ -148,11 +146,10 @@ class TrainingTypeSearch extends ShortCodeComponent
             'orderby' => 'post__in',
         ]);
 
-        $this->templateEngine = new TemplateEngine();
         $html = '';
 
         if (empty($products)) {
-            $html = $this->templateEngine->render('training-search-no-results');
+            $html = $this->render_template([], 'no_results');
         } else {
             foreach ($products as $product) {
                 $html .= $this->render_training_type($product);
@@ -268,11 +265,11 @@ class TrainingTypeSearch extends ShortCodeComponent
     // ──────────────────────────────────────────────
 
     /**
-     * Joins the product_tag taxonomy tables and scores each word match
-     * across title (weight 10), tags (weight 5), and excerpt (weight 2).
+     * Scores each word match across title (weight 10), tags (weight 5),
+     * and excerpt (weight 2).
      *
-     * Uses GROUP BY + GROUP_CONCAT to aggregate all tag names per product
-     * into a single matchable string, avoiding duplicate rows.
+     * Uses EXISTS subqueries for tag matching instead of JOINs + GROUP_CONCAT,
+     * which avoids duplicate rows and unreliable aggregate evaluation in ORDER BY.
      *
      * @param string[] $words
      */
@@ -280,18 +277,6 @@ class TrainingTypeSearch extends ShortCodeComponent
     {
         return function (array $clauses) use ($words): array {
             global $wpdb;
-
-            // JOIN product_tag terms via the taxonomy relationship tables
-            $clauses['join'] .=
-                " LEFT JOIN {$wpdb->term_relationships} AS cv_tr
-                    ON ({$wpdb->posts}.ID = cv_tr.object_id)
-                  LEFT JOIN {$wpdb->term_taxonomy} AS cv_tt
-                    ON (cv_tr.term_taxonomy_id = cv_tt.term_taxonomy_id
-                        AND cv_tt.taxonomy = 'product_tag')
-                  LEFT JOIN {$wpdb->terms} AS cv_t
-                    ON (cv_tt.term_id = cv_t.term_id)";
-
-            $clauses['groupby'] = "{$wpdb->posts}.ID";
 
             $score_parts = [];
 
@@ -312,10 +297,22 @@ class TrainingTypeSearch extends ShortCodeComponent
                     $like
                 );
 
-                $score_parts[] = $wpdb->prepare(
-                    "CASE WHEN GROUP_CONCAT(cv_t.name SEPARATOR ' ') LIKE %s THEN {$wTag} ELSE 0 END",
+                // EXISTS subquery — no JOINs needed on the outer query
+                $tag_exists = $wpdb->prepare(
+                    "SELECT 1
+                     FROM {$wpdb->term_relationships} tr
+                     INNER JOIN {$wpdb->term_taxonomy} tt
+                        ON tr.term_taxonomy_id = tt.term_taxonomy_id
+                        AND tt.taxonomy = 'product_tag'
+                     INNER JOIN {$wpdb->terms} t
+                        ON tt.term_id = t.term_id
+                     WHERE tr.object_id = {$wpdb->posts}.ID
+                       AND t.name LIKE %s
+                     LIMIT 1",
                     $like
                 );
+
+                $score_parts[] = "CASE WHEN EXISTS ({$tag_exists}) THEN {$wTag} ELSE 0 END";
             }
 
             $score_sql = implode(' + ', $score_parts);
@@ -381,3 +378,4 @@ class TrainingTypeSearch extends ShortCodeComponent
         };
     }
 }
+

@@ -2,8 +2,8 @@
 
 namespace Coachview\Presentation\Components;
 
-use Coachview\Models\CourseFormat;
-use Coachview\Models\RegistrationFormType;
+use Coachview\Models\Enums\CourseFormat;
+use Coachview\Models\Enums\RegistrationFormType;
 use WP_Error;
 use WP_Http;
 use WP_REST_Request;

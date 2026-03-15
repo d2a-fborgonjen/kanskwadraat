@@ -3,9 +3,9 @@
 use Automattic\WooCommerce\Enums\ProductStatus;
 use Coachview\Api\TokenManager;
 use Coachview\Constants;
-use Coachview\Models\CourseFormat;
-use Coachview\Models\RegistrationFormType;
-use Coachview\Models\RegistrationType;
+use Coachview\Models\Enums\CourseFormat;
+use Coachview\Models\Enums\RegistrationFormType;
+use Coachview\Models\Enums\RegistrationType;
 
 function coachview_test_mode_enabled(): bool {
     return get_option('coachview_api_mode', 'test') === 'test';
@@ -64,7 +64,6 @@ function coachview_get_default_register_url(): string {
  */
 function cv_get_register_form_type($training_type_id): RegistrationFormType {
     $type = get_post_meta($training_type_id, 'cv_form_type', true) ?: 'default';
-    error_log("TYYYYYOPPPPEEEE" . $type);
     return RegistrationFormType::from($type);
 }
 

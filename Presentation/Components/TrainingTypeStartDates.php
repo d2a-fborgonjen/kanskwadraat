@@ -2,7 +2,7 @@
 
 namespace Coachview\Presentation\Components;
 
-use Coachview\Models\CourseFormat;
+use Coachview\Models\Enums\CourseFormat;
 use Coachview\Presentation\TemplateEngine;
 use WC_Product_Variation;
 
@@ -47,8 +47,7 @@ class TrainingTypeStartDates extends ShortCodeComponent
             'variations' => $this->prepare_variations_data($variations)
         ];
 
-        $template_engine = new TemplateEngine();
-        return $template_engine->render('training-start-dates', $template_data);
+        return $this->render_template($template_data);
     }
 
     private function get_future_variations($product): array {

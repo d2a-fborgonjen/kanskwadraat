@@ -1,6 +1,7 @@
 <?php
 
 namespace Coachview\Models;
+use Coachview\Models\Enums\CourseFormat;
 use function Coachview\Sync\minutes_to_time_string;
 
 class TrainingTypeComponent {

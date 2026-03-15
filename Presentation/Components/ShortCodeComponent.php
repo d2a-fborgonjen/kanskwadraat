@@ -2,18 +2,30 @@
 
 namespace Coachview\Presentation\Components;
 
+use Coachview\Presentation\TemplateEngine;
+
 abstract class ShortCodeComponent
 {
     public function __construct()
     {
         add_shortcode(static::get_shortcode(), [$this, 'do_render_shortcode']);
-        $this->enqueue_styles();
+        // Enqueue styles/scripts on proper WP hooks instead of immediately
+        add_action('wp_enqueue_scripts', function () {
+            $this->enqueue_styles();
+            $this->enqueue_scripts();
+        });
     }
 
     public function do_render_shortcode($atts): string
     {
-        $this->enqueue_scripts();
         return $this->render_shortcode($atts);
+    }
+
+    public function render_template($data, ?string $sub_template = null): string
+    {
+        $shortcode = $this->get_shortcode();
+        $template_name = $sub_template ? "{$shortcode}_{$sub_template}" : $shortcode;
+        return TemplateEngine::instance()->render($template_name, $data);
     }
 
     public static abstract function get_shortcode(): string;

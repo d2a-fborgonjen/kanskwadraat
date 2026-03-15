@@ -1,7 +1,9 @@
 <?php
 
-namespace Coachview\Models;
+namespace Coachview\Presentation\Forms;
 
+use Coachview\Models\Enums\RegistrationFormType;
+use Coachview\Models\Enums\RegistrationType;
 use Coachview\Presentation\TemplateEngine;
 
 class FormField extends FormElement
@@ -38,9 +40,7 @@ class FormField extends FormElement
         if (!$this->canShow($form_type, $registration_type)) {
             return '';
         }
-        
-        $templateEngine = new TemplateEngine();
-        
+
         $data = [
             'field' => $this->field,
             'type' => $this->type,
@@ -51,7 +51,7 @@ class FormField extends FormElement
             'attributes' => $this->attributes
         ];
         
-        return $templateEngine->render('form-field', $data);
+        return TemplateEngine::instance()->render('cv_form_field', $data);
     }
 
 

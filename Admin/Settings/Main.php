@@ -1,12 +1,9 @@
 <?php
 
-namespace Coachview\Admin;
-
-use Coachview\Sync\Store\TrainingDetail;
-
+namespace Coachview\Admin\Settings;
 use function Coachview\Sync\get_item_count;
 
-class Admin
+class Main
 {
     public function __construct()
     {

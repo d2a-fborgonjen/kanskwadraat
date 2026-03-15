@@ -1,6 +1,6 @@
 <?php
 
-namespace Coachview\Models;
+namespace Coachview\Models\Enums;
 
 enum CourseFormat: string
 {

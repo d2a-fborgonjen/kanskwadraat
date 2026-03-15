@@ -3,12 +3,8 @@
 namespace Coachview\Presentation\Components;
 
 use Coachview\Constants;
-use Coachview\Models\CourseFormat;
-use Coachview\Models\FormSection;
-use Coachview\Models\RegistrationFormType;
-use Coachview\Models\RegistrationType;
-use Coachview\Presentation\TemplateEngine;
-
+use Coachview\Models\Enums\RegistrationFormType;
+use Coachview\Presentation\Forms\FormSection;
 use WC_Product;
 use WC_Product_Simple;
 use WC_Product_Variable;
@@ -16,8 +12,6 @@ use WC_Product_Variation;
 
 class RegisterForm extends ShortCodeComponent
 {
-    private $templateEngine;
-
     public static function get_shortcode(): string
     {
         return 'cv_register_form';
@@ -74,7 +68,6 @@ class RegisterForm extends ShortCodeComponent
     private function render_register_page(bool $with_header_and_footer = false): string
     {
         $params = $this->get_query_parameters();
-        $this->templateEngine = new TemplateEngine();
         [$training_type, $training] = $this->resolve_training($params['variation_id'], $params['product_id']);
         if (!$training_type) {
             return '<p>' . esc_html__('Ongeldige training.', 'coachview') . '</p>';
@@ -137,7 +130,7 @@ class RegisterForm extends ShortCodeComponent
             $data['training_date'] = $date;
             $data['training_location'] = $location;
         }
-        return $this->templateEngine->render('register-page', $data);
+        return $this->render_template($data);
     }
 
     private function generate_form_token()
@@ -167,7 +160,7 @@ class RegisterForm extends ShortCodeComponent
             $hidden_form_data['training_id'] = $training->get_id();
         }
 
-        return $this->templateEngine->render('hidden-inputs', ['hidden_inputs' => $hidden_form_data]);
+        return $this->render_template(['hidden_inputs' => $hidden_form_data], 'hidden_inputs');
     }
 
 

@@ -31,12 +31,11 @@ class TrainingAgenda extends ShortCodeComponent
             $agenda_items = array_slice($agenda_items, 0, $atts['max_items']);
         }
 
-        // Use TemplateEngine to render the template
-        $template_engine = new TemplateEngine();
-        return $template_engine->render('training-agenda', [
+        $data = [
             'placeholder_image_url' => cv_assets_url('img/example_training4.png'),
             'agenda_items' => $agenda_items,
-        ]);
+        ];
+        return $this->render_template($data);
     }
 
     private function get_agenda_items(): array {
@@ -106,7 +105,6 @@ class TrainingAgenda extends ShortCodeComponent
     private function get_training_data($training): array {
         $id = $training->get_id();
         $start_date_ts = strtotime(get_post_meta($id, 'start_date', true));
-        error_log($id . ' - ' . get_display_date($start_date_ts));
         return [
             'city' => get_post_meta($id, 'city', true),
             'start_date_ts' => $start_date_ts,

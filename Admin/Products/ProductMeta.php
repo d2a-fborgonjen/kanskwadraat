@@ -1,8 +1,8 @@
 <?php
 
-namespace Coachview\Admin;
+namespace Coachview\Admin\Products;
 
-use Coachview\Models\RegistrationFormType;
+use Coachview\Models\Enums\RegistrationFormType;
 use Coachview\Presentation\Components\TrainingAgenda;
 
 class ProductMeta

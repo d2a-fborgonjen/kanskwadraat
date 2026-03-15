@@ -7,44 +7,40 @@ use Twig\TwigFunction;
 
 class TemplateEngine
 {
+    private static ?TemplateEngine $template_engine = null;
     private $twig;
     
     public function __construct()
     {
-        $loader = new FilesystemLoader([
-            'search' =>  plugin_dir_path(__FILE__) . '../assets/tpls/search/',
-            'simple-search' =>  plugin_dir_path(__FILE__) . '../assets/tpls/simple-search/',
-            'register' =>  plugin_dir_path(__FILE__) . '../assets/tpls/register/',
-            'training' =>  plugin_dir_path(__FILE__) . '../assets/tpls/training/',
-        ]);
+        $baseDir = plugin_dir_path(__FILE__);
+        $loader = new FilesystemLoader($baseDir . 'Templates/');
         
         $this->twig = new Environment($loader, [
             'cache' => false, // Set to a cache directory in production
-            'debug' => true,  // Set to false in production
+            'debug' => false,  // Set to false in production
             'auto_reload' => true,
         ]);
+    }
 
-        $this->twig->addFunction(new TwigFunction('esc_html', 'esc_html'));
-        $this->twig->addFunction(new TwigFunction('esc_url', 'esc_url'));
-        $this->twig->addFunction(new TwigFunction('wp_kses_post', 'wp_kses_post'));
-        $this->twig->addFunction(new TwigFunction('date_i18n', 'date_i18n'));
-        $this->twig->addFunction(new TwigFunction('get_permalink', 'get_permalink'));
-        $this->twig->addFunction(new TwigFunction('get_post_meta', 'get_post_meta'));
-        $this->twig->addFunction(new TwigFunction('admin_url', 'admin_url'));
-        $this->twig->addFunction(new TwigFunction('plugin_dir_url', 'plugin_dir_url'));
+    public static function instance(): TemplateEngine
+    {
+        if (self::$template_engine === null) {
+            self::$template_engine = new TemplateEngine();
+        }
+        return self::$template_engine;
     }
     
     /**
      * Render a template with data
      * 
-     * @param string $templateName Template filename without .twig extension
-     * @param array $data Data to pass to template
+     * @param string $template_name Template filename without .twig extension
+     * @param ?array $data Data to pass to template
      * @return string Rendered HTML
      */
-    public function render($templateName, $data = [])
+    public function render(string $template_name, ?array $data = []): string
     {
         try {
-            return $this->twig->render($templateName . '.twig', $data);
+            return $this->twig->render($template_name . '.twig', $data);
         } catch (\Exception $e) {
             error_log('Twig Template Error: ' . $e->getMessage());
             return '<div class="error">Template rendering error: ' . esc_html($e->getMessage()) . '</div>';

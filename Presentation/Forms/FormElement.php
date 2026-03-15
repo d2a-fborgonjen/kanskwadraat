@@ -1,6 +1,9 @@
 <?php
 
-namespace Coachview\Models;
+namespace Coachview\Presentation\Forms;
+
+use Coachview\Models\Enums\RegistrationFormType;
+use Coachview\Models\Enums\RegistrationType;
 
 abstract class FormElement {
 

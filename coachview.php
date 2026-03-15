@@ -1,23 +1,23 @@
 <?php
 /*
 Plugin Name: Coachview
-Description: Koppeling met Coachview API. Laatste update 2026-03-11 09:55
-Version: 1.26.3.11
+Description: Koppeling met Coachview API. Laatste update 2026-03-12 20:56
+Version: 1.0
 Author: Frank Borgonjen
 */
 require_once __DIR__ . '/vendor/autoload.php';
 
-use Coachview\Admin\Admin;
-use Coachview\Admin\CategoryList;
-use Coachview\Admin\CustomACF;
-use Coachview\Admin\ProductList;
-use Coachview\Admin\ProductMeta;
-use Coachview\Admin\SearchForms;
-use Coachview\Admin\Settings;
+use Coachview\Admin\Categories\CategoryList;
+use Coachview\Admin\Products\CustomACF;
+use Coachview\Admin\Products\ProductList;
+use Coachview\Admin\Products\ProductMeta;
+use Coachview\Admin\Settings\Main;
+use Coachview\Admin\Settings\SearchForms;
+use Coachview\Admin\Settings\Settings;
 use Coachview\Cron\Cron;
+use Coachview\Presentation\Components\RegisterCallback;
 use Coachview\Presentation\Components\RegisterForm;
 use Coachview\Presentation\Components\RegisterFormHandler;
-use Coachview\Presentation\Components\RegisterCallback;
 use Coachview\Presentation\Components\TrainingAgenda;
 use Coachview\Presentation\Components\TrainingSimpleSearch;
 use Coachview\Presentation\Components\TrainingTypeCTA;
@@ -26,13 +26,14 @@ use Coachview\Presentation\Components\TrainingTypeStartDates;
 use Coachview\Sync\Hooks\Sync;
 
 add_action('plugins_loaded', function () {
-    // Admin pages
-    new Admin();
+    new Main();
+    // settings
     new Settings();
+    new SearchForms();
+    // Admin products
     new ProductList();
     new CategoryList();
     new ProductMeta();
-    new SearchForms();
     new CustomACF();
 
     // Training Type + Training

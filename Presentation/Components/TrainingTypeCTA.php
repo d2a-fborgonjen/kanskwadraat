@@ -2,7 +2,7 @@
 
 namespace Coachview\Presentation\Components;
 
-use Coachview\Models\RegistrationType;
+use Coachview\Models\Enums\RegistrationType;
 
 /**
  * Shortcode to display Call to Action (CTA)

@@ -1,8 +1,6 @@
 <?php
 
-namespace Coachview\Admin;
-
-use Coachview\Models\RegistrationFormType;
+namespace Coachview\Admin\Settings;
 
 class Settings
 {

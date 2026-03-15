@@ -1,6 +1,7 @@
 <?php
 namespace Coachview\Models;
 
+use Coachview\Models\Enums\CourseFormat;
 use Illuminate\Support\Collection;
 
 class TrainingType {
