@@ -21,7 +21,7 @@ class TrainingDataloader
             ->where('publicatieWebsite', 'true')
             ->where('opleidingssoortStatusId', 'Definitief')
             ->where('inactief', 'false')
-//            ->where('code', 'BSO-1')
+//            ->where('code', 'VVE-BASIS ')
             ->includeFreeFields()
             ->includeExtraFields()
             ->includeDirectRelations()
@@ -35,9 +35,9 @@ class TrainingDataloader
 
             foreach ($rawData as $index => $data) {
                 try {
+                    $categories = self::__load_training_type_categories($data['id']);
                     $trainings = self::__load_trainings($data['id']);
                     $components = self::__load_training_type_components($data['id']);
-                    $categories = self::__load_training_type_categories($data['id']);
                     $result[] = TrainingType::from_array($data, $categories, $trainings, $components);
                 } catch (Exception $e) {
                     error_log("Error loading training types: " . $e->getMessage());
@@ -58,6 +58,7 @@ class TrainingDataloader
             ->where('OpleidingssoortId', $training_type_id)
             ->includeFreeFields()
             ->includeExtraFields()
+            ->take(100)
             ->build();
         return collect(ApiClient::training_type_components()->get($query))->map(function($data) {
             return TrainingTypeComponent::from_array($data);
@@ -70,6 +71,7 @@ class TrainingDataloader
             ->where('OpleidingssoortId', $training_type_id)
             ->where('publicatieWebsite', 'true')
             ->includeExtraFields()
+            ->take(100)
             ->build();
         return collect(ApiClient::training_type_categories()->get($query))->map(function($data) {
             return $data['naam'];
@@ -104,6 +106,7 @@ class TrainingDataloader
             ->order_by('datumTijdVan')
             ->includeFreeFields()
             ->includeDirectRelations()
+            ->take(100)
             ->build();
         return collect(ApiClient::training_components()->get($query))->map(function($data) {
             return TrainingComponent::from_array($data);
