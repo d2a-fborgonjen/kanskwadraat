@@ -1,24 +1,23 @@
 <?php
 /*
 Plugin Name: Coachview
-Description: Koppeling met Coachview API. Laatste update 2026-03-12 20:56
+Description: Koppeling met Coachview API. Laatste update 2026-03-17
 Version: 1.0
 Author: Frank Borgonjen
 */
 require_once __DIR__ . '/vendor/autoload.php';
 
-use Coachview\Admin\Categories\CategoryList;
-use Coachview\Admin\Products\CustomACF;
-use Coachview\Admin\Products\ProductList;
-use Coachview\Admin\Products\ProductMeta;
-use Coachview\Admin\Settings\Main;
-use Coachview\Admin\Settings\SearchForms;
-use Coachview\Admin\Settings\Settings;
-use Coachview\Constants;
+use Coachview\Admin\Admin;
+use Coachview\Admin\CategoryList;
+use Coachview\Admin\CustomACF;
+use Coachview\Admin\ProductList;
+use Coachview\Admin\ProductMeta;
+use Coachview\Admin\SearchForms;
+use Coachview\Admin\Settings;
 use Coachview\Cron\Cron;
-use Coachview\Presentation\Components\RegisterCallback;
 use Coachview\Presentation\Components\RegisterForm;
 use Coachview\Presentation\Components\RegisterFormHandler;
+use Coachview\Presentation\Components\RegisterCallback;
 use Coachview\Presentation\Components\TrainingAgenda;
 use Coachview\Presentation\Components\TrainingSimpleSearch;
 use Coachview\Presentation\Components\TrainingTypeCTA;
@@ -27,14 +26,13 @@ use Coachview\Presentation\Components\TrainingTypeStartDates;
 use Coachview\Sync\Hooks\Sync;
 
 add_action('plugins_loaded', function () {
-    new Main();
-    // settings
+    // Admin pages
+    new Admin();
     new Settings();
-    new SearchForms();
-    // Admin products
     new ProductList();
     new CategoryList();
     new ProductMeta();
+    new SearchForms();
     new CustomACF();
 
     // Training Type + Training
@@ -68,5 +66,5 @@ register_deactivation_hook(__FILE__, function() {
 });
 
 add_action('wp_enqueue_scripts', function () {
-    wp_enqueue_style(Constants::STYLE_HANDLE_COMMON, cv_assets_url('css/common.css'), array(), null);
+    wp_enqueue_style('coachview-common', cv_assets_url('css/common.css'), array(), null);
 });
