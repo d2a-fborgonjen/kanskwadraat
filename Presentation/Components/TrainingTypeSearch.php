@@ -173,7 +173,7 @@ class TrainingTypeSearch extends ShortCodeComponent
             'posts_per_page' => -1,
             'meta_query'     => [
                 [
-                    'key'     => self::META_KEY_HIDE,
+                    'key'     => Constants::META_TRAINING_TYPE_HIDE_FROM_SEARCH,
                     'compare' => 'NOT EXISTS',
                 ],
             ],
