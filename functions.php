@@ -64,7 +64,6 @@ function coachview_get_default_register_url(): string {
  */
 function cv_get_register_form_type($training_type_id): RegistrationFormType {
     $type = get_post_meta($training_type_id, 'cv_form_type', true) ?: 'default';
-    error_log("TYYYYYOPPPPEEEE" . $type);
     return RegistrationFormType::from($type);
 }
 
