@@ -77,7 +77,13 @@ class TrainingSync {
 
     public static function __save_single_product(TrainingType $training_type): WC_Product_Simple
     {
-        $product = get_product_by_cv_id($training_type->id) ?? new WC_Product_Simple();
+//        $product = get_product_by_cv_id($training_type->id) ?? new WC_Product_Simple();
+        $product = get_product_by_sku($training_type->code) ?? new WC_Product_Simple();
+
+        if ($product->get_id() === 0) {
+            log_cv_info('NEW Product. SKU: ' . $training_type->code);
+        }
+
         if ($product instanceof WC_Product_Variable) {
             log_cv_info('Product type mismatch: expected Simple, got Variable. Deleting and recreating as Simple.');
             $product->delete(true);
@@ -93,8 +99,11 @@ class TrainingSync {
 
     public static function __save_variable_product(TrainingType $training_type): WC_Product_Variable
     {
-        $product = get_product_by_cv_id($training_type->id) ?? new WC_Product_Variable();
-//        $product = get_product_by_sku($training_type->code) ?? new WC_Product_Variable();
+        //$product = get_product_by_cv_id($training_type->id) ?? new WC_Product_Variable();
+        $product = get_product_by_sku($training_type->code) ?? new WC_Product_Variable();
+        if ($product->get_id() === 0) {
+            log_cv_info('NEW Product. SKU: ' . $training_type->code);
+        }
         if (!($product instanceof WC_Product_Variable)) {
             log_cv_info('Product type mismatch: expected Variable, got Simple. Deleting and recreating as Variable.');
             $product->delete(true);
@@ -145,6 +154,8 @@ class TrainingSync {
         return $trainings->map(function(Training $training) use ($product) {
             $variation = get_product_variation_by_sku($training->code)?? new WC_Product_Variation();
             if ($variation->get_id() === 0) {
+                log_cv_info('NEW Variation. SKU: ' . $training->code);
+
                 $variation->set_sku($training->code);
                 $variation->set_manage_stock(true);
                 $variation->set_parent_id($product->get_id());

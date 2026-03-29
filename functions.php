@@ -3,30 +3,30 @@
 use Automattic\WooCommerce\Enums\ProductStatus;
 use Coachview\Api\TokenManager;
 use Coachview\Constants;
-use Coachview\Models\Enums\CourseFormat;
-use Coachview\Models\Enums\RegistrationFormType;
-use Coachview\Models\Enums\RegistrationType;
+use Coachview\Models\CourseFormat;
+use Coachview\Models\RegistrationFormType;
+use Coachview\Models\RegistrationType;
 
 function coachview_test_mode_enabled(): bool {
-    return get_option(Constants::OPTION_API_MODE, Constants::API_MODE_TEST) === Constants::API_MODE_TEST;
+    return get_option('coachview_api_mode', 'test') === 'test';
 }
 
 function coachview_api_url(): string {
     return coachview_test_mode_enabled() ?
-        Constants::API_URL_TEST :
-        Constants::API_URL_PRODUCTION;
+        'https://training.coachview.net' :
+        'https://kanskwadraat.coachview.com';
 }
 
 function coachview_api_client_id(): string {
     return coachview_test_mode_enabled() ?
-        get_option(Constants::OPTION_API_TEST_CLIENT_ID) :
-        get_option(Constants::OPTION_API_CLIENT_ID);
+        get_option('coachview_test_client_id') :
+        get_option('coachview_client_id');
 }
 
 function coachview_api_secret(): string {
     return coachview_test_mode_enabled() ?
-        get_option(Constants::OPTION_API_TEST_SECRET) :
-        get_option(Constants::OPTION_API_SECRET);
+        get_option('coachview_test_secret') :
+        get_option('coachview_secret');
 }
 
 function coachview_api_token(bool $refresh = false): string {
@@ -42,13 +42,13 @@ function coachview_get_default_search_url(): string {
 function coachview_register_page_url(array $params): string {
     $url = coachview_get_default_register_url();
     if (has_custom_register_page()) {
-        $url = get_permalink(get_option(Constants::OPTION_REGISTER_PAGE_ID));
+        $url = get_permalink(get_option('coachview_register_page'));
     }
     return empty($params) ? $url : $url . '?' . http_build_query($params);
 }
 
 function has_custom_register_page(): bool {
-    $register_page_id = get_option(Constants::OPTION_REGISTER_PAGE_ID, 0);
+    $register_page_id = get_option('coachview_register_page', 0);
     return $register_page_id && get_post_status($register_page_id) === 'publish';
 }
 
@@ -63,12 +63,12 @@ function coachview_get_default_register_url(): string {
  * Used to include / exclude registration form fields
  */
 function cv_get_register_form_type($training_type_id): RegistrationFormType {
-    $type = get_post_meta($training_type_id, Constants::META_TRAINING_TYPE_FORM_TYPE, true) ?: 'default';
+    $type = get_post_meta($training_type_id, 'cv_form_type', true) ?: 'default';
     return RegistrationFormType::from($type);
 }
 
 function cv_get_course_format($training_type_id): CourseFormat {
-    $format = get_post_meta($training_type_id, Constants::META_TRAINING_TYPE_CATEGORY, true) ?: CourseFormat::BLENDED->value;
+    $format = get_post_meta($training_type_id, 'training_type_category', true) ?: CourseFormat::BLENDED->value;
     return CourseFormat::from($format);
 }
 
@@ -79,13 +79,13 @@ function cv_get_course_format($training_type_id): CourseFormat {
  */
 function cv_get_registration_type(WC_Product $training_type): RegistrationType
 {
-    $training_type_category = get_post_meta($training_type->get_id(), Constants::META_TRAINING_TYPE_CATEGORY, true);
+    $training_type_category = get_post_meta($training_type->get_id(), 'training_type_category', true);
 
     // Published but hidden training types are only available for in-company registrations
     if ($training_type->get_status() == ProductStatus::PUBLISH &&
         // TODO: ASK johan about in company trainings
         (get_post_meta($training_type->get_id() , '_yoast_wpseo_meta-robots-noindex', true) === '1'
-            || get_post_meta($training_type->get_id() , Constants::META_TRAINING_TYPE_HIDE_FROM_SEARCH, true) === 'yes')) {
+            || get_post_meta($training_type->get_id() , 'cv_hide_from_search', true) === 'yes')) {
         return RegistrationType::IN_COMPANY;
     } else if ($training_type_category === CourseFormat::E_LEARNING->value) {
         return RegistrationType::OPEN_ENROLLMENT;
@@ -103,14 +103,12 @@ function cv_get_register_success_message(RegistrationFormType $form_type, Course
     } else if ($course_format == CourseFormat::E_LEARNING) {
         $success_message_type = 'elearning';
     }
-    $option_name = Constants::OPTION_REGISTER_SUCCESS_MESSAGE_PREFIX . $success_message_type;
-    $default = esc_html__('Dankjewel voor je aanmelding.', Constants::TEXT_DOMAIN);
-    return get_option($option_name, $default);
+    return get_option('cv_register_success_message_' . $success_message_type, 'Dankjewel voor je aanmelding.');
 }
 
 function cv_get_register_success_redirect_message(): string {
-    $fallback_message =  esc_html__('Dankjewel voor je aanmelding. Je wordt over enkele ogenblikken doorgestuurd naar de betaalpagina.', Constants::TEXT_DOMAIN);
-    return get_option(Constants::OPTION_REGISTER_SUCCESS_REDIRECT_MESSAGE, $fallback_message);
+    $fallback_message =  esc_html__('Dankjewel voor je aanmelding. Je wordt over enkele ogenblikken doorgestuurd naar de betaalpagina.', 'coachview');
+    return get_option('cv_register_success_redirect_message', $fallback_message);
 }
 
 function get_display_date(int $timestamp): string {
@@ -166,7 +164,7 @@ function get_category_with_children($id): array | null {
 }
 
 function cv_assets_url(string $path = ''): string {
-    return plugin_dir_url(__FILE__) . Constants::ASSETS_BASE_DIR . '/' . ltrim($path, '/');
+    return plugin_dir_url(__FILE__) . 'assets/' . ltrim($path, '/');
 }
 
 function wp_get_query_var( $key, $default = '' ) {
@@ -205,11 +203,11 @@ function normalize_enums(mixed $data): mixed
 }
 
 function coachview_get_payment_methods(): array {
-    return get_option(Constants::OPTION_PAYMENT_METHODS, []);
+    return get_option('cv_payment_methods', []);
 }
 
 function coachview_get_default_payment_method_ids(): array {
-    $saved_method_ids = get_option(Constants::OPTION_DEFAULT_PAYMENT_METHOD_IDS, []);
+    $saved_method_ids = get_option('cv_default_payment_method_ids', []);
     if (is_string($saved_method_ids)) {
         $saved_method_ids = json_decode($saved_method_ids, true) ?? [];
     }
@@ -219,7 +217,7 @@ function coachview_get_default_payment_method_ids(): array {
 function coachview_get_product_payment_methods(WC_Product $product): array {
     $all_methods = coachview_get_payment_methods();
     $default_method_ids = coachview_get_default_payment_method_ids();
-    $product_method_ids = get_post_meta($product->get_id(), Constants::META_PRODUCT_PAYMENT_METHODS, true);
+    $product_method_ids = get_post_meta($product->get_id(), 'cv_payment_methods', true);
     if (is_array($product_method_ids)) {
         return array_filter($all_methods, fn($method) => in_array($method['id'], $product_method_ids));
     } else if (!empty($default_method_ids)) {
@@ -235,7 +233,7 @@ function coachview_get_product_payment_methods(WC_Product $product): array {
  */
 function coachview_get_search_forms(): array
 {
-    $forms = get_option(Constants::OPTION_SEARCH_FORMS, []);
+    $forms = get_option('coachview_search_forms', []);
     return is_array($forms) ? $forms : [];
 }
 
@@ -255,4 +253,3 @@ function coachview_get_search_form_by_name(string $form_name): ?array
     }
     return null;
 }
-
