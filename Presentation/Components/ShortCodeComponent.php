@@ -7,7 +7,7 @@ abstract class ShortCodeComponent
     public function __construct()
     {
         add_shortcode(static::get_shortcode(), [$this, 'do_render_shortcode']);
-        $this->enqueue_styles();
+        add_action('wp_enqueue_scripts', [$this, 'enqueue_styles']);
     }
 
     public function do_render_shortcode($atts): string
