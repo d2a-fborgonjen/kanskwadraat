@@ -2,10 +2,10 @@
 
 namespace Coachview\Sync;
 
-use Coachview\Models\CourseFormat;
+use Coachview\Constants;
+use Coachview\Models\Enums\CourseFormat;
 use Coachview\Models\Training;
 use Coachview\Models\TrainingType;
-use Coachview\Sync\Dataloaders\TrainingDataloader;
 use Exception;
 use Illuminate\Support\Collection;
 use WC_Product;
@@ -19,8 +19,8 @@ class TrainingSync {
     public static function run(): void
     {
         TrainingSync::report_progress(0, 1);
-        $take = get_option('coachview_training_import_limit', 1000);
-        $training_types = TrainingDataloader::load_training_types($take, [TrainingSync::class, 'report_progress']);
+        $take = get_option(Constants::TRAINING_IMPORT_LIMIT, 1000);
+        $training_types = Dataloaders\TrainingDataloader::load_training_types($take, [TrainingSync::class, 'report_progress']);
         $training_types->each(function(TrainingType $training_type, $idx) {
             try {
                 if ($training_type->get_course_format() == CourseFormat::E_LEARNING) {
@@ -47,7 +47,7 @@ class TrainingSync {
     public static function report_progress(int $done, int $total): void
     {
         $progress = round(($done / $total) * 100, 2);
-        update_option('coachview_sync_progress', $progress);
+        update_option(Constants::OPTION_SYNC_PROGRESS, $progress);
     }
 
     private static function __save_product_categories(WC_Product $product, TrainingType $training_type): void {
@@ -132,18 +132,18 @@ class TrainingSync {
         $product->set_regular_price($training_type->price);
         $product->set_manage_stock(false);
         $product->set_stock_status('instock');
-        $product->update_meta_data('cv_last_sync', time());
-        $product->update_meta_data('training_goal', $training_type->goal);
-        $product->update_meta_data('training_duration', $training_type->num_half_days);
+        $product->update_meta_data(Constants::META_LAST_SYNC, time());
+        $product->update_meta_data(Constants::META_TRAINING_GOAL, $training_type->goal);
+        $product->update_meta_data(Constants::META_TRAINING_DURATION, $training_type->num_half_days);
 
         // one of: elearning, klassikaal, blended
-        $product->update_meta_data('training_type_category', $training_type->get_course_format()->value);
+        $product->update_meta_data(Constants::META_TRAINING_TYPE_CATEGORY, $training_type->get_course_format()->value);
 
         if ($product->get_id() === 0) {
             $product->set_virtual(true);
             $product->set_status('draft');
-            $product->add_meta_data('coachview_id', $training_type->id, true);
-            $product->add_meta_data('coachview_source', coachview_test_mode_enabled() ? 'TEST' : 'PRODUCTION');
+            $product->add_meta_data(Constants::META_COACHVIEW_ID, $training_type->id, true);
+            $product->add_meta_data(Constants::META_COACHVIEW_SOURCE, coachview_test_mode_enabled() ? 'TEST' : 'PRODUCTION');
             $product->set_description($training_type->description);
         }
     }
@@ -161,27 +161,24 @@ class TrainingSync {
                 $variation->set_attributes(['training_code' => $training->code]);
                 $variation->set_status('publish');
 
-                $variation->update_meta_data('coachview_id', $training->id);
-                $variation->update_meta_data('coachview_source', coachview_test_mode_enabled() ? 'TEST' : 'PRODUCTION');
+                $variation->update_meta_data(Constants::META_COACHVIEW_ID, $training->id);
+                $variation->update_meta_data(Constants::META_COACHVIEW_SOURCE, coachview_test_mode_enabled() ? 'TEST' : 'PRODUCTION');
             }
-            $variation->set_regular_price($product->get_regular_price());
-            $variation->set_stock_quantity($training->num_seats_available);
-
-            $variation->update_meta_data('cv_last_sync', time());
-            $variation->update_meta_data('location',  firstNonEmpty($training->components->pluck('location')));
-            $variation->update_meta_data('address', firstNonEmpty($training->components->pluck('address')));
-            $variation->update_meta_data('zipcode', firstNonEmpty($training->components->pluck('zipcode')));
-            $variation->update_meta_data('city', firstNonEmpty($training->components->pluck('city')));
-            $variation->update_meta_data('planning', json_encode($training->components));
-            $variation->update_meta_data('start_day', $training->start_day);
-            $variation->update_meta_data('start_date', $training->start_date);
-            $variation->update_meta_data('end_date', $training->end_date);
-            $variation->update_meta_data('total_study_hours', $training->total_study_hours);
-            $variation->update_meta_data('total_days', $training->total_days);
-            $variation->update_meta_data('num_seats_taken', $training->num_seats_taken);
-            $variation->update_meta_data('num_seats_available', $training->num_seats_available);
-            $variation->update_meta_data('min_seats', $training->min_seats);
-            $variation->update_meta_data('max_seats', $training->max_seats);
+            $variation->update_meta_data(Constants::META_LAST_SYNC, time());
+            $variation->update_meta_data(Constants::META_LOCATION,  firstNonEmpty($training->components->pluck('location')));
+            $variation->update_meta_data(Constants::META_ADDRESS, firstNonEmpty($training->components->pluck('address')));
+            $variation->update_meta_data(Constants::META_ZIPCODE, firstNonEmpty($training->components->pluck('zipcode')));
+            $variation->update_meta_data(Constants::META_CITY, firstNonEmpty($training->components->pluck('city')));
+            $variation->update_meta_data(Constants::META_PLANNING, json_encode($training->components));
+            $variation->update_meta_data(Constants::META_START_DAY, $training->start_day);
+            $variation->update_meta_data(Constants::META_START_DATE, $training->start_date);
+            $variation->update_meta_data(Constants::META_END_DATE, $training->end_date);
+            $variation->update_meta_data(Constants::META_TOTAL_STUDY_HOURS, $training->total_study_hours);
+            $variation->update_meta_data(Constants::META_TOTAL_DAYS, $training->total_days);
+            $variation->update_meta_data(Constants::META_NUM_SEATS_TAKEN, $training->num_seats_taken);
+            $variation->update_meta_data(Constants::META_NUM_SEATS_AVAILABLE, $training->num_seats_available);
+            $variation->update_meta_data(Constants::META_MIN_SEATS, $training->min_seats);
+            $variation->update_meta_data(Constants::META_MAX_SEATS, $training->max_seats);
             $variation->save();
 
             return $variation;
@@ -219,3 +216,4 @@ class TrainingSync {
     }
 
 }
+

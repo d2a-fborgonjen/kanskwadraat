@@ -2,9 +2,11 @@
 
 namespace Coachview\Admin;
 
+use Coachview\Constants;
+use Coachview\Helpers\Categories;
+
 class SearchForms
 {
-    private const OPTION_NAME = 'coachview_search_forms';
 
     public function __construct()
     {
@@ -28,7 +30,7 @@ class SearchForms
 
     public function register_search_forms(): void
     {
-        register_setting('coachview_search_forms', self::OPTION_NAME);
+        register_setting(Constants::OPTION_SEARCH_FORMS, Constants::OPTION_SEARCH_FORMS);
     }
 
     public function handle_save_form(): void
@@ -58,7 +60,7 @@ class SearchForms
             $forms[$new_id] = $form_data;
         }
 
-        update_option(self::OPTION_NAME, $forms);
+        update_option(Constants::OPTION_SEARCH_FORMS, $forms);
 
         wp_redirect(admin_url('admin.php?page=coachview-search-forms&message=saved'));
         exit;
@@ -81,7 +83,7 @@ class SearchForms
         $forms = $this->get_forms();
         if (isset($forms[$form_id])) {
             unset($forms[$form_id]);
-            update_option(self::OPTION_NAME, $forms);
+            update_option(Constants::OPTION_SEARCH_FORMS, $forms);
         }
 
         wp_redirect(admin_url('admin.php?page=coachview-search-forms&message=deleted'));
@@ -90,7 +92,7 @@ class SearchForms
 
     private function get_forms(): array
     {
-        $forms = get_option(self::OPTION_NAME, []);
+        $forms = get_option(Constants::OPTION_SEARCH_FORMS, []);
         return is_array($forms) ? $forms : [];
     }
 
@@ -153,7 +155,7 @@ class SearchForms
                                 <th scope="row"><label><?php esc_html_e('Categorieën', 'coachview'); ?></label></th>
                                 <td>
                                     <?php
-                                    $categories = get_hierarchical_categories();
+                                    $categories = Categories::getHierarchicalCategories();
 
                                     for ($i = 1; $i <= 2; $i++) {
                                         $field_name = 'category_' . $i;

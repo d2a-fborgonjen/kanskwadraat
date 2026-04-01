@@ -2,6 +2,7 @@
 
 namespace Coachview\Sync;
 
+use Coachview\Constants;
 use WC_Product;
 use WP_Query;
 
@@ -27,7 +28,7 @@ function get_product_by_cv_id(string $cv_id): ?WC_Product
         'post_type'  => 'product',
         'meta_query' => [
             [
-                'key'   => 'coachview_id',
+                'key'   => Constants::META_COACHVIEW_ID,
                 'value' => $cv_id
             ],
         ],
@@ -60,7 +61,7 @@ function get_item_count(string $product_type): int
         'post_type'      => $product_type,
         'meta_query'     => [
             [
-                'key'     => 'coachview_id',
+                'key'     => Constants::META_COACHVIEW_ID,
                 'compare' => 'EXISTS',
             ],
         ],
@@ -103,7 +104,7 @@ function get_or_create_category(string $name, int $parentId = 0): ?int
 
 function set_category_last_sync(int $term_id): void
 {
-    update_term_meta($term_id, 'last_sync', time());
+    update_term_meta($term_id, Constants::META_LAST_SYNC, time());
 }
 
 function get_categories_by_parent_not_in(int $parent_id, $not_in): array
@@ -122,19 +123,19 @@ function log_cv_exception($action, $exception) {
     $error_msg = $action . ': ' . $exception->getMessage() . "\n" . $exception->getTraceAsString();
     error_log($error_msg);
 
-    $error_log = get_option('coachview_sync_error', '');
+    $error_log = get_option(Constants::OPTION_SYNC_ERROR_LOG, '');
     $date = date('Y-m-d H:i:s');
     $error_log = $error_log . "[$date] $error_msg\n";
-    update_option('coachview_sync_error', $error_log);
+    update_option(Constants::OPTION_SYNC_ERROR_LOG, $error_log);
 }
 
 function log_cv_info($info_msg) {
     error_log($info_msg);
 
-    $logging = get_option('coachview_sync_info', '');
+    $logging = get_option(Constants::OPTION_SYNC_INFO_LOG, '');
     $date = date('Y-m-d H:i:s');
     $logging = $logging . "[$date] $info_msg\n";
-    update_option('coachview_sync_info', $logging);
+    update_option(Constants::OPTION_SYNC_INFO_LOG, $logging);
 }
 
 // Helper method to find the first non-empty value in a collection

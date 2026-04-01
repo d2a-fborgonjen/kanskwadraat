@@ -3,12 +3,14 @@
 namespace Coachview\Presentation\Components;
 
 use Coachview\Constants;
-use Coachview\Models\CourseFormat;
+use Coachview\Helpers\Assets;
+use Coachview\Helpers\MetaHelpers;
+use Coachview\Helpers\Payment;
+use Coachview\Helpers\Registration;
+use Coachview\Helpers\Url;
+use Coachview\Models\Enums\RegistrationFormType;
 use Coachview\Models\FormSection;
-use Coachview\Models\RegistrationFormType;
-use Coachview\Models\RegistrationType;
 use Coachview\Presentation\TemplateEngine;
-
 use WC_Product;
 use WC_Product_Simple;
 use WC_Product_Variable;
@@ -25,14 +27,14 @@ class RegisterForm extends ShortCodeComponent
 
     public function enqueue_styles(): void
     {
-        wp_enqueue_style(self::get_shortcode(), cv_assets_url('css/register-form.css'), [], null);
+        Assets::enqueueStyle(self::get_shortcode(), 'css/register-form.css');
     }
 
     public function enqueue_scripts(): void
     {
-        wp_enqueue_script(self::get_shortcode() . '-wizard', cv_assets_url('js/register-page-wizard.js'), ['jquery'], '1.0', true);
-        wp_enqueue_script(self::get_shortcode() . '-participants', cv_assets_url('js/register-page-participants.js'), ['jquery'], '1.0', true);
-        wp_enqueue_script(self::get_shortcode(), cv_assets_url('js/register-page.js'), ['jquery', self::get_shortcode().'-wizard', self::get_shortcode().'-participants'], '1.0', true);
+        Assets::enqueueScript(self::get_shortcode() . '-wizard', 'js/register-page-wizard.js', ['jquery']);
+        Assets::enqueueScript(self::get_shortcode() . '-participants', 'js/register-page-participants.js', ['jquery']);
+        Assets::enqueueScript(self::get_shortcode(), 'js/register-page.js', [self::get_shortcode().'-wizard', self::get_shortcode().'-participants']);
     }
 
     public function __construct()
@@ -40,7 +42,7 @@ class RegisterForm extends ShortCodeComponent
         parent::__construct();
         add_filter('query_vars', [$this, 'parse_query_vars']);
 
-        if (!has_custom_register_page()) {
+        if (!Url::has_custom_register_page()) {
             add_action('template_redirect', [$this, 'template_redirect']);
             add_action('init', [$this, 'add_register_rewrite_rule']);
         }
@@ -85,11 +87,11 @@ class RegisterForm extends ShortCodeComponent
     private function render_form(WC_Product $training_type, ?WC_Product_Variation $training, bool $with_header_and_footer): string
     {
         // Registration form variation
-        $registration_form_type = cv_get_register_form_type($training_type->get_id());
+        $registration_form_type = Registration::get_register_form_type($training_type->get_id());
         // Type of registration (in_company, open_enrollment, enlist, )
-        $registration_type = cv_get_registration_type($training_type);
-        $participant_header = get_post_meta($training_type->get_id(), 'cv_form_participant_header', true) ?? null;
-        $contact_person_header = get_post_meta($training_type->get_id(), 'cv_form_contact_person_header', true) ?? null;
+        $registration_type = Registration::get_registration_type($training_type);
+        $participant_header = MetaHelpers::form_participant_header($training_type->get_id()) ?: null;
+        $contact_person_header = MetaHelpers::form_contact_person_header($training_type->get_id()) ?: null;
 
         $form_sections = [
             FormSection::load('deelnemer.json')->with_title($participant_header),
@@ -120,16 +122,16 @@ class RegisterForm extends ShortCodeComponent
             'price' => $training_type->get_price(),
 
             // Form contents
-            'hidden_inputs' => $this->render_hidden_inputs($training_type, $training, $registration_form_type),
-            'form_sections' => $rendered_sections,
+            'hidden_inputs'  => $this->render_hidden_inputs($training_type, $training, $registration_form_type),
+            'form_sections'  => $rendered_sections,
 
             // Payment methods
-            'payment_methods' => coachview_get_product_payment_methods($training_type),
+            'payment_methods' => Payment::getProductPaymentMethods($training_type),
         ];
 
         if ($training) {
-            $location = collect(get_post_meta($training->get_id(), 'location', true))->first() ?? 'Onbekend';
-            $startDate = get_post_meta($training->get_id(), 'start_date', true);
+            $location = collect(MetaHelpers::get_array($training->get_id(), Constants::META_LOCATION))->first() ?? 'Onbekend';
+            $startDate = MetaHelpers::get_string($training->get_id(), Constants::META_START_DATE);
             $day = date_i18n('l', strtotime($startDate));
             $date = date_i18n('j F', strtotime($startDate));
             $data['training'] = true;
@@ -152,18 +154,17 @@ class RegisterForm extends ShortCodeComponent
                                          ?WC_Product_Variation $training,
                                          RegistrationFormType $form_type)
     {
-        // Training type category
         $hidden_form_data = [
-            '_coachview_form_token' => $this->generate_form_token(),
-            '_coachview_form_type' => $form_type->value,
-            '_coachview_course_format' => cv_get_course_format($training_type->get_id())->value,
-            'action' => 'coachview_training_form',
-            'opleidingen[opleidingssoortId]' => get_post_meta($training_type->get_id(), 'coachview_id', true),
-            'debiteur[verzendwijzeFactuur]' => 'Email'
+            '_coachview_form_token'         => $this->generate_form_token(),
+            '_coachview_form_type'          => $form_type->value,
+            '_coachview_course_format'      => Registration::get_course_format($training_type->get_id())->value,
+            'action'                        => 'coachview_training_form',
+            'opleidingen[opleidingssoortId]' => MetaHelpers::coachview_id($training_type->get_id()),
+            'debiteur[verzendwijzeFactuur]' => 'Email',
         ];
 
         if ($training) {
-            $hidden_form_data['opleidingen[opleidingId]'] = get_post_meta($training->get_id(), 'coachview_id', true);
+            $hidden_form_data['opleidingen[opleidingId]'] = MetaHelpers::coachview_id($training->get_id());
             $hidden_form_data['training_id'] = $training->get_id();
         }
 
@@ -181,7 +182,7 @@ class RegisterForm extends ShortCodeComponent
             $variations = wc_get_products([
                 'type' => 'variation',
                 'limit' => 1,
-                'meta_key' => 'coachview_id',
+                'meta_key' => Constants::META_COACHVIEW_ID,
                 'meta_value' => $cv_training_id,
             ]);
             if (!empty($variations)) {

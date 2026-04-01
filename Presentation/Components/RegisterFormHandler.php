@@ -2,8 +2,11 @@
 
 namespace Coachview\Presentation\Components;
 
-use Coachview\Models\CourseFormat;
-use Coachview\Models\RegistrationFormType;
+use Coachview\Api\TokenManager;
+use Coachview\Helpers\Api;
+use Coachview\Helpers\Registration;
+use Coachview\Models\Enums\CourseFormat;
+use Coachview\Models\Enums\RegistrationFormType;
 use WP_Error;
 use WP_Http;
 use WP_REST_Request;
@@ -105,8 +108,8 @@ class RegisterFormHandler
         $redirectUrl = $order['betaalproviderRedirectUrl'];
 
         $message = $redirectUrl
-            ? cv_get_register_success_redirect_message()
-            : cv_get_register_success_message($form_type, $course_format);
+            ? Registration::get_redirect_success_message()
+            : Registration::get_success_message($form_type, $course_format);
 
         return [
             'success'      => true,
@@ -159,9 +162,9 @@ class RegisterFormHandler
      */
     private function create_coachview_order(array $order_data)
     {
-        $response = (new WP_Http())->post(coachview_api_url() . '/api/v1/Webaanvragen', [
+        $response = (new WP_Http())->post(Api::getBaseUrl() . '/api/v1/Webaanvragen', [
             'headers' => [
-                'Authorization' => 'Bearer ' . coachview_api_token(),
+                'Authorization' => 'Bearer ' . TokenManager::instance()->getToken(),
                 'Content-Type'  => 'application/json; charset=utf-8',
             ],
             'body'       => collect($order_data)->toJson(),

@@ -1,6 +1,7 @@
 <?php
 namespace Coachview\Api;
 
+use Coachview\Helpers\Api;
 use function Coachview\Sync\log_cv_exception;
 
 class TokenManager {
@@ -27,11 +28,15 @@ class TokenManager {
     }
 
     private function authenticate(): ?string {
-        $url = coachview_api_url() . '/auth/connect/token';
+        $url = Api::getBaseUrl() . '/auth/connect/token';
+
+        $client_id = Api::getClientId();
+        $client_secret = Api::getSecret();
+
         $body = [
             'grant_type' => 'client_credentials',
-            'client_id' => coachview_api_client_id(),
-            'client_secret' => coachview_api_secret()
+            'client_id' => $client_id,
+            'client_secret' => $client_secret
         ];
         $response = wp_remote_post($url, ['body' => $body]);
 

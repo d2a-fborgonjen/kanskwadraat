@@ -1,16 +1,18 @@
 <?php
 namespace Coachview\Api;
 
+use Coachview\Helpers\Api;
+
 class HttpClient {
     private string $base_url;
 
     public function __construct() {
-        $this->base_url = coachview_api_url() . '/api';
+        $this->base_url = Api::getBaseUrl() . '/api';
     }
 
     private function getHeaders(bool $is_json = false): array {
         $headers = [
-            'Authorization' => 'Bearer ' . coachview_api_token(),
+            'Authorization' => 'Bearer ' . TokenManager::instance()->getToken(),
             'Accept' => 'application/json'
         ];
 

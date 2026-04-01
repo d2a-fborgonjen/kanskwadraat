@@ -2,6 +2,8 @@
 
 namespace Coachview\Models;
 
+use Coachview\Models\Enums\RegistrationFormType;
+use Coachview\Models\Enums\RegistrationType;
 use Coachview\Presentation\TemplateEngine;
 
 class FormSection extends FormElement {

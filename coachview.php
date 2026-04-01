@@ -15,6 +15,9 @@ use Coachview\Admin\ProductMeta;
 use Coachview\Admin\SearchForms;
 use Coachview\Admin\Settings;
 use Coachview\Cron\Cron;
+use Coachview\Helpers\Assets;
+use Coachview\Helpers\Url;
+use Coachview\Constants;
 use Coachview\Presentation\Components\RegisterForm;
 use Coachview\Presentation\Components\RegisterFormHandler;
 use Coachview\Presentation\Components\RegisterCallback;
@@ -54,7 +57,7 @@ add_action('plugins_loaded', function () {
 
 register_activation_hook(__FILE__, function() {
     Cron::activate();
-    if (has_custom_register_page()) {
+    if (Url::has_custom_register_page()) {
         return;
     }
     (new RegisterForm())->add_register_rewrite_rule();
@@ -66,5 +69,5 @@ register_deactivation_hook(__FILE__, function() {
 });
 
 add_action('wp_enqueue_scripts', function () {
-    wp_enqueue_style('coachview-common', cv_assets_url('css/common.css'), array(), null);
+    Assets::enqueueStyle(Constants::STYLE_HANDLE_COMMON, 'css/common.css');
 });

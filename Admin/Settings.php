@@ -2,7 +2,8 @@
 
 namespace Coachview\Admin;
 
-use Coachview\Models\RegistrationFormType;
+use Coachview\Constants;
+use Coachview\Helpers\Payment;
 
 class Settings
 {
@@ -28,23 +29,24 @@ class Settings
 
     public function register_settings(): void
     {
-        register_setting('coachview_sync_settings', 'coachview_api_mode');
-        register_setting('coachview_sync_settings', 'coachview_client_id');
-        register_setting('coachview_sync_settings', 'coachview_secret');
-        register_setting('coachview_sync_settings', 'coachview_test_client_id');
-        register_setting('coachview_sync_settings', 'coachview_test_secret');
-        register_setting('coachview_sync_settings', 'coachview_training_import_limit');
-        register_setting('coachview_sync_settings', 'coachview_register_page');
-        register_setting('coachview_sync_settings', 'cv_default_payment_method_ids');
-        register_setting('coachview_sync_settings', 'cv_register_success_message_default');
-        register_setting('coachview_sync_settings', 'cv_register_success_message_partou');
-        register_setting('coachview_sync_settings', 'cv_register_success_message_elearning');
-        register_setting('coachview_sync_settings', 'cv_register_success_message_redirect');
+        $group = Constants::OPTION_GROUP_SYNC_SETTINGS;
+        register_setting($group, Constants::OPTION_API_MODE);
+        register_setting($group, Constants::OPTION_API_CLIENT_ID);
+        register_setting($group, Constants::OPTION_API_SECRET);
+        register_setting($group, Constants::OPTION_API_TEST_CLIENT_ID);
+        register_setting($group, Constants::OPTION_API_TEST_SECRET);
+        register_setting($group, Constants::TRAINING_IMPORT_LIMIT);
+        register_setting($group, Constants::OPTION_REGISTER_PAGE_ID);
+        register_setting($group, Constants::OPTION_DEFAULT_PAYMENT_METHOD_IDS);
+        register_setting($group, Constants::OPTION_REGISTER_SUCCESS_MESSAGE_DEFAULT);
+        register_setting($group, Constants::OPTION_REGISTER_SUCCESS_MESSAGE_PARTOU);
+        register_setting($group, Constants::OPTION_REGISTER_SUCCESS_MESSAGE_ELEARNING);
+        register_setting($group, Constants::OPTION_REGISTER_SUCCESS_REDIRECT_MESSAGE);
     }
 
     public function refresh_api_token_on_save($option): void
     {
-        if ($option === 'coachview_api_mode') {
+        if ($option === Constants::OPTION_API_MODE) {
             error_log("API mode changed, refreshing token...");
             coachview_api_token(true);
         }
@@ -53,9 +55,9 @@ class Settings
     public function settings_page()
     {
         $success_messages = [
-                'default' => 'Trainnig/opleiding',
+                'default'  => 'Trainnig/opleiding',
                 'elearning' => 'E-learning',
-                'partou' => 'Partou',
+                'partou'   => 'Partou',
                 'redirect' => 'Registratie gelukt, doorsturen naar betaalpagina'
         ];
 
@@ -63,9 +65,9 @@ class Settings
         <div class="wrap">
             <form method="post" action="options.php">
                 <?php
-                settings_fields('coachview_sync_settings');
-                do_settings_sections('coachview_sync_settings');
-                $mode = get_option('coachview_api_mode', 'test');
+                settings_fields(Constants::OPTION_GROUP_SYNC_SETTINGS);
+                do_settings_sections(Constants::OPTION_GROUP_SYNC_SETTINGS);
+                $mode = get_option(Constants::OPTION_API_MODE, Constants::API_MODE_TEST);
                 ?>
                 <h1>Coachview Instellingen</h1>
 
@@ -74,35 +76,42 @@ class Settings
                     <tr>
                         <th scope="row">Api mode</th>
                         <td>
-                            <input type="radio" name="coachview_api_mode" id="test_mode"
-                                   value="test" <?php echo $mode === 'test' ? 'checked' : ''; ?>><label for="test_mode">Test</label>
-                            <input type="radio" name="coachview_api_mode" id="production_mode"
-                                   value="production" <?php echo $mode !== 'test' ? 'checked' : ''; ?>><label
-                                    for="production_mode">Production</label>
+                            <input type="radio"
+                                   name="<?php echo Constants::OPTION_API_MODE; ?>"
+                                   value="<?php echo Constants::API_MODE_TEST; ?>"
+                                   id="test_mode"
+                                    <?php echo $mode === Constants::API_MODE_TEST ? 'checked' : ''; ?>>
+                            <label for="test_mode">Test</label>
+                            <input type="radio"
+                                   name="<?php echo Constants::OPTION_API_MODE; ?>"
+                                   value="<?php echo Constants::API_MODE_PRODUCTION; ?>"
+                                   id="production_mode"
+                                    <?php echo $mode !== Constants::API_MODE_TEST ? 'checked' : ''; ?>>
+                            <label for="production_mode">Production</label>
                         </td>
                     </tr>
                     <tr>
                         <th scope="row">Client ID</th>
-                        <td><input type="text" name="coachview_client_id"
-                                   value="<?php echo esc_attr(get_option('coachview_client_id')); ?>"
+                        <td><input type="text" name="<?php echo Constants::OPTION_API_CLIENT_ID; ?>"
+                                   value="<?php echo esc_attr(get_option(Constants::OPTION_API_CLIENT_ID)); ?>"
                                    class="regular-text"></td>
                     </tr>
                     <tr>
                         <th scope="row">Client Secret</th>
-                        <td><input type="password" name="coachview_secret"
-                                   value="<?php echo esc_attr(get_option('coachview_secret')); ?>" class="regular-text">
+                        <td><input type="password" name="<?php echo Constants::OPTION_API_SECRET; ?>"
+                                   value="<?php echo esc_attr(get_option(Constants::OPTION_API_SECRET)); ?>" class="regular-text">
                         </td>
                     </tr>
                     <tr>
                         <th scope="row">Test Client ID</th>
-                        <td><input type="text" name="coachview_test_client_id"
-                                   value="<?php echo esc_attr(get_option('coachview_test_client_id')); ?>"
+                        <td><input type="text" name="<?php echo Constants::OPTION_API_TEST_CLIENT_ID; ?>"
+                                   value="<?php echo esc_attr(get_option(Constants::OPTION_API_TEST_CLIENT_ID)); ?>"
                                    class="regular-text"></td>
                     </tr>
                     <tr>
                         <th scope="row">Test Client Secret</th>
-                        <td><input type="password" name="coachview_test_secret"
-                                   value="<?php echo esc_attr(get_option('coachview_test_secret')); ?>"
+                        <td><input type="password" name="<?php echo Constants::OPTION_API_TEST_SECRET; ?>"
+                                   value="<?php echo esc_attr(get_option(Constants::OPTION_API_TEST_SECRET)); ?>"
                                    class="regular-text"></td>
                     </tr>
                 </table>
@@ -112,8 +121,8 @@ class Settings
                     <tr>
                         <th scope="row">Limiteer import</th>
                         <td>
-                            <input type="text" name="coachview_training_import_limit"
-                                   value="<?php echo esc_attr(get_option('coachview_training_import_limit')); ?>"
+                            <input type="text" name="<?php echo Constants::TRAINING_IMPORT_LIMIT; ?>"
+                                   value="<?php echo esc_attr(get_option(Constants::TRAINING_IMPORT_LIMIT)); ?>"
                                    class="regular-text">
                             <p class="description">
                                 Geef hier aan hoeveel trainingen er vanuit coachview gesynchoniseerd worden tijdens
@@ -130,11 +139,11 @@ class Settings
                         <th scope="row">Standaard betaalmethodes</th>
                         <td>
                             <?php
-                            $payment_methods = coachview_get_payment_methods();
-                            $saved_method_ids = coachview_get_default_payment_method_ids();
+                            $payment_methods = Payment::getPaymentMethods();
+                            $saved_method_ids = Payment::getDefaultPaymentMethodIds();
                             foreach ($payment_methods as $method) {
                                 $checked = in_array($method['id'], $saved_method_ids) ? 'checked' : '';
-                                echo "<label><input type='checkbox' name='cv_default_payment_method_ids[]' value='{$method['id']}' $checked> {$method['name']}</label><br />";
+                                echo "<label><input type='checkbox' name='" . Constants::OPTION_DEFAULT_PAYMENT_METHOD_IDS . "[]' value='{$method['id']}' $checked> {$method['name']}</label><br />";
                             }
                             ?>
                             <p class="description">
@@ -152,10 +161,10 @@ class Settings
                         <td>
                             <?php
                             wp_dropdown_pages([
-                                    'name' => 'coachview_register_page',
+                                    'name' => Constants::OPTION_REGISTER_PAGE_ID,
                                     'show_option_none' => '— Selecteer een pagina —',
                                     'option_none_value' => '0',
-                                    'selected' => get_option('coachview_register_page')
+                                    'selected' => get_option(Constants::OPTION_REGISTER_PAGE_ID)
                             ]);
                             ?>
                             <p class="description">
@@ -175,7 +184,7 @@ class Settings
                         echo '<tr>';
                         echo '<th scope="row">' . $label . '</th>';
                         echo "<td>";
-                        $editor_id = 'cv_register_success_message_' . $type;
+                        $editor_id = Constants::OPTION_REGISTER_SUCCESS_MESSAGE_PREFIX . $type;
                         $value = get_option($editor_id, 'Dankjewel voor je inschrijving');
                         $settings = [
                             'textarea_name' => $editor_id,

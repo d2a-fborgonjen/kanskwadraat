@@ -1,6 +1,10 @@
 <?php
 
 namespace Coachview\Admin;
+
+use Coachview\Constants;
+use Coachview\Helpers\Registration;
+use Coachview\Models\Enums\RegistrationType;
 use WC_Product_Variable;
 
 class ProductList {
@@ -25,27 +29,22 @@ class ProductList {
         if ($column === 'coachview_data') {
             $data = '';
 
-            // Training type category
-            $training_type_category = get_post_meta($post_id, 'training_type_category', true);
+            $training_type_category = get_post_meta($post_id, Constants::META_TRAINING_TYPE_CATEGORY, true);
             if (is_string($training_type_category) && $training_type_category !== '') {
                 $data .= '<strong>Type:</strong> ' . ucfirst($training_type_category) . '<br>';
             }
 
-            // Registration type
             $product = wc_get_product($post_id);
-            $registration_type = cv_get_registration_type($product);
-            if (is_string($registration_type) && $registration_type !== '') {
-                $data .= '<strong>Registratie type:</strong> ' . ucfirst($registration_type) . '<br>';
+            $registration_type = Registration::get_registration_type($product);
+            if ($registration_type instanceof RegistrationType) {
+                $data .= '<strong>Registratie type:</strong> ' . ucfirst(strtolower($registration_type->value)) . '<br>';
             }
 
-            // Last sync
-            $last_sync_ts = get_post_meta($post_id, 'cv_last_sync', true);
+            $last_sync_ts = get_post_meta($post_id, Constants::META_LAST_SYNC, true);
             if ($last_sync_ts) {
                 $data .= '<strong>Laatste sync:</strong> ' . wp_date('j M Y H:i', intval($last_sync_ts)) . '<br>';
             }
 
-            // Aantal trainingen
-            $product = wc_get_product($post_id);
             if ($product instanceof WC_Product_Variable) {
                 $num_trainings = count($product->get_children());
                 if ($num_trainings > 0) {
@@ -53,8 +52,7 @@ class ProductList {
                 }
             }
 
-            // Source
-            $source = get_post_meta($post_id, 'coachview_source', true) ?: 'Onbekend';
+            $source = get_post_meta($post_id, Constants::META_COACHVIEW_SOURCE, true) ?: 'Onbekend';
             if (is_string($source) && $source !== '') {
                 $data .= '<strong>Coachview bron:</strong> ' . ucfirst(strtolower($source)) . '<br>';
             }

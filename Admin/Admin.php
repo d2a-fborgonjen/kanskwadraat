@@ -2,6 +2,8 @@
 
 namespace Coachview\Admin;
 
+use Coachview\Constants;
+use Coachview\Helpers\Assets;
 use Coachview\Sync\Store\TrainingDetail;
 
 use function Coachview\Sync\get_item_count;
@@ -20,7 +22,7 @@ class Admin
 
     public function admin_page()
     {
-        wp_enqueue_script('coachview-synchronization', plugin_dir_url(__FILE__) . '../assets/js/synchronization.js', array('jquery'), null, true);
+        Assets::enqueueScript('coachview-synchronization', 'js/synchronization.js', ['jquery']);
         wp_localize_script('coachview-synchronization', 'coachview_ajax', ['ajax_url' => admin_url('admin-ajax.php')]);
 
         $counts = [
@@ -28,10 +30,10 @@ class Admin
             "training" => get_item_count('product_variation'),
         ];
 
-        $last_sync = get_option('coachview_sync_finished');
+        $last_sync = get_option(Constants::OPTION_SYNC_FINISHED);
         $last_sync_date  = $last_sync ? date_i18n(get_option('date_format') . ' om ' . get_option('time_format'), strtotime($last_sync)) : 'onbekend';
-        $info_log = get_option('coachview_sync_info', '');
-        $error_log = get_option('coachview_sync_error', '');
+        $info_log = get_option(Constants::OPTION_SYNC_INFO_LOG, '');
+        $error_log = get_option(Constants::OPTION_SYNC_ERROR_LOG, '');
         ?>
 
         <div id="sync-status" class="updated"><p>Laatste synchronisatie <?php echo $last_sync_date; ?></p></div>

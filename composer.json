@@ -6,7 +6,8 @@
             "Coachview\\Models\\": "Models/",
             "Coachview\\Presentation\\": "Presentation/",
             "Coachview\\Cron\\": "Cron/",
-            "Coachview\\Sync\\": "Sync/"
+            "Coachview\\Sync\\": "Sync/",
+            "Coachview\\Helpers\\": "Helpers/"
         },
         "files": [
             "functions.php",

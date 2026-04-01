@@ -2,6 +2,10 @@
 
 namespace Coachview\Presentation\Components;
 
+use Coachview\Helpers\Categories;
+use Coachview\Helpers\Assets;
+use Coachview\Helpers\SearchForms;
+use Coachview\Helpers\Url;
 use Coachview\Presentation\TemplateEngine;
 
 use WC_Product;
@@ -18,7 +22,7 @@ class TrainingSimpleSearch extends ShortCodeComponent
 
     public function enqueue_scripts(): void
     {
-        wp_enqueue_script(self::get_shortcode(), cv_assets_url('js/simple-search.js'), ['jquery'], '1.0', true);
+        Assets::enqueueScript(self::get_shortcode(), 'js/simple-search.js', ['jquery']);
     }
 
     public function enqueue_styles(): void {}
@@ -37,7 +41,7 @@ class TrainingSimpleSearch extends ShortCodeComponent
 
         // If form name is provided, use form settings
         if (!empty($form_name)) {
-            $form = coachview_get_search_form_by_name($form_name);
+            $form = SearchForms::get_by_name($form_name);
             if ($form) {
                 // Build search page URL from form data
                 $search_page_url = '';
@@ -46,7 +50,7 @@ class TrainingSimpleSearch extends ShortCodeComponent
                     $search_page_url = get_permalink($page_id);
                 }
                 if (empty($search_page_url)) {
-                    $search_page_url = coachview_get_default_search_url();
+                    $search_page_url = Url::get_default_search_url();
                 }
 
                 $data = [
@@ -62,31 +66,16 @@ class TrainingSimpleSearch extends ShortCodeComponent
         return '<div class="cv-simple-search-error">Zoekformulier met naam "'. $form_name .'" niet gevonden.</div>';
     }
 
-    private function get_search_categories(): array
-    {
-        $cat_ids = [
-            get_option('coachview_search_page_category_1', 0),
-            get_option('coachview_search_page_category_2', 0)
-        ];
-        $result = [];
-        foreach ($cat_ids as $cat_id) {
-            if ($cat_id > 0) {
-                $result[] = get_category_with_children($cat_id);
-            }
-        }
-        return $result;
-    }
-
     private function get_search_categories_from_form(array $form): array
     {
         $cat_ids = [
             isset($form['category_1']) ? absint($form['category_1']) : 0,
-            isset($form['category_2']) ? absint($form['category_2']) : 0
+            isset($form['category_2']) ? absint($form['category_2']) : 0,
         ];
         $result = [];
         foreach ($cat_ids as $cat_id) {
             if ($cat_id > 0) {
-                $category = get_category_with_children($cat_id);
+                $category = Categories::getCategoryWithChildren($cat_id);
                 if ($category) {
                     $result[] = $category;
                 }

@@ -2,18 +2,17 @@
 
 namespace Coachview\Presentation\Components;
 
-use Coachview\Models\CourseFormat;
+use Coachview\Constants;
+use Coachview\Helpers\Assets;
+use Coachview\Helpers\Categories;
+use Coachview\Helpers\MetaHelpers;
+use Coachview\Models\Enums\CourseFormat;
 use Coachview\Presentation\TemplateEngine;
-use WP_REST_Response;
 use WP_Query;
+use WP_REST_Response;
 
 class TrainingTypeSearch extends ShortCodeComponent
 {
-    private const META_KEY_HIDE = 'cv_hide_from_search';
-    private const WEIGHT_TAG     = 10;
-    private const WEIGHT_TITLE   = 5;
-    private const WEIGHT_EXCERPT = 2;
-    private const MIN_WORD_LENGTH = 3;
 
     private ?TemplateEngine $templateEngine = null;
 
@@ -30,12 +29,12 @@ class TrainingTypeSearch extends ShortCodeComponent
 
     public function enqueue_styles(): void
     {
-        wp_enqueue_style(self::get_shortcode(), cv_assets_url('css/training-search.css'), [], null);
+        Assets::enqueueStyle(self::get_shortcode(), 'css/training-search.css');
     }
 
     public function enqueue_scripts(): void
     {
-        wp_enqueue_script(self::get_shortcode(), cv_assets_url('js/training-search.js'), ['jquery'], '1.0', true);
+        Assets::enqueueScript(self::get_shortcode(), 'js/training-search.js', ['jquery']);
     }
 
     public function __construct()
@@ -81,22 +80,22 @@ class TrainingTypeSearch extends ShortCodeComponent
 
     private function renderCategorySidebar(): string
     {
-        $categories = get_hierarchical_categories();
+        $categories = Categories::getHierarchicalCategories();
         return $this->templateEngine->render('training-search-categories', ['categories' => $categories]);
     }
 
     private function render_training_type($product): string
     {
         $productId = $product->get_id();
-        $num_locations = get_post_meta($productId, 'num_locations', true);
-        $startDate = get_post_meta($productId, 'start_date', true);
-        $duration = get_post_meta($productId, 'training_duration', true);
-        $training_cities = get_post_meta($productId, 'training_cities', true);
-        $training_type_category = get_post_meta($productId, 'training_type_category', true);
+        $num_locations          = MetaHelpers::get_int($productId, Constants::META_NUM_LOCATIONS);
+        $startDate              = MetaHelpers::get_int($productId, Constants::META_START_DATE);
+        $duration               = MetaHelpers::get_string($productId, Constants::META_TRAINING_DURATION);
+        $training_cities        = MetaHelpers::get_array($productId, Constants::META_TRAINING_CITIES);
+        $training_type_category = MetaHelpers::get_string($productId, Constants::META_TRAINING_TYPE_CATEGORY);
         $product_url = get_permalink($productId);
 
         $is_online = $training_type_category === CourseFormat::E_LEARNING->value;
-        $location = $is_online ? 'Online' : implode(', ', $training_cities ?: []);
+        $location = $is_online ? 'Online' : implode(', ', $training_cities);
 
         $image_id = $product->get_image_id();
         $image_url = $image_id ? wp_get_attachment_image_url($image_id, 'full') : null;
@@ -183,7 +182,7 @@ class TrainingTypeSearch extends ShortCodeComponent
             'posts_per_page' => -1,
             'meta_query'     => [
                 [
-                    'key'     => self::META_KEY_HIDE,
+                    'key'     => Constants::META_TRAINING_TYPE_HIDE_FROM_SEARCH,
                     'compare' => 'NOT EXISTS',
                 ],
             ],
@@ -225,7 +224,7 @@ class TrainingTypeSearch extends ShortCodeComponent
 
         $words = preg_split('/\s+/', $search) ?: [];
         $words = array_map('trim', $words);
-        $words = array_filter($words, static fn(string $w): bool => mb_strlen($w) >= self::MIN_WORD_LENGTH);
+        $words = array_filter($words, static fn(string $w): bool => mb_strlen($w) >= Constants::SEARCH_MIN_WORD_LENGTH);
 
         return array_values($words);
     }
@@ -298,9 +297,9 @@ class TrainingTypeSearch extends ShortCodeComponent
             foreach ($words as $word) {
                 $like = '%' . $wpdb->esc_like($word) . '%';
 
-                $wTitle   = self::WEIGHT_TITLE;
-                $wTag     = self::WEIGHT_TAG;
-                $wExcerpt = self::WEIGHT_EXCERPT;
+                $wTitle   = Constants::SEARCH_WEIGHT_TITLE;
+                $wTag     = Constants::SEARCH_WEIGHT_TAG;
+                $wExcerpt = Constants::SEARCH_WEIGHT_EXCERPT;
 
                 $score_parts[] = $wpdb->prepare(
                     "CASE WHEN {$wpdb->posts}.post_title LIKE %s THEN {$wTitle} ELSE 0 END",
@@ -381,3 +380,4 @@ class TrainingTypeSearch extends ShortCodeComponent
         };
     }
 }
+
