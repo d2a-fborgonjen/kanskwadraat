@@ -9,15 +9,12 @@ abstract class ShortCodeComponent
     public function __construct()
     {
         add_shortcode(static::get_shortcode(), [$this, 'do_render_shortcode']);
-        // Enqueue styles/scripts on proper WP hooks instead of immediately
-        add_action('wp_enqueue_scripts', function () {
-            $this->enqueue_styles();
-            $this->enqueue_scripts();
-        });
+        add_action('wp_enqueue_scripts', [$this, 'enqueue_styles']);
     }
 
     public function do_render_shortcode($atts): string
     {
+        $this->enqueue_scripts();
         return $this->render_shortcode($atts);
     }
 
