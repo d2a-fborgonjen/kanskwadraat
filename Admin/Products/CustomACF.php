@@ -1,6 +1,6 @@
 <?php
 
-namespace Coachview\Admin;
+namespace Coachview\Admin\Products;
 
 class CustomACF {
 
