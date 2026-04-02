@@ -2,6 +2,7 @@
 
 namespace Coachview\Sync;
 use Coachview\Constants;
+use Coachview\Helpers\Logger;
 use Coachview\Presentation\Components\TrainingAgenda;
 
 class SyncRunner
@@ -20,10 +21,8 @@ class SyncRunner
     {
         update_option(Constants::OPTION_SYNC_RUNNING, true);
         update_option(Constants::OPTION_SYNC_STARTED, current_time('mysql'));
-        update_option(Constants::OPTION_SYNC_ERROR_LOG, null);
-        update_option(Constants::OPTION_SYNC_INFO_LOG, null);
         update_option(Constants::OPTION_SYNC_FINISHED, null);
-        error_log('Coachview sync started at ' . current_time('mysql'));
+        Logger::info('Sync started', 'sync');
     }
 
     private static function onSynchronizationFinished(): void
@@ -32,6 +31,6 @@ class SyncRunner
 
         update_option(Constants::OPTION_SYNC_RUNNING, false);
         update_option(Constants::OPTION_SYNC_FINISHED, current_time('mysql'));
-        error_log('Coachview sync finished at ' . current_time('mysql'));
+        Logger::info('Sync finished', 'sync');
     }
 }

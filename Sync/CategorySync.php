@@ -2,6 +2,7 @@
 
 namespace Coachview\Sync;
 
+use Coachview\Constants;
 use Coachview\Sync\Dataloaders\CategoryDataloader;
 
 class CategorySync
@@ -66,7 +67,7 @@ class CategorySync
             'hide_empty' => false,
             'meta_query' => [
                 [
-                    'key'   => 'last_sync',
+                    'key'   => Constants::META_LAST_SYNC,
                     'value' => $value,
                     'compare' => $compare
                 ],

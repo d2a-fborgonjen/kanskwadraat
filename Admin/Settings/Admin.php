@@ -4,7 +4,7 @@ namespace Coachview\Admin\Settings;
 
 use Coachview\Constants;
 use Coachview\Helpers\Assets;
-use Coachview\Sync\Store\TrainingDetail;
+use Coachview\Helpers\Logger;
 use WP_Query;
 
 class Admin
@@ -32,8 +32,7 @@ class Admin
 
         $last_sync = get_option(Constants::OPTION_SYNC_FINISHED);
         $last_sync_date  = $last_sync ? date_i18n(get_option('date_format') . ' om ' . get_option('time_format'), strtotime($last_sync)) : 'onbekend';
-        $info_log = get_option(Constants::OPTION_SYNC_INFO_LOG, '');
-        $error_log = get_option(Constants::OPTION_SYNC_ERROR_LOG, '');
+        $recent_logs = Logger::query(['channel' => 'sync', 'limit' => 15]);
         ?>
 
         <div id="sync-status" class="updated"><p>Laatste synchronisatie <?php echo $last_sync_date; ?></p></div>
@@ -44,8 +43,6 @@ class Admin
                 Synchroniseer trainingen
             </button>
             <hr>
-
-<!--            <strong>--><?php //echo coachview_api_token(true); ?><!--</strong>-->
 
             <h2>Statistieken</h2>
             <table class="wp-list-table widefat fixed striped">
@@ -67,20 +64,30 @@ class Admin
                 </tbody>
             </table>
 
-            <h2>Logging</h2>
+            <h2>Recente sync logs</h2>
             <hr>
             <button class="button button-cta toggle-logging">Toon logging</button>
 
             <div class="logging" style="display: none">
-                <h3>Info</h3>
-                <div id="sync-info-log">
-                    <pre><?php echo $info_log ?? 'geen logging'; ?></pre>
+                <div id="sync-log">
+                    <?php if (empty($recent_logs)): ?>
+                        <p>Geen recente sync logs.</p>
+                    <?php else: ?>
+                        <table class="wp-list-table widefat fixed striped" style="margin-top:8px">
+                            <thead><tr><th style="width:150px">Datum</th><th style="width:60px">Level</th><th>Bericht</th></tr></thead>
+                            <tbody>
+                            <?php foreach ($recent_logs as $entry): ?>
+                                <tr>
+                                    <td><?php echo esc_html($entry->created_at); ?></td>
+                                    <td><?php echo esc_html(strtoupper($entry->level)); ?></td>
+                                    <td><?php echo esc_html($entry->message); ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    <?php endif; ?>
                 </div>
-
-                <h3>Fouten</h3>
-                <div id="sync-error-log">
-                    <pre><?php echo $error_log ?? 'geen logging'; ?></pre>
-                </div>
+                <p><a href="<?php echo admin_url('admin.php?page=coachview-logs&channel=sync'); ?>" class="button" style="margin-top:8px;">Bekijk alle logs →</a></p>
             </div>
         </div>
         <?php

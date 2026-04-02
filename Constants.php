@@ -87,8 +87,6 @@ class Constants {
     public const LOG_TABLE = 'coachview_logs';
 
     // Sync options & logging
-    public const OPTION_SYNC_ERROR_LOG    = 'coachview_sync_error';
-    public const OPTION_SYNC_INFO_LOG     = 'coachview_sync_info';
     public const OPTION_SYNC_PROGRESS     = 'coachview_sync_progress';
     public const OPTION_SYNC_RUNNING      = 'coachview_sync_running';
     public const OPTION_SYNC_STARTED      = 'coachview_sync_started';

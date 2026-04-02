@@ -56,32 +56,10 @@ class MetaHelpers
     //  Convenience helpers for common Coachview meta
     // ──────────────────────────────────────────────
 
-    public static function coachview_id(int $post_id): ?int
+    public static function coachview_id(int $post_id): ?string
     {
-        $value = get_post_meta($post_id, Constants::META_COACHVIEW_ID, true);
-        if ($value === '' || $value === null) {
-            return null;
-        }
-        return (int) $value;
-    }
-
-    public static function coachview_source(int $post_id, string $default = ''): string
-    {
-        return self::get_string($post_id, Constants::META_COACHVIEW_SOURCE, $default);
-    }
-
-    public static function last_sync(int $post_id, ?int $default = null): ?int
-    {
-        $value = get_post_meta($post_id, Constants::META_LAST_SYNC, true);
-        if ($value === '' || $value === null) {
-            return $default;
-        }
-        return (int) $value;
-    }
-
-    public static function form_type(int $post_id, string $default = ''): string
-    {
-        return self::get_string($post_id, Constants::META_TRAINING_TYPE_FORM_TYPE, $default);
+        $value = self::get_string($post_id, Constants::META_COACHVIEW_ID, '');
+        return $value === '' ? null : $value;
     }
 
     public static function form_participant_header(int $post_id, string $default = ''): string

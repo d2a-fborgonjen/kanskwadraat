@@ -3,6 +3,7 @@
 namespace Coachview\Sync\Hooks;
 
 use Coachview\Constants;
+use Coachview\Helpers\Logger;
 use Coachview\Sync\SyncRunner;
 
 class Sync {
@@ -28,11 +29,11 @@ class Sync {
 
     public function __get_sync_progress(): void
     {
-        $error_messages = get_option(Constants::OPTION_SYNC_ERROR_LOG);
-        if ($error_messages) {
+        $sync_errors = Logger::query(['level' => 'error', 'channel' => 'sync', 'limit' => 20]);
+
+        if (!empty($sync_errors)) {
             wp_send_json_error([
-                'error_log' =>  $error_messages,
-                'info_log'  => get_option(Constants::OPTION_SYNC_INFO_LOG),
+                'logs' => $sync_errors,
             ]);
         } else {
             wp_send_json_success([
@@ -40,7 +41,7 @@ class Sync {
                 'running'  => get_option(Constants::OPTION_SYNC_RUNNING),
                 'started'  => get_option(Constants::OPTION_SYNC_STARTED),
                 'finished' => get_option(Constants::OPTION_SYNC_FINISHED),
-                'info_log' => get_option(Constants::OPTION_SYNC_INFO_LOG),
+                'logs'     => Logger::query(['channel' => 'sync', 'limit' => 20]),
             ]);
         }
     }

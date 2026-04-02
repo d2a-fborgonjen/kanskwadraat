@@ -144,29 +144,33 @@ jQuery(document).ready(function($) {
                 }))
             )
             .then(({ ok, data }) => {
-                if (!ok) {
-                    const message = data && data.message
+                if (ok) {
+                    const redirectUrl = data && data.redirect_url ? data.redirect_url : null;
+                    let successMessage = data && data.message
                         ? data.message
-                        : REGISTER_PAGE.TEXT.defaultError;
-                    throw new Error(message);
+                        : REGISTER_PAGE.TEXT.defaultSuccess;
+                    completeRegistration(successMessage, redirectUrl);
+                } else {
+                    onRegisterError(data);
                 }
-
-                const redirectUrl = data && data.redirect_url ? data.redirect_url : null;
-                let successMessage = data && data.message
-                    ? data.message
-                    : REGISTER_PAGE.TEXT.defaultSuccess;
-                completeRegistration(successMessage, redirectUrl);
             })
             .catch((error) => {
-                const message = error && error.message
-                    ? error.message
-                    : REGISTER_PAGE.TEXT.defaultError;
-                showFormMessage(REGISTER_PAGE.MESSAGE_TYPES.warning, message);
-                console.log("Full error", error);
+                onRegisterError(error);
             })
             .finally(() => {
                 toggleSubmitting(false);
             });
+    }
+
+    function onRegisterError(error) {
+        const errorDetails = error?.error_details?.error || [];
+        const errorMsgs = errorDetails.map(e => e['message']);
+        let errorDetailStr = errorMsgs.length > 0 ? '<br /><br /><small>Details: ' + errorMsgs.join('<br />') + '</small>' : '';
+
+        const message = error && error.message
+            ? error.message + errorDetailStr
+            : REGISTER_PAGE.TEXT.defaultError;
+        showFormMessage(REGISTER_PAGE.MESSAGE_TYPES.warning, message);
     }
 
     $form.on('submit', function(e) {

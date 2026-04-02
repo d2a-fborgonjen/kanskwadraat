@@ -3,6 +3,7 @@
 namespace Coachview\Sync;
 
 use Coachview\Constants;
+use Coachview\Helpers\Logger;
 use WC_Product;
 use WP_Query;
 
@@ -105,22 +106,13 @@ function get_categories_by_parent_not_in(int $parent_id, $not_in): array
 
 
 function log_cv_exception($action, $exception) {
-    $error_msg = $action . ': ' . $exception->getMessage() . "\n" . $exception->getTraceAsString();
-    error_log($error_msg);
-
-    $error_log = get_option(Constants::OPTION_SYNC_ERROR_LOG, '');
-    $date = date('Y-m-d H:i:s');
-    $error_log = $error_log . "[$date] $error_msg\n";
-    update_option(Constants::OPTION_SYNC_ERROR_LOG, $error_log);
+    Logger::error($action . ': ' . $exception->getMessage(), 'sync', [
+        'trace' => $exception->getTraceAsString(),
+    ]);
 }
 
 function log_cv_info($info_msg) {
-    error_log($info_msg);
-
-    $logging = get_option(Constants::OPTION_SYNC_INFO_LOG, '');
-    $date = date('Y-m-d H:i:s');
-    $logging = $logging . "[$date] $info_msg\n";
-    update_option(Constants::OPTION_SYNC_INFO_LOG, $logging);
+    Logger::info($info_msg, 'sync');
 }
 
 // Helper method to find the first non-empty value in a collection

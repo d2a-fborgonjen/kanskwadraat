@@ -4,6 +4,7 @@ namespace Coachview\Sync\Dataloaders;
 
 use Coachview\Api\ApiClient;
 use Coachview\Api\QueryBuilder;
+use Coachview\Helpers\Logger;
 use Coachview\Models\Training;
 use Coachview\Models\TrainingComponent;
 use Coachview\Models\TrainingType;
@@ -40,7 +41,9 @@ class TrainingDataloader
                     $components = self::__load_training_type_components($data['id']);
                     $result[] = TrainingType::from_array($data, $categories, $trainings, $components);
                 } catch (Exception $e) {
-                    error_log("Error loading training types: " . $e->getMessage());
+                    Logger::error('Error loading training type: ' . $e->getMessage(), 'sync', [
+                        'trace' => $e->getTraceAsString(),
+                    ]);
                 }
                 if ($progress) {
                     $progress($index + 1, $total);

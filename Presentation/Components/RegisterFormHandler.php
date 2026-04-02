@@ -43,9 +43,7 @@ class RegisterFormHandler
         $result = $this->handle_submission($payload ?? []);
 
         if (!$result['success']) {
-            return new WP_REST_Response([
-                'message' => $result['message'],
-            ], $result['status']);
+            return new WP_REST_Response($result, $result['status']);
         }
 
         return new WP_REST_Response([
@@ -59,8 +57,8 @@ class RegisterFormHandler
     private function handle_submission(array $data): array
     {
         $token = $data['_coachview_form_token'] ?? '';
-        $key = 'coachview_form_' . $token;
-        if (!$token || !get_transient($key)) {
+        $form_token = 'coachview_form_' . $token;
+        if (!$token || !get_transient($form_token)) {
             Logger::warn('Invalid or expired form submission attempt.', 'order', ['token' => $token]);
 
             return [
@@ -71,7 +69,6 @@ class RegisterFormHandler
                 'order'   => null,
             ];
         }
-        delete_transient($key);
 
         $order_data = $this->to_coachview_order_data($data);
 //        error_log('Processing form submission for training registration.' . print_r($order_data, true));
@@ -97,10 +94,11 @@ class RegisterFormHandler
                 'message' => $message,
                 'redirect_url' => null,
                 'order'   => null,
-                'error_details' => $order->get_error_data('error_details')
+                'error_details' => json_decode($order->get_error_data('error_details'))
             ];
         }
 
+        delete_transient($form_token);
         $this->update_total_participants($data);
 
         $form_type = RegistrationFormType::from($data['_coachview_form_type'] ?: RegistrationFormType::DEFAULT->value);
