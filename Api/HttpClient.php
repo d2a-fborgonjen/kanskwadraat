@@ -12,7 +12,7 @@ class HttpClient {
 
     private function getHeaders(bool $is_json = false): array {
         $headers = [
-            'Authorization' => 'Bearer ' . TokenManager::instance()->getToken(),
+            'Authorization' => 'Bearer ' . Api::getToken(),
             'Accept' => 'application/json'
         ];
 

@@ -55,21 +55,6 @@ function get_product_variation_by_sku(string $sku): ?WC_Product
 }
 
 
-function get_item_count(string $product_type): int
-{
-    $query = new WP_Query([
-        'post_type'      => $product_type,
-        'meta_query'     => [
-            [
-                'key'     => Constants::META_COACHVIEW_ID,
-                'compare' => 'EXISTS',
-            ],
-        ],
-        'fields'         => 'ids',
-        'nopaging'       => true
-    ]);
-    return count($query->posts);
-}
 
 function minutes_to_time_string(int $minutes): string
 {

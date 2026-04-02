@@ -35,12 +35,11 @@ class TrainingAgenda extends ShortCodeComponent
             $agenda_items = array_slice($agenda_items, 0, $atts['max_items']);
         }
 
-        // Use TemplateEngine to render the template
-        $template_engine = new TemplateEngine();
-        return $template_engine->render('training-agenda', [
-            'placeholder_image_url' => Assets::toPath('img/example_training4.png'),
+        $data = [
+            'placeholder_image_url' => cv_assets_url('img/example_training4.png'),
             'agenda_items' => $agenda_items,
-        ]);
+        ];
+        return $this->render_template($data);
     }
 
     private function get_agenda_items(): array {

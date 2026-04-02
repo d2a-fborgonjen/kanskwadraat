@@ -1,12 +1,11 @@
 <?php
 
-namespace Coachview\Admin;
+namespace Coachview\Admin\Settings;
 
 use Coachview\Constants;
 use Coachview\Helpers\Assets;
 use Coachview\Sync\Store\TrainingDetail;
-
-use function Coachview\Sync\get_item_count;
+use WP_Query;
 
 class Admin
 {
@@ -20,14 +19,15 @@ class Admin
         add_menu_page('Coachview', 'Coachview', 'manage_options', 'coachview', [$this, 'admin_page'], 'dashicons-welcome-learn-more', 10);
     }
 
+
     public function admin_page()
     {
         Assets::enqueueScript('coachview-synchronization', 'js/synchronization.js', ['jquery']);
         wp_localize_script('coachview-synchronization', 'coachview_ajax', ['ajax_url' => admin_url('admin-ajax.php')]);
 
         $counts = [
-            "trainingType" => get_item_count('product'),
-            "training" => get_item_count('product_variation'),
+            "trainingType" => $this->get_item_count('product'),
+            "training" => $this->get_item_count('product_variation'),
         ];
 
         $last_sync = get_option(Constants::OPTION_SYNC_FINISHED);
@@ -84,5 +84,21 @@ class Admin
             </div>
         </div>
         <?php
+    }
+
+    private function get_item_count(string $product_type): int
+    {
+        $query = new WP_Query([
+                'post_type'      => $product_type,
+                'meta_query'     => [
+                        [
+                                'key'     => Constants::META_COACHVIEW_ID,
+                                'compare' => 'EXISTS',
+                        ],
+                ],
+                'fields'         => 'ids',
+                'nopaging'       => true
+        ]);
+        return count($query->posts);
     }
 }

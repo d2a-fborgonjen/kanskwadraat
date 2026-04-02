@@ -1,6 +1,6 @@
 <?php
 
-namespace Coachview\Models;
+namespace Coachview\Presentation\Forms;
 
 use Coachview\Models\Enums\RegistrationFormType;
 use Coachview\Models\Enums\RegistrationType;
@@ -21,8 +21,6 @@ class FormSection extends FormElement {
         if (!$this->canShow($form_type, $registration_type)) {
             return '';
         }
-        $templateEngine = new TemplateEngine();
-
         // Prepare items with their render methods
         $renderedItems = [];
         foreach ($this->items as $item) {
@@ -35,7 +33,7 @@ class FormSection extends FormElement {
             'items' => $renderedItems
         ];
 
-        return $templateEngine->render('form-section', $data);
+        return TemplateEngine::instance()->render('cv_form_section', $data);
     }
 
     public function with_title(?string $title): self {
@@ -47,7 +45,7 @@ class FormSection extends FormElement {
 
     public static function load(string $filename): ?FormSection
     {
-        $file_path = plugin_dir_path(__FILE__) . '../assets/forms/' . $filename;
+        $file_path = plugin_dir_path(__FILE__) . 'Configs/' . $filename;
         if (!file_exists($file_path)) {
             return null;
         }

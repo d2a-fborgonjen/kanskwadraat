@@ -1,6 +1,6 @@
 <?php
 
-namespace Coachview\Admin;
+namespace Coachview\Admin\Categories;
 
 class CategoryList {
     public function __construct()

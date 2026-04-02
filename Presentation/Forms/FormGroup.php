@@ -1,6 +1,6 @@
 <?php
 
-namespace Coachview\Models;
+namespace Coachview\Presentation\Forms;
 
 use Coachview\Models\Enums\RegistrationFormType;
 use Coachview\Models\Enums\RegistrationType;
@@ -31,9 +31,7 @@ class FormGroup extends FormElement
         if (!$this->canShow($form_type, $registration_type)) {
             return '';
         }
-        
-        $templateEngine = new TemplateEngine();
-        
+
         // Filter fields that should be shown and prepare their rendered content
         $renderedFields = [];
         foreach ($this->fields as $field) {
@@ -43,6 +41,6 @@ class FormGroup extends FormElement
         }
         
         $data = ['fields' => $renderedFields];
-        return $templateEngine->render('form-group', $data);
+        return TemplateEngine::instance()->render('cv_form_group', $data);
     }
 }

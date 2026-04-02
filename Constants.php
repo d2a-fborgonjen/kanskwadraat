@@ -7,6 +7,7 @@ class Constants {
     public const OPTION_API_MODE = 'coachview_api_mode';
     public const API_MODE_TEST = 'test';
     public const API_MODE_PRODUCTION = 'production';
+    public const OPTION_API_TOKEN = 'coachview_api_token';
     public const OPTION_API_TEST_CLIENT_ID = 'coachview_test_client_id';
     public const OPTION_API_CLIENT_ID = 'coachview_client_id';
     public const OPTION_API_TEST_SECRET = 'coachview_test_secret';

@@ -2,7 +2,6 @@
 
 namespace Coachview\Presentation\Components;
 
-use Coachview\Api\TokenManager;
 use Coachview\Helpers\Api;
 use Coachview\Helpers\Registration;
 use Coachview\Models\Enums\CourseFormat;
@@ -35,9 +34,11 @@ class RegisterFormHandler
             $payload = $request->get_body_params();
         }
 
+//        $result = $this->blocked_submission_response();
 //        $result = coachview_test_mode_enabled()
 //            ? $this->handle_submission($payload ?? [])
 //            : $this->blocked_submission_response();
+
         $result = $this->handle_submission($payload ?? []);
 
         if (!$result['success']) {
@@ -164,7 +165,7 @@ class RegisterFormHandler
     {
         $response = (new WP_Http())->post(Api::getBaseUrl() . '/api/v1/Webaanvragen', [
             'headers' => [
-                'Authorization' => 'Bearer ' . TokenManager::instance()->getToken(),
+                'Authorization' => 'Bearer ' . Api::getToken(),
                 'Content-Type'  => 'application/json; charset=utf-8',
             ],
             'body'       => collect($order_data)->toJson(),
@@ -179,6 +180,8 @@ class RegisterFormHandler
         if ($statusCode !== 201) {
             $body = wp_remote_retrieve_body($response);
             error_log('Order creation failed: ' . $statusCode . ' Response: ' . $body);
+
+
 
             return new WP_Error(
                 $statusCode,

@@ -60,7 +60,7 @@ class TrainingSimpleSearch extends ShortCodeComponent
                     'search_page_url' => $search_page_url,
                     'categories' => $this->get_search_categories_from_form($form)
                 ];
-                return $templateEngine->render('simple-search', $data);
+                return $templateEngine->render($this->get_shortcode(), $data);
             }
         }
         return '<div class="cv-simple-search-error">Zoekformulier met naam "'. $form_name .'" niet gevonden.</div>';

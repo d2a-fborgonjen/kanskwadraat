@@ -1,8 +1,9 @@
 <?php
 
-namespace Coachview\Admin;
+namespace Coachview\Admin\Settings;
 
 use Coachview\Constants;
+use Coachview\Helpers\Api;
 use Coachview\Helpers\Payment;
 
 class Settings
@@ -48,7 +49,7 @@ class Settings
     {
         if ($option === Constants::OPTION_API_MODE) {
             error_log("API mode changed, refreshing token...");
-            coachview_api_token(true);
+            Api::getToken(true);
         }
     }
 

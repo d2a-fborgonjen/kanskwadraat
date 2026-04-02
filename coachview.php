@@ -7,20 +7,20 @@ Author: Frank Borgonjen
 */
 require_once __DIR__ . '/vendor/autoload.php';
 
-use Coachview\Admin\Admin;
-use Coachview\Admin\CategoryList;
-use Coachview\Admin\CustomACF;
-use Coachview\Admin\ProductList;
-use Coachview\Admin\ProductMeta;
-use Coachview\Admin\SearchForms;
-use Coachview\Admin\Settings;
+use Coachview\Admin\Categories\CategoryList;
+use Coachview\Admin\Products\CustomACF;
+use Coachview\Admin\Products\ProductList;
+use Coachview\Admin\Products\ProductMeta;
+use Coachview\Admin\Settings\Admin;
+use Coachview\Admin\Settings\Settings;
+use Coachview\Admin\Settings\SearchForms;
+use Coachview\Constants;
 use Coachview\Cron\Cron;
 use Coachview\Helpers\Assets;
 use Coachview\Helpers\Url;
-use Coachview\Constants;
+use Coachview\Presentation\Components\RegisterCallback;
 use Coachview\Presentation\Components\RegisterForm;
 use Coachview\Presentation\Components\RegisterFormHandler;
-use Coachview\Presentation\Components\RegisterCallback;
 use Coachview\Presentation\Components\TrainingAgenda;
 use Coachview\Presentation\Components\TrainingSimpleSearch;
 use Coachview\Presentation\Components\TrainingTypeCTA;

@@ -1,6 +1,7 @@
 <?php
 namespace Coachview\Api;
 
+use Coachview\Constants;
 use Coachview\Helpers\Api;
 use function Coachview\Sync\log_cv_exception;
 
@@ -17,11 +18,11 @@ class TokenManager {
     }
 
     public function getToken(bool $refresh = false): ?string {
-        $token = get_transient('coachview_api_token');
+        $token = get_transient(Constants::OPTION_API_TOKEN);
         if (!$token || $refresh) {
             $token = $this->authenticate();
             if ($token) {
-                set_transient('coachview_api_token', $token, 1 * HOUR_IN_SECONDS);
+                set_transient(Constants::OPTION_API_TOKEN, $token, 1 * HOUR_IN_SECONDS);
             }
         }
         return $token ?: 'not-authorized';

@@ -1,6 +1,6 @@
 <?php
 
-namespace Coachview\Admin;
+namespace Coachview\Admin\Products;
 
 use Coachview\Constants;
 use Coachview\Helpers\Registration;

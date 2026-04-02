@@ -25,7 +25,7 @@ class Payment
     {
         $all_methods        = self::getPaymentMethods();
         $default_method_ids = self::getDefaultPaymentMethodIds();
-        $product_method_ids = self::getProductPaymentMethods($product->get_id());
+        $product_method_ids = MetaHelpers::get_array($product->get_id(), Constants::META_PRODUCT_PAYMENT_METHODS);
 
         if (is_array($product_method_ids)) {
             return array_filter($all_methods, static fn($method) => in_array($method['id'], $product_method_ids, true));

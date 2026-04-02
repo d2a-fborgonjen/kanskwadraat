@@ -1,8 +1,9 @@
 <?php
 
-namespace Coachview\Admin;
+namespace Coachview\Admin\Products;
 
 use Coachview\Constants;
+use Coachview\Helpers\Payment;
 use Coachview\Models\Enums\RegistrationFormType;
 use Coachview\Presentation\Components\TrainingAgenda;
 
@@ -92,7 +93,7 @@ class ProductMeta
 
         <?php
         $savedMethods = get_post_meta($post->ID, Constants::META_PRODUCT_PAYMENT_METHODS, true);
-        foreach (coachview_get_payment_methods() as $method)
+        foreach (Payment::getPaymentMethods() as $method)
         {
             $checked = '';
             if (is_array($savedMethods) && in_array($method['id'], $savedMethods, true)) {
