@@ -177,8 +177,8 @@ class RegisterFormHandler
         }
 
         $statusCode = wp_remote_retrieve_response_code($response);
+        $body = wp_remote_retrieve_body($response);
         if ($statusCode !== 201) {
-            $body = wp_remote_retrieve_body($response);
             Logger::error('Order creation failed', 'order', [
                 'status_code' => $statusCode,
                 'response'    => $body
@@ -192,7 +192,8 @@ class RegisterFormHandler
             return $error;
         }
 
-        return json_decode(wp_remote_retrieve_body($response), true);
+        Logger::info("Order created", 'order', ['result' => $body]);
+        return json_decode($body, true);
     }
 
     private function update_total_participants(array $post_data): void

@@ -263,11 +263,11 @@ class TrainingTypeSearch extends ShortCodeComponent
     // ──────────────────────────────────────────────
 
     /**
-     * Scores each word match across title (weight 10), tags (weight 5),
-     * and excerpt (weight 2).
+     * Joins the product_tag taxonomy tables and scores each word match
+     * across title (weight 10), tags (weight 5), and excerpt (weight 2).
      *
-     * Uses EXISTS subqueries for tag matching instead of JOINs + GROUP_CONCAT,
-     * which avoids duplicate rows and unreliable aggregate evaluation in ORDER BY.
+     * Uses GROUP BY + GROUP_CONCAT to aggregate all tag names per product
+     * into a single matchable string, avoiding duplicate rows.
      *
      * @param string[] $words
      */
@@ -307,22 +307,10 @@ class TrainingTypeSearch extends ShortCodeComponent
                     $like
                 );
 
-                // EXISTS subquery — no JOINs needed on the outer query
-                $tag_exists = $wpdb->prepare(
-                    "SELECT 1
-                     FROM {$wpdb->term_relationships} tr
-                     INNER JOIN {$wpdb->term_taxonomy} tt
-                        ON tr.term_taxonomy_id = tt.term_taxonomy_id
-                        AND tt.taxonomy = 'product_tag'
-                     INNER JOIN {$wpdb->terms} t
-                        ON tt.term_id = t.term_id
-                     WHERE tr.object_id = {$wpdb->posts}.ID
-                       AND t.name LIKE %s
-                     LIMIT 1",
+                $score_parts[] = $wpdb->prepare(
+                    "CASE WHEN GROUP_CONCAT(cv_t.name SEPARATOR ' ') LIKE %s THEN {$wTag} ELSE 0 END",
                     $like
                 );
-
-                $score_parts[] = "CASE WHEN EXISTS ({$tag_exists}) THEN {$wTag} ELSE 0 END";
             }
 
             $score_sql = implode(' + ', $score_parts);
