@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Coachview
-Description: Koppeling met Coachview API. Laatste update 2026-03-17
+Description: Koppeling met Coachview API. Laatste update 2026-04-02
 Version: 1.0
 Author: Frank Borgonjen
 */

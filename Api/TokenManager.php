@@ -3,7 +3,7 @@ namespace Coachview\Api;
 
 use Coachview\Constants;
 use Coachview\Helpers\Api;
-use function Coachview\Sync\log_cv_exception;
+use Coachview\Helpers\Logger;
 
 class TokenManager {
     private static ?TokenManager $instance = null;
@@ -42,7 +42,7 @@ class TokenManager {
         $response = wp_remote_post($url, ['body' => $body]);
 
         if (is_wp_error($response)) {
-            log_cv_exception('Request[token]', new \Exception($response->get_error_message()));
+            Logger::error('Request[token]: ' . $response->get_error_message(), 'api');
             return null;
         }
 
@@ -52,7 +52,9 @@ class TokenManager {
         if ($code === 200 && isset($data['access_token'])) {
             return $data['access_token'];
         }
-        log_cv_exception('Request[token]', new \Exception('Token refresh error' . print_r($data, true)));
+        Logger::error('Request[token]: Token refresh error', 'api', [
+            'response' => $data,
+        ]);
         return null;
     }
 }

@@ -4,8 +4,8 @@ namespace Coachview\Sync\Dataloaders;
 
 use Coachview\Api\ApiClient;
 use Coachview\Api\QueryBuilder;
+use Coachview\Helpers\Logger;
 use Exception;
-use function Coachview\Sync\log_cv_exception;
 
 class PaymentMethodDataloader
 {
@@ -25,7 +25,10 @@ class PaymentMethodDataloader
                 ->toArray();
 
         } catch (Exception $e) {
-            log_cv_exception('Load[PaymentMethods]', $e);
+            Logger::error('Load[PaymentMethods]: ' . $e->getMessage(), 'sync', [
+                'exception' => get_class($e),
+                'trace'     => $e->getTraceAsString(),
+            ]);
             return [];
         }
     }

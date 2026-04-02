@@ -84,7 +84,8 @@ class TrainingTypeSearch extends ShortCodeComponent
     {
         $productId = $product->get_id();
         $num_locations          = MetaHelpers::get_int($productId, Constants::META_NUM_LOCATIONS);
-        $startDate              = MetaHelpers::get_int($productId, Constants::META_START_DATE);
+        $startDateRaw           = MetaHelpers::get_string($productId, Constants::META_START_DATE);
+        $startDate              = $startDateRaw !== '' ? strtotime($startDateRaw) : 0;
         $duration               = MetaHelpers::get_string($productId, Constants::META_TRAINING_DURATION);
         $training_cities        = MetaHelpers::get_array($productId, Constants::META_TRAINING_CITIES);
         $training_type_category = MetaHelpers::get_string($productId, Constants::META_TRAINING_TYPE_CATEGORY);

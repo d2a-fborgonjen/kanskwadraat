@@ -11,7 +11,7 @@ class TrainingType {
         public string     $name,
         public string     $goal,
         public string     $description,
-        public int        $price,
+        public float      $price,
         public int        $num_components,
         public string     $num_half_days,
         public array      $categories,

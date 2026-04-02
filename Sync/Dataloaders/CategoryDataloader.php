@@ -4,8 +4,8 @@ namespace Coachview\Sync\Dataloaders;
 
 use Coachview\Api\ApiClient;
 use Coachview\Api\QueryBuilder;
+use Coachview\Helpers\Logger;
 use Exception;
-use function Coachview\Sync\log_cv_exception;
 
 class CategoryDataloader
 {
@@ -26,7 +26,10 @@ class CategoryDataloader
                 ->toArray();
 
         } catch (Exception $e) {
-            log_cv_exception('Load[Categories]', $e);
+            Logger::error('Load[Categories]: ' . $e->getMessage(), 'sync', [
+                'exception' => get_class($e),
+                'trace'     => $e->getTraceAsString(),
+            ]);
             return [];
         }
     }

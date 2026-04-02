@@ -13,7 +13,6 @@ use Coachview\Sync\Hooks\Sync;
 use Coachview\Sync\SyncRunner;
 use Exception;
 use Illuminate\Support\Collection;
-use function Coachview\Sync\log_cv_exception;
 
 class TrainingDataloader
 {
@@ -51,7 +50,10 @@ class TrainingDataloader
             }
             return collect($result);
         } catch (Exception $e) {
-            log_cv_exception('Load[TrainingTypes]', $e);
+            Logger::error('Load[TrainingTypes]: ' . $e->getMessage(), 'sync', [
+                'exception' => get_class($e),
+                'trace'     => $e->getTraceAsString(),
+            ]);
             return collect();
         }
     }

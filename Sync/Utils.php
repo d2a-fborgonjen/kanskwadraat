@@ -3,7 +3,6 @@
 namespace Coachview\Sync;
 
 use Coachview\Constants;
-use Coachview\Helpers\Logger;
 use WC_Product;
 use WP_Query;
 
@@ -15,22 +14,6 @@ function get_product_by_sku(string $sku): ?WC_Product
             [
                 'key'     => '_sku',
                 'value'   => $sku,
-            ],
-        ],
-        'posts_per_page' => 1,
-        'fields' => 'ids',
-    ]);
-    return !empty($query->posts) ? wc_get_product($query->posts[0]) : null;
-}
-
-function get_product_by_cv_id(string $cv_id): ?WC_Product
-{
-    $query = new WP_Query([
-        'post_type'  => 'product',
-        'meta_query' => [
-            [
-                'key'   => Constants::META_COACHVIEW_ID,
-                'value' => $cv_id
             ],
         ],
         'posts_per_page' => 1,
@@ -102,17 +85,6 @@ function get_categories_by_parent_not_in(int $parent_id, $not_in): array
         'exclude'    => $not_in,
     ]);
     return is_wp_error($terms) ? [] : $terms;
-}
-
-
-function log_cv_exception($action, $exception) {
-    Logger::error($action . ': ' . $exception->getMessage(), 'sync', [
-        'trace' => $exception->getTraceAsString(),
-    ]);
-}
-
-function log_cv_info($info_msg) {
-    Logger::info($info_msg, 'sync');
 }
 
 // Helper method to find the first non-empty value in a collection

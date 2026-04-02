@@ -36,7 +36,7 @@ class RegisterFormHandler
         }
 
 //        $result = $this->blocked_submission_response();
-//        $result = coachview_test_mode_enabled()
+//        $result = Api::isTestMode()
 //            ? $this->handle_submission($payload ?? [])
 //            : $this->blocked_submission_response();
 
