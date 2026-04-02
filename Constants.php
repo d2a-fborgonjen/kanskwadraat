@@ -83,6 +83,9 @@ class Constants {
     // Misc
     public const TEXT_DOMAIN = 'coachview';
 
+    // Logger
+    public const LOG_TABLE = 'coachview_logs';
+
     // Sync options & logging
     public const OPTION_SYNC_ERROR_LOG    = 'coachview_sync_error';
     public const OPTION_SYNC_INFO_LOG     = 'coachview_sync_info';

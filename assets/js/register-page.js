@@ -162,6 +162,7 @@ jQuery(document).ready(function($) {
                     ? error.message
                     : REGISTER_PAGE.TEXT.defaultError;
                 showFormMessage(REGISTER_PAGE.MESSAGE_TYPES.warning, message);
+                console.log("Full error", error);
             })
             .finally(() => {
                 toggleSubmitting(false);

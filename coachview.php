@@ -12,8 +12,10 @@ use Coachview\Admin\Products\CustomACF;
 use Coachview\Admin\Products\ProductList;
 use Coachview\Admin\Products\ProductMeta;
 use Coachview\Admin\Settings\Admin;
+use Coachview\Admin\Settings\LogViewer;
 use Coachview\Admin\Settings\Settings;
 use Coachview\Admin\Settings\SearchForms;
+use Coachview\Helpers\Logger;
 use Coachview\Constants;
 use Coachview\Cron\Cron;
 use Coachview\Helpers\Assets;
@@ -29,6 +31,8 @@ use Coachview\Presentation\Components\TrainingTypeStartDates;
 use Coachview\Sync\Hooks\Sync;
 
 add_action('plugins_loaded', function () {
+    Logger::maybe_create_table();
+
     // Admin pages
     new Admin();
     new Settings();
@@ -37,6 +41,7 @@ add_action('plugins_loaded', function () {
     new ProductMeta();
     new SearchForms();
     new CustomACF();
+    new LogViewer();
 
     // Training Type + Training
     new TrainingSimpleSearch();
@@ -56,6 +61,7 @@ add_action('plugins_loaded', function () {
 });
 
 register_activation_hook(__FILE__, function() {
+    Logger::create_table();
     Cron::activate();
     if (Url::has_custom_register_page()) {
         return;
