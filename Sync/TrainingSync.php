@@ -27,21 +27,19 @@ class TrainingSync {
         $training_types->each(function(TrainingType $training_type, $idx) {
             try {
                 if ($training_type->get_course_format() == CourseFormat::E_LEARNING) {
-                    $isNew = get_product_by_sku($training_type->code) === null;
+                    $isNew = self::__get_product_by_sku($training_type->code) === null;
                     $product = TrainingSync::__save_single_product($training_type);
                     $action = $isNew ? 'Created' : 'Updated';
-                    Logger::info("$action single product", 'sync', [
-                        'SKU' => $training_type->code,
+                    Logger::info("$action single product " . $training_type->code, 'sync', [
                         'CV ID' => $training_type->id,
                         'WP ID' => $product->get_id(),
                     ]);
                 } else {
-                    $isNew = get_product_by_sku($training_type->code) === null;
+                    $isNew = self::__get_product_by_sku($training_type->code) === null;
                     $product = TrainingSync::__save_variable_product($training_type);
                     $variations = TrainingSync::__save_variations($product, $training_type->trainings);
                     $action = $isNew ? 'Created' : 'Updated';
-                    Logger::info("$action variable product", 'sync', [
-                        'SKU' => $training_type->code,
+                    Logger::info("$action variable product " . $training_type->code, 'sync', [
                         'CV ID' => $training_type->id,
                         'WP ID' => $product->get_id(),
                         'num_variations' => $variations->count(),
@@ -96,7 +94,7 @@ class TrainingSync {
     public static function __save_single_product(TrainingType $training_type): WC_Product_Simple
     {
 //        $product = get_product_by_cv_id($training_type->id) ?? new WC_Product_Simple();
-        $product = get_product_by_sku($training_type->code) ?? new WC_Product_Simple();
+        $product = self::__get_product_by_sku($training_type->code) ?? new WC_Product_Simple();
 
         if ($product instanceof WC_Product_Variable) {
             Logger::info('Product type mismatch '. $training_type->code, 'sync', [
@@ -120,7 +118,7 @@ class TrainingSync {
     public static function __save_variable_product(TrainingType $training_type): WC_Product_Variable
     {
         //$product = get_product_by_cv_id($training_type->id) ?? new WC_Product_Variable();
-        $product = get_product_by_sku($training_type->code) ?? new WC_Product_Variable();
+        $product = self::__get_product_by_sku($training_type->code) ?? new WC_Product_Variable();
         if (!($product instanceof WC_Product_Variable)) {
             Logger::info('Product type mismatch', 'sync', [
                 'SKU' => $training_type->code,
@@ -176,7 +174,7 @@ class TrainingSync {
     private static function __save_variations(WC_Product_Variable $product, Collection $trainings): Collection
     {
         return $trainings->map(function(Training $training) use ($product) {
-            $variation = get_product_variation_by_sku($training->code)?? new WC_Product_Variation();
+            $variation = self::__get_product_by_sku($training->code)?? new WC_Product_Variation();
             if ($variation->get_id() === 0) {
                 $variation->set_sku($training->code);
                 $variation->set_manage_stock(true);
@@ -188,8 +186,7 @@ class TrainingSync {
                 $variation->update_meta_data(Constants::META_COACHVIEW_SOURCE, Api::isTestMode() ? 'TEST' : 'PRODUCTION');
             }
             $action = $variation->get_id() === 0 ? 'Created' : 'Updated';
-            Logger::info("$action product variation", 'sync', [
-                'SKU' => $training->code,
+            Logger::info("$action product variation " . $training->code, 'sync', [
                 'CV ID' => $training->id,
                 'parent_id' => $product->get_id(),
                 'parent_SKU' => $product->get_sku(),
@@ -246,6 +243,16 @@ class TrainingSync {
     private static function __set_acf_repeaters(WC_Product_Variable|WC_Product $product, TrainingType $training_type)
     {
         update_field('training_type_components', $training_type->get_training_type_components(), $product->get_id());
+    }
+
+    private static function __get_product_by_sku(string $sku): ?WC_Product
+    {
+        $product_id = wc_get_product_id_by_sku($sku);
+        if (!$product_id) {
+            return null;
+        }
+        $product = wc_get_product($product_id);
+        return $product ?: null;
     }
 
 }
