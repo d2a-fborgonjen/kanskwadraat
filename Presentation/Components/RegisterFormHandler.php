@@ -2,6 +2,9 @@
 
 namespace Coachview\Presentation\Components;
 
+use Coachview\Helpers\Api;
+use Coachview\Helpers\Logger;
+use Coachview\Helpers\Registration;
 use Coachview\Models\Enums\CourseFormat;
 use Coachview\Models\Enums\RegistrationFormType;
 use WP_Error;
@@ -32,15 +35,15 @@ class RegisterFormHandler
             $payload = $request->get_body_params();
         }
 
-//        $result = coachview_test_mode_enabled()
+//        $result = $this->blocked_submission_response();
+//        $result = Api::isTestMode()
 //            ? $this->handle_submission($payload ?? [])
 //            : $this->blocked_submission_response();
+
         $result = $this->handle_submission($payload ?? []);
 
         if (!$result['success']) {
-            return new WP_REST_Response([
-                'message' => $result['message'],
-            ], $result['status']);
+            return new WP_REST_Response($result, $result['status']);
         }
 
         return new WP_REST_Response([
@@ -54,19 +57,18 @@ class RegisterFormHandler
     private function handle_submission(array $data): array
     {
         $token = $data['_coachview_form_token'] ?? '';
-        $key = 'coachview_form_' . $token;
-        if (!$token || !get_transient($key)) {
-            error_log('Invalid or expired form submission attempt.');
+        $form_token = 'coachview_form_' . $token;
+        if (!$token || !get_transient($form_token)) {
+            Logger::warn('Invalid or expired form submission attempt.', 'order', ['token' => $token]);
 
             return [
                 'success' => false,
                 'status'  => 400,
-                'message' => esc_html__('Ongeldige formulierverzending.', 'coachview'),
+                'message' => esc_html__('Formulierverzending is ongeldig omdat de maximale tijd is verstreken.', 'coachview'),
                 'redirect_url' => null,
                 'order'   => null,
             ];
         }
-        delete_transient($key);
 
         $order_data = $this->to_coachview_order_data($data);
 //        error_log('Processing form submission for training registration.' . print_r($order_data, true));
@@ -92,9 +94,11 @@ class RegisterFormHandler
                 'message' => $message,
                 'redirect_url' => null,
                 'order'   => null,
+                'error_details' => json_decode($order->get_error_data('error_details'))
             ];
         }
 
+        delete_transient($form_token);
         $this->update_total_participants($data);
 
         $form_type = RegistrationFormType::from($data['_coachview_form_type'] ?: RegistrationFormType::DEFAULT->value);
@@ -105,8 +109,8 @@ class RegisterFormHandler
         $redirectUrl = $order['betaalproviderRedirectUrl'];
 
         $message = $redirectUrl
-            ? cv_get_register_success_redirect_message()
-            : cv_get_register_success_message($form_type, $course_format);
+            ? Registration::get_redirect_success_message()
+            : Registration::get_success_message($form_type, $course_format);
 
         return [
             'success'      => true,
@@ -159,9 +163,9 @@ class RegisterFormHandler
      */
     private function create_coachview_order(array $order_data)
     {
-        $response = (new WP_Http())->post(coachview_api_url() . '/api/v1/Webaanvragen', [
+        $response = (new WP_Http())->post(Api::getBaseUrl() . '/api/v1/Webaanvragen', [
             'headers' => [
-                'Authorization' => 'Bearer ' . coachview_api_token(),
+                'Authorization' => 'Bearer ' . Api::getToken(),
                 'Content-Type'  => 'application/json; charset=utf-8',
             ],
             'body'       => collect($order_data)->toJson(),
@@ -173,17 +177,23 @@ class RegisterFormHandler
         }
 
         $statusCode = wp_remote_retrieve_response_code($response);
+        $body = wp_remote_retrieve_body($response);
         if ($statusCode !== 201) {
-            $body = wp_remote_retrieve_body($response);
-            error_log('Order creation failed: ' . $statusCode . ' Response: ' . $body);
+            Logger::error('Order creation failed', 'order', [
+                'status_code' => $statusCode,
+                'response'    => $body
+            ]);
 
-            return new WP_Error(
+            $error = new WP_Error(
                 $statusCode,
                 esc_html__('Er is iets misgegaan bij het verwerken van je aanmelding. Probeer het later opnieuw.', 'coachview')
             );
+            $error->add_data($body, 'error_details');
+            return $error;
         }
 
-        return json_decode(wp_remote_retrieve_body($response), true);
+        Logger::info("Order created", 'order', ['result' => $body]);
+        return json_decode($body, true);
     }
 
     private function update_total_participants(array $post_data): void

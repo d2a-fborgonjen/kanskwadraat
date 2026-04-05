@@ -2,6 +2,8 @@
 
 namespace Coachview\Presentation\Components;
 
+use Coachview\Helpers\Registration;
+use Coachview\Helpers\Url;
 use Coachview\Models\Enums\RegistrationType;
 
 /**
@@ -26,8 +28,8 @@ class TrainingTypeCTA extends ShortCodeComponent {
             return '<span class="d-none">cv_training_type_call_to_action not used on product page or invalid product ID.</span>';
         }
 
-        $registration_type = cv_get_registration_type($product);
-        $register_link = coachview_register_page_url(['woo_pid' => $product->get_id()]);
+        $registration_type = Registration::get_registration_type($product);
+        $register_link = Url::get_register_page_url(['woo_pid' => $product->get_id()]);
 
         if ($product->is_type('variable')) {
             if ($registration_type === RegistrationType::ENLIST) {

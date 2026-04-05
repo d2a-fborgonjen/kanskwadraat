@@ -4,6 +4,7 @@ namespace Coachview\Sync\Dataloaders;
 
 use Coachview\Api\ApiClient;
 use Coachview\Api\QueryBuilder;
+use Coachview\Helpers\Logger;
 use Coachview\Models\Training;
 use Coachview\Models\TrainingComponent;
 use Coachview\Models\TrainingType;
@@ -12,7 +13,6 @@ use Coachview\Sync\Hooks\Sync;
 use Coachview\Sync\SyncRunner;
 use Exception;
 use Illuminate\Support\Collection;
-use function Coachview\Sync\log_cv_exception;
 
 class TrainingDataloader
 {
@@ -40,7 +40,9 @@ class TrainingDataloader
                     $components = self::__load_training_type_components($data['id']);
                     $result[] = TrainingType::from_array($data, $categories, $trainings, $components);
                 } catch (Exception $e) {
-                    error_log("Error loading training types: " . $e->getMessage());
+                    Logger::error('Error loading training type: ' . $e->getMessage(), 'sync', [
+                        'trace' => $e->getTraceAsString(),
+                    ]);
                 }
                 if ($progress) {
                     $progress($index + 1, $total);
@@ -48,7 +50,10 @@ class TrainingDataloader
             }
             return collect($result);
         } catch (Exception $e) {
-            log_cv_exception('Load[TrainingTypes]', $e);
+            Logger::error('Load[TrainingTypes]: ' . $e->getMessage(), 'sync', [
+                'exception' => get_class($e),
+                'trace'     => $e->getTraceAsString(),
+            ]);
             return collect();
         }
     }

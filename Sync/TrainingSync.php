@@ -3,10 +3,11 @@
 namespace Coachview\Sync;
 
 use Coachview\Constants;
+use Coachview\Helpers\Api;
+use Coachview\Helpers\Logger;
 use Coachview\Models\Enums\CourseFormat;
 use Coachview\Models\Training;
 use Coachview\Models\TrainingType;
-use Coachview\Sync\Dataloaders\TrainingDataloader;
 use Exception;
 use Illuminate\Support\Collection;
 use WC_Product;
@@ -21,34 +22,49 @@ class TrainingSync {
     {
         TrainingSync::report_progress(0, 1);
         $take = get_option(Constants::TRAINING_IMPORT_LIMIT, 1000);
-        $training_types = TrainingDataloader::load_training_types($take, [TrainingSync::class, 'report_progress']);
+        Logger::info('Starting Training Type synchronization', 'sync', ['limit' => $take]);
+        $training_types = Dataloaders\TrainingDataloader::load_training_types($take, [TrainingSync::class, 'report_progress']);
         $training_types->each(function(TrainingType $training_type, $idx) {
             try {
                 if ($training_type->get_course_format() == CourseFormat::E_LEARNING) {
+                    $isNew = self::__get_product_by_sku($training_type->code) === null;
                     $product = TrainingSync::__save_single_product($training_type);
-                    $product_id = $product->get_id();
-                    log_cv_info("Saved [$training_type->code] WP ID [$product_id]");
+                    $action = $isNew ? 'Created' : 'Updated';
+                    Logger::info("$action single product " . $training_type->code, 'sync', [
+                        'CV ID' => $training_type->id,
+                        'WP ID' => $product->get_id(),
+                    ]);
                 } else {
+                    $isNew = self::__get_product_by_sku($training_type->code) === null;
                     $product = TrainingSync::__save_variable_product($training_type);
                     $variations = TrainingSync::__save_variations($product, $training_type->trainings);
+                    $action = $isNew ? 'Created' : 'Updated';
+                    Logger::info("$action variable product " . $training_type->code, 'sync', [
+                        'CV ID' => $training_type->id,
+                        'WP ID' => $product->get_id(),
+                        'num_variations' => $variations->count(),
+                        'price' => $training_type->price,
+                    ]);
 
                     TrainingSync::__archive_stale_variations($product, $training_type->trainings);
-
-                    $product_id = $product->get_id();
-                    $num_variations = $variations->count();
-                    log_cv_info("Saved [$training_type->code] WP ID [$product_id] Num variations: [$num_variations] Price: [{$training_type->price}]");
                 }
                 TrainingSync::__save_product_categories($product, $training_type);
             } catch (Exception $e) {
-                log_cv_exception("Save[TrainingType::" . $training_type->code . "] CV id [" . $training_type->id . "]", $e);
+                Logger::error('Error saving TrainingType '. $training_type->code, 'sync', [
+                    'message' => $e->getMessage(),
+                    'CV ID' => $training_type->id,
+                    'exception' => get_class($e),
+                    'trace'     => $e->getTraceAsString(),
+                ]);
             }
         });
+        Logger::info('Finished Training Type synchronization', 'sync');
     }
 
     public static function report_progress(int $done, int $total): void
     {
         $progress = round(($done / $total) * 100, 2);
-        update_option('coachview_sync_progress', $progress);
+        update_option(Constants::OPTION_SYNC_PROGRESS, $progress);
     }
 
     private static function __save_product_categories(WC_Product $product, TrainingType $training_type): void {
@@ -78,14 +94,16 @@ class TrainingSync {
     public static function __save_single_product(TrainingType $training_type): WC_Product_Simple
     {
 //        $product = get_product_by_cv_id($training_type->id) ?? new WC_Product_Simple();
-        $product = get_product_by_sku($training_type->code) ?? new WC_Product_Simple();
-
-        if ($product->get_id() === 0) {
-            log_cv_info('NEW Product. SKU: ' . $training_type->code);
-        }
+        $product = self::__get_product_by_sku($training_type->code) ?? new WC_Product_Simple();
 
         if ($product instanceof WC_Product_Variable) {
-            log_cv_info('Product type mismatch: expected Simple, got Variable. Deleting and recreating as Simple.');
+            Logger::info('Product type mismatch '. $training_type->code, 'sync', [
+                'CV ID' => $training_type->id,
+                'WP ID' => $product->get_id(),
+                'expected' => 'Simple',
+                'got' => 'Variable',
+                'action' => 'Delete existing, create new Simple product',
+            ]);
             $product->delete(true);
             $product = new WC_Product_Simple();
         }
@@ -100,12 +118,16 @@ class TrainingSync {
     public static function __save_variable_product(TrainingType $training_type): WC_Product_Variable
     {
         //$product = get_product_by_cv_id($training_type->id) ?? new WC_Product_Variable();
-        $product = get_product_by_sku($training_type->code) ?? new WC_Product_Variable();
-        if ($product->get_id() === 0) {
-            log_cv_info('NEW Product. SKU: ' . $training_type->code);
-        }
+        $product = self::__get_product_by_sku($training_type->code) ?? new WC_Product_Variable();
         if (!($product instanceof WC_Product_Variable)) {
-            log_cv_info('Product type mismatch: expected Variable, got Simple. Deleting and recreating as Variable.');
+            Logger::info('Product type mismatch', 'sync', [
+                'SKU' => $training_type->code,
+                'CV ID' => $training_type->id,
+                'WP ID' => $product->get_id(),
+                'expected' => 'Variable',
+                'got' => 'Simple',
+                'action' => 'Delete existing, create new Variable product',
+            ]);
             $product->delete(true);
             $product = new WC_Product_Variable();
         }
@@ -133,18 +155,18 @@ class TrainingSync {
         $product->set_regular_price($training_type->price);
         $product->set_manage_stock(false);
         $product->set_stock_status('instock');
-        $product->update_meta_data('cv_last_sync', time());
-        $product->update_meta_data('training_goal', $training_type->goal);
-        $product->update_meta_data('training_duration', $training_type->num_half_days);
+        $product->update_meta_data(Constants::META_LAST_SYNC, time());
+        $product->update_meta_data(Constants::META_TRAINING_GOAL, $training_type->goal);
+        $product->update_meta_data(Constants::META_TRAINING_DURATION, $training_type->num_half_days);
 
         // one of: elearning, klassikaal, blended
-        $product->update_meta_data('training_type_category', $training_type->get_course_format()->value);
+        $product->update_meta_data(Constants::META_TRAINING_TYPE_CATEGORY, $training_type->get_course_format()->value);
 
         if ($product->get_id() === 0) {
             $product->set_virtual(true);
             $product->set_status('draft');
-            $product->add_meta_data('coachview_id', $training_type->id, true);
-            $product->add_meta_data('coachview_source', coachview_test_mode_enabled() ? 'TEST' : 'PRODUCTION');
+            $product->add_meta_data(Constants::META_COACHVIEW_ID, $training_type->id, true);
+            $product->add_meta_data(Constants::META_COACHVIEW_SOURCE, Api::isTestMode() ? 'TEST' : 'PRODUCTION');
             $product->set_description($training_type->description);
         }
     }
@@ -152,37 +174,38 @@ class TrainingSync {
     private static function __save_variations(WC_Product_Variable $product, Collection $trainings): Collection
     {
         return $trainings->map(function(Training $training) use ($product) {
-            $variation = get_product_variation_by_sku($training->code)?? new WC_Product_Variation();
+            $variation = self::__get_product_by_sku($training->code)?? new WC_Product_Variation();
             if ($variation->get_id() === 0) {
-                log_cv_info('NEW Variation. SKU: ' . $training->code);
-
                 $variation->set_sku($training->code);
                 $variation->set_manage_stock(true);
                 $variation->set_parent_id($product->get_id());
                 $variation->set_attributes(['training_code' => $training->code]);
                 $variation->set_status('publish');
 
-                $variation->update_meta_data('coachview_id', $training->id);
-                $variation->update_meta_data('coachview_source', coachview_test_mode_enabled() ? 'TEST' : 'PRODUCTION');
+                $variation->update_meta_data(Constants::META_COACHVIEW_ID, $training->id);
+                $variation->update_meta_data(Constants::META_COACHVIEW_SOURCE, Api::isTestMode() ? 'TEST' : 'PRODUCTION');
             }
-            $variation->set_regular_price($product->get_regular_price());
-            $variation->set_stock_quantity($training->num_seats_available);
-
-            $variation->update_meta_data('cv_last_sync', time());
-            $variation->update_meta_data('location',  firstNonEmpty($training->components->pluck('location')));
-            $variation->update_meta_data('address', firstNonEmpty($training->components->pluck('address')));
-            $variation->update_meta_data('zipcode', firstNonEmpty($training->components->pluck('zipcode')));
-            $variation->update_meta_data('city', firstNonEmpty($training->components->pluck('city')));
-            $variation->update_meta_data('planning', json_encode($training->components));
-            $variation->update_meta_data('start_day', $training->start_day);
-            $variation->update_meta_data('start_date', $training->start_date);
-            $variation->update_meta_data('end_date', $training->end_date);
-            $variation->update_meta_data('total_study_hours', $training->total_study_hours);
-            $variation->update_meta_data('total_days', $training->total_days);
-            $variation->update_meta_data('num_seats_taken', $training->num_seats_taken);
-            $variation->update_meta_data('num_seats_available', $training->num_seats_available);
-            $variation->update_meta_data('min_seats', $training->min_seats);
-            $variation->update_meta_data('max_seats', $training->max_seats);
+            $action = $variation->get_id() === 0 ? 'Created' : 'Updated';
+            Logger::info("$action product variation " . $training->code, 'sync', [
+                'CV ID' => $training->id,
+                'parent_id' => $product->get_id(),
+                'parent_SKU' => $product->get_sku(),
+            ]);
+            $variation->update_meta_data(Constants::META_LAST_SYNC, time());
+            $variation->update_meta_data(Constants::META_LOCATION,  firstNonEmpty($training->components->pluck('location')));
+            $variation->update_meta_data(Constants::META_ADDRESS, firstNonEmpty($training->components->pluck('address')));
+            $variation->update_meta_data(Constants::META_ZIPCODE, firstNonEmpty($training->components->pluck('zipcode')));
+            $variation->update_meta_data(Constants::META_CITY, firstNonEmpty($training->components->pluck('city')));
+            $variation->update_meta_data(Constants::META_PLANNING, json_encode($training->components));
+            $variation->update_meta_data(Constants::META_START_DAY, $training->start_day);
+            $variation->update_meta_data(Constants::META_START_DATE, $training->start_date);
+            $variation->update_meta_data(Constants::META_END_DATE, $training->end_date);
+            $variation->update_meta_data(Constants::META_TOTAL_STUDY_HOURS, $training->total_study_hours);
+            $variation->update_meta_data(Constants::META_TOTAL_DAYS, $training->total_days);
+            $variation->update_meta_data(Constants::META_NUM_SEATS_TAKEN, $training->num_seats_taken);
+            $variation->update_meta_data(Constants::META_NUM_SEATS_AVAILABLE, $training->num_seats_available);
+            $variation->update_meta_data(Constants::META_MIN_SEATS, $training->min_seats);
+            $variation->update_meta_data(Constants::META_MAX_SEATS, $training->max_seats);
             $variation->save();
 
             return $variation;
@@ -195,7 +218,6 @@ class TrainingSync {
     private static function __archive_stale_variations(WC_Product_Variable $product, Collection $active_trainings): void
     {
         $training_codes = $active_trainings->pluck('code')->toArray();
-        $training_type_name = $product->get_name();
         foreach ($product->get_children() as $variation_id) {
             $variation = wc_get_product($variation_id);
             if (!$variation instanceof WC_Product_Variation) {
@@ -209,7 +231,11 @@ class TrainingSync {
 //                $variation->set_stock_quantity(0);
 //                $variation->set_manage_stock(true);
 //                $variation->save();
-                log_cv_info("Archived stale training. Variation ID [$variation_id] code: [$training_code] TrainingType: $training_type_name");
+                Logger::info('Archived stale variation', 'sync', [
+                    'variation_id' => $variation_id,
+                    'training_code' => $training_code,
+                    'training_type' => $product->get_name(),
+                ]);
             }
         }
     }
@@ -219,4 +245,15 @@ class TrainingSync {
         update_field('training_type_components', $training_type->get_training_type_components(), $product->get_id());
     }
 
+    private static function __get_product_by_sku(string $sku): ?WC_Product
+    {
+        $product_id = wc_get_product_id_by_sku($sku);
+        if (!$product_id) {
+            return null;
+        }
+        $product = wc_get_product($product_id);
+        return $product ?: null;
+    }
+
 }
+

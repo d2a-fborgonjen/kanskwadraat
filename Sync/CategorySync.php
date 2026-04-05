@@ -2,13 +2,15 @@
 
 namespace Coachview\Sync;
 
+use Coachview\Constants;
+use Coachview\Helpers\Logger;
 use Coachview\Sync\Dataloaders\CategoryDataloader;
 
 class CategorySync
 {
     public static function run(): void
     {
-        log_cv_info('Starting category synchronization.');
+        Logger::info('Starting category synchronization.', 'sync');
         $categories = CategoryDataloader::load_categories(100);
         foreach ($categories as $parent_name => $children) {
             $parent_id = get_or_create_category($parent_name);
@@ -18,6 +20,7 @@ class CategorySync
             }
             CategorySync::delete_category_children_not_in_list($parent_id, $child_cat_ids);
         }
+        Logger::info('Finished category synchronization.', 'sync');
     }
 
     public static function cleanup_after_sync()
@@ -34,7 +37,7 @@ class CategorySync
         }
 
         foreach ($children as $child) {
-            log_cv_info("Delete category {$child->name} as it no longer exists in Coachview.");
+            Logger::info("Delete category {$child->name} as it no longer exists in Coachview.", 'sync');
             wp_delete_term($child->term_id, 'product_cat');
         }
     }
@@ -44,7 +47,7 @@ class CategorySync
         $cats = is_wp_error($terms) ? [] : $terms;
 
         foreach ($cats as $term) {
-            log_cv_info("Delete category {$term->name} {$term->parent} as its sync time has expired.");
+            Logger::info("Delete category {$term->name} {$term->parent} as its sync time has expired.", 'sync');
             wp_delete_term($term->term_id, 'product_cat');
         }
     }
@@ -55,7 +58,7 @@ class CategorySync
         $cats = is_wp_error($terms) ? [] : $terms;
 
         foreach ($cats as $term) {
-            log_cv_info("Delete category {$term->name} as it has no sync time.");
+            Logger::info("Delete category {$term->name} as it has no sync time.", 'sync');
             wp_delete_term($term->term_id, 'product_cat');
         }
     }
@@ -66,7 +69,7 @@ class CategorySync
             'hide_empty' => false,
             'meta_query' => [
                 [
-                    'key'   => 'last_sync',
+                    'key'   => Constants::META_LAST_SYNC,
                     'value' => $value,
                     'compare' => $compare
                 ],

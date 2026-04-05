@@ -31,7 +31,7 @@ class FormGroup extends FormElement
         if (!$this->canShow($form_type, $registration_type)) {
             return '';
         }
-        
+
         // Filter fields that should be shown and prepare their rendered content
         $renderedFields = [];
         foreach ($this->fields as $field) {

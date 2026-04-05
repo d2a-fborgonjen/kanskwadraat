@@ -3,12 +3,16 @@
 namespace Coachview\Presentation\Components;
 
 use Coachview\Constants;
+use Coachview\Helpers\Assets;
+use Coachview\Helpers\Categories;
+use Coachview\Helpers\MetaHelpers;
 use Coachview\Models\Enums\CourseFormat;
 use WP_Query;
 use WP_REST_Response;
 
 class TrainingTypeSearch extends ShortCodeComponent
 {
+
     /** @var callable|null */
     private $relevanceFilter = null;
 
@@ -22,12 +26,12 @@ class TrainingTypeSearch extends ShortCodeComponent
 
     public function enqueue_styles(): void
     {
-        wp_enqueue_style(self::get_shortcode(), cv_assets_url('css/training-search.css'), [], null);
+        Assets::enqueueStyle(self::get_shortcode(), 'css/training-search.css');
     }
 
     public function enqueue_scripts(): void
     {
-        wp_enqueue_script(self::get_shortcode(), cv_assets_url('js/training-search.js'), ['jquery'], '1.0', true);
+        Assets::enqueueScript(self::get_shortcode(), 'js/training-search.js', ['jquery']);
     }
 
     public function __construct()
@@ -72,22 +76,23 @@ class TrainingTypeSearch extends ShortCodeComponent
 
     private function renderCategorySidebar(): string
     {
-        $categories = get_hierarchical_categories();
+        $categories = Categories::getHierarchicalCategories();
         return $this->render_template(['categories' => $categories], 'categories');
     }
 
     private function render_training_type($product): string
     {
         $productId = $product->get_id();
-        $num_locations = get_post_meta($productId, 'num_locations', true);
-        $startDate = get_post_meta($productId, 'start_date', true);
-        $duration = get_post_meta($productId, 'training_duration', true);
-        $training_cities = get_post_meta($productId, 'training_cities', true);
-        $training_type_category = get_post_meta($productId, 'training_type_category', true);
+        $num_locations          = MetaHelpers::get_int($productId, Constants::META_NUM_LOCATIONS);
+        $startDateRaw           = MetaHelpers::get_string($productId, Constants::META_START_DATE);
+        $startDate              = $startDateRaw !== '' ? strtotime($startDateRaw) : 0;
+        $duration               = MetaHelpers::get_string($productId, Constants::META_TRAINING_DURATION);
+        $training_cities        = MetaHelpers::get_array($productId, Constants::META_TRAINING_CITIES);
+        $training_type_category = MetaHelpers::get_string($productId, Constants::META_TRAINING_TYPE_CATEGORY);
         $product_url = get_permalink($productId);
 
         $is_online = $training_type_category === CourseFormat::E_LEARNING->value;
-        $location = $is_online ? 'Online' : implode(', ', $training_cities ?: []);
+        $location = $is_online ? 'Online' : implode(', ', $training_cities);
 
         $image_id = $product->get_image_id();
         $image_url = $image_id ? wp_get_attachment_image_url($image_id, 'full') : null;
@@ -258,11 +263,11 @@ class TrainingTypeSearch extends ShortCodeComponent
     // ──────────────────────────────────────────────
 
     /**
-     * Scores each word match across title (weight 10), tags (weight 5),
-     * and excerpt (weight 2).
+     * Joins the product_tag taxonomy tables and scores each word match
+     * across title (weight 10), tags (weight 5), and excerpt (weight 2).
      *
-     * Uses EXISTS subqueries for tag matching instead of JOINs + GROUP_CONCAT,
-     * which avoids duplicate rows and unreliable aggregate evaluation in ORDER BY.
+     * Uses GROUP BY + GROUP_CONCAT to aggregate all tag names per product
+     * into a single matchable string, avoiding duplicate rows.
      *
      * @param string[] $words
      */
@@ -270,6 +275,18 @@ class TrainingTypeSearch extends ShortCodeComponent
     {
         return function (array $clauses) use ($words): array {
             global $wpdb;
+
+            // JOIN product_tag terms via the taxonomy relationship tables
+            $clauses['join'] .=
+                " LEFT JOIN {$wpdb->term_relationships} AS cv_tr
+                    ON ({$wpdb->posts}.ID = cv_tr.object_id)
+                  LEFT JOIN {$wpdb->term_taxonomy} AS cv_tt
+                    ON (cv_tr.term_taxonomy_id = cv_tt.term_taxonomy_id
+                        AND cv_tt.taxonomy = 'product_tag')
+                  LEFT JOIN {$wpdb->terms} AS cv_t
+                    ON (cv_tt.term_id = cv_t.term_id)";
+
+            $clauses['groupby'] = "{$wpdb->posts}.ID";
 
             $score_parts = [];
 
@@ -290,22 +307,10 @@ class TrainingTypeSearch extends ShortCodeComponent
                     $like
                 );
 
-                // EXISTS subquery — no JOINs needed on the outer query
-                $tag_exists = $wpdb->prepare(
-                    "SELECT 1
-                     FROM {$wpdb->term_relationships} tr
-                     INNER JOIN {$wpdb->term_taxonomy} tt
-                        ON tr.term_taxonomy_id = tt.term_taxonomy_id
-                        AND tt.taxonomy = 'product_tag'
-                     INNER JOIN {$wpdb->terms} t
-                        ON tt.term_id = t.term_id
-                     WHERE tr.object_id = {$wpdb->posts}.ID
-                       AND t.name LIKE %s
-                     LIMIT 1",
+                $score_parts[] = $wpdb->prepare(
+                    "CASE WHEN GROUP_CONCAT(cv_t.name SEPARATOR ' ') LIKE %s THEN {$wTag} ELSE 0 END",
                     $like
                 );
-
-                $score_parts[] = "CASE WHEN EXISTS ({$tag_exists}) THEN {$wTag} ELSE 0 END";
             }
 
             $score_sql = implode(' + ', $score_parts);

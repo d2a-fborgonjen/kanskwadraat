@@ -2,6 +2,8 @@
 
 namespace Coachview\Admin\Products;
 
+use Coachview\Constants;
+use Coachview\Helpers\Payment;
 use Coachview\Models\Enums\RegistrationFormType;
 use Coachview\Presentation\Components\TrainingAgenda;
 
@@ -45,18 +47,18 @@ class ProductMeta
 
     public function render_form_type_metabox($post)
     {
-        if (!get_post_meta($post->ID, 'coachview_id', true)) {
+        if (!get_post_meta($post->ID, Constants::META_COACHVIEW_ID, true)) {
             return;
         }
-        $value = get_post_meta($post->ID, 'cv_form_type', true);
-        $participantHeaderValue = get_post_meta($post->ID, 'cv_form_participant_header', true);
-        $contactPersonHeaderValue = get_post_meta($post->ID, 'cv_form_contact_person_header', true);
+        $value = get_post_meta($post->ID, Constants::META_TRAINING_TYPE_FORM_TYPE, true);
+        $participantHeaderValue = get_post_meta($post->ID, Constants::META_FORM_PARTICIPANT_HEADER, true);
+        $contactPersonHeaderValue = get_post_meta($post->ID, Constants::META_FORM_CONTACT_PERSON_HEADER, true);
         wp_nonce_field('cv_save_meta', 'cv_meta_nonce');
         ?>
         <p><?php _e('Gebruik een aangepaste of versimpelde inschrijfformulier voor deze cursus.', 'coachview'); ?></p>
 
-        <label for="cv_form_type"><?php esc_html_e('Formulier variatie', 'coachview'); ?></label>
-        <select name="cv_form_type" id="cv_form_type" class="widefat">
+        <label for="<?php echo Constants::META_TRAINING_TYPE_FORM_TYPE; ?>"><?php esc_html_e('Formulier variatie', 'coachview'); ?></label>
+        <select name="<?php echo Constants::META_TRAINING_TYPE_FORM_TYPE; ?>" id="<?php echo Constants::META_TRAINING_TYPE_FORM_TYPE; ?>" class="widefat">
             <option value=""><?php esc_html_e('Kies een optie', 'coachview'); ?></option>
             <?php foreach (RegistrationFormType::cases() as $type): ?>
                 <option value="<?php echo esc_attr($type->value); ?>" <?php selected($value, $type->value); ?>>
@@ -66,17 +68,17 @@ class ProductMeta
         </select>
 
         <p><?php esc_html_e('Stel hier aangepaste kopteksten in voor deelnemer en pedagogisch medewerker/contactpersoon', 'coachview'); ?></p>
-        <label for="cv_form_participant_header"><?php esc_html_e('Deelnemer titel', 'coachview'); ?></label>
+        <label for="<?php echo Constants::META_FORM_PARTICIPANT_HEADER; ?>"><?php esc_html_e('Deelnemer titel', 'coachview'); ?></label>
         <input type="text"
-               id="cv_form_participant_header"
-               name="cv_form_participant_header"
+               id="<?php echo Constants::META_FORM_PARTICIPANT_HEADER; ?>"
+               name="<?php echo Constants::META_FORM_PARTICIPANT_HEADER; ?>"
                placeholder="Deelnemer aan..."
                class="widefat" value="<?php echo esc_attr($participantHeaderValue); ?>">
 
-        <label for="cv_form_contact_person_header"><?php esc_html_e('Contactpersoon titel', 'coachview'); ?></label>
+        <label for="<?php echo Constants::META_FORM_CONTACT_PERSON_HEADER; ?>"><?php esc_html_e('Contactpersoon titel', 'coachview'); ?></label>
         <input type="text"
-               id="cv_form_contact_person_header"
-               name="cv_form_contact_person_header"
+               id="<?php echo Constants::META_FORM_CONTACT_PERSON_HEADER; ?>"
+               name="<?php echo Constants::META_FORM_CONTACT_PERSON_HEADER; ?>"
                placeholder="Pedagogisch medewerker die je gaat coachen"
                class="widefat" value="<?php echo esc_attr($contactPersonHeaderValue); ?>">
         <?php
@@ -87,11 +89,11 @@ class ProductMeta
         ?>
         <p><?php _e('Selecteer welke betaalwijzen ondersteund worden voor dit product.', 'coachview'); ?></p>
 
-        <label for="cv_payment_methods"><?php esc_html_e('Betaalwijzen', 'coachview'); ?></label>
+        <label for="<?php echo Constants::META_PRODUCT_PAYMENT_METHODS; ?>"><?php esc_html_e('Betaalwijzen', 'coachview'); ?></label>
 
         <?php
-        $savedMethods = get_post_meta($post->ID, 'cv_payment_methods', true);
-        foreach (coachview_get_payment_methods() as $method)
+        $savedMethods = get_post_meta($post->ID, Constants::META_PRODUCT_PAYMENT_METHODS, true);
+        foreach (Payment::getPaymentMethods() as $method)
         {
             $checked = '';
             if (is_array($savedMethods) && in_array($method['id'], $savedMethods, true)) {
@@ -100,7 +102,7 @@ class ProductMeta
             ?>
             <div>
                 <label>
-                    <input type="checkbox" name="cv_payment_methods[]" value="<?php echo esc_attr($method['id']); ?>" <?php echo $checked; ?>>
+                    <input type="checkbox" name="<?php echo Constants::META_PRODUCT_PAYMENT_METHODS; ?>[]" value="<?php echo esc_attr($method['id']); ?>" <?php echo $checked; ?>>
                     <?php echo esc_html($method['name']); ?>
                 </label>
             </div>
@@ -110,18 +112,18 @@ class ProductMeta
 
     public function render_hide_option_metabox($post)
     {
-        if (!get_post_meta($post->ID, 'coachview_id', true)) {
+        if (!get_post_meta($post->ID, Constants::META_COACHVIEW_ID, true)) {
             return;
         }
-        $value = get_post_meta($post->ID, 'cv_hide_from_search', true) ?: 'no';
+        $value = get_post_meta($post->ID, Constants::META_TRAINING_TYPE_HIDE_FROM_SEARCH, true) ?: 'no';
         ?>
         <p><?php esc_html_e('Verberg deze training van de zoekresultaten', 'coachview'); ?></p>
         <label>
-            <input type="radio" name="cv_hide_from_search" value="yes" <?php checked($value, 'yes'); ?>>
+            <input type="radio" name="<?php echo Constants::META_TRAINING_TYPE_HIDE_FROM_SEARCH; ?>" value="yes" <?php checked($value, 'yes'); ?>>
             <?php esc_html_e('Ja', 'coachview'); ?>
         </label><br>
         <label>
-            <input type="radio" name="cv_hide_from_search" value="no" <?php checked($value, 'no'); ?>>
+            <input type="radio" name="<?php echo Constants::META_TRAINING_TYPE_HIDE_FROM_SEARCH; ?>" value="no" <?php checked($value, 'no'); ?>>
             <?php esc_html_e('Nee', 'coachview'); ?>
         </label>
         <?php
@@ -141,35 +143,35 @@ class ProductMeta
             return;
         }
 
-        if (isset($_POST['cv_form_type'])) {
-            update_post_meta($post_id, 'cv_form_type', sanitize_text_field($_POST['cv_form_type']));
+        if (isset($_POST[Constants::META_TRAINING_TYPE_FORM_TYPE])) {
+            update_post_meta($post_id, Constants::META_TRAINING_TYPE_FORM_TYPE, sanitize_text_field($_POST[Constants::META_TRAINING_TYPE_FORM_TYPE]));
         } else {
-            delete_post_meta($post_id, 'cv_form_type');
+            delete_post_meta($post_id, Constants::META_TRAINING_TYPE_FORM_TYPE);
         }
 
-        if (isset($_POST['cv_form_participant_header'])) {
-            update_post_meta($post_id, 'cv_form_participant_header', sanitize_text_field($_POST['cv_form_participant_header']));
+        if (isset($_POST[Constants::META_FORM_PARTICIPANT_HEADER])) {
+            update_post_meta($post_id, Constants::META_FORM_PARTICIPANT_HEADER, sanitize_text_field($_POST[Constants::META_FORM_PARTICIPANT_HEADER]));
         } else {
-            delete_post_meta($post_id, 'cv_form_participant_header');
+            delete_post_meta($post_id, Constants::META_FORM_PARTICIPANT_HEADER);
         }
 
-        if (isset($_POST['cv_form_contact_person_header'])) {
-            update_post_meta($post_id, 'cv_form_contact_person_header', sanitize_text_field($_POST['cv_form_contact_person_header']));
+        if (isset($_POST[Constants::META_FORM_CONTACT_PERSON_HEADER])) {
+            update_post_meta($post_id, Constants::META_FORM_CONTACT_PERSON_HEADER, sanitize_text_field($_POST[Constants::META_FORM_CONTACT_PERSON_HEADER]));
         } else {
-            delete_post_meta($post_id, 'cv_form_contact_person_header');
+            delete_post_meta($post_id, Constants::META_FORM_CONTACT_PERSON_HEADER);
         }
 
-        if (isset($_POST['cv_hide_from_search']) && $_POST['cv_hide_from_search'] === 'yes') {
-            update_post_meta($post_id, 'cv_hide_from_search', 'yes');
+        if (isset($_POST[Constants::META_TRAINING_TYPE_HIDE_FROM_SEARCH]) && $_POST[Constants::META_TRAINING_TYPE_HIDE_FROM_SEARCH] === 'yes') {
+            update_post_meta($post_id, Constants::META_TRAINING_TYPE_HIDE_FROM_SEARCH, 'yes');
         } else {
-            delete_post_meta($post_id, 'cv_hide_from_search');
+            delete_post_meta($post_id, Constants::META_TRAINING_TYPE_HIDE_FROM_SEARCH);
         }
 
-        if (isset($_POST['cv_payment_methods']) && is_array($_POST['cv_payment_methods'])) {
-            $methods = array_map('sanitize_text_field', $_POST['cv_payment_methods']);
-            update_post_meta($post_id, 'cv_payment_methods', $methods);
+        if (isset($_POST[Constants::META_PRODUCT_PAYMENT_METHODS]) && is_array($_POST[Constants::META_PRODUCT_PAYMENT_METHODS])) {
+            $methods = array_map('sanitize_text_field', $_POST[Constants::META_PRODUCT_PAYMENT_METHODS]);
+            update_post_meta($post_id, Constants::META_PRODUCT_PAYMENT_METHODS, $methods);
         } else {
-            delete_post_meta($post_id, 'cv_payment_methods');
+            delete_post_meta($post_id, Constants::META_PRODUCT_PAYMENT_METHODS);
         }
 
         TrainingAgenda::clear_cached_agenda_data();

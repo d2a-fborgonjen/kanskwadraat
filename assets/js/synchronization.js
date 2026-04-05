@@ -29,13 +29,13 @@ jQuery(document).ready(function($) {
 
     function handleSyncResponse(response) {
         if (!response.success) {
-            showSyncError('Synchronisatie is mislukt', response.data?.error_log);
+            showSyncError('Synchronisatie is mislukt', response.data?.logs);
         }
     }
 
     function handlePollingResponse(response) {
         if (!response.success) {
-            showSyncError('Synchronisatie is mislukt', response.data?.error_log);
+            showSyncError('Synchronisatie is mislukt', response.data?.logs);
             return;
         }
         if (response.data.running) {
@@ -43,7 +43,7 @@ jQuery(document).ready(function($) {
             pollTimer = setTimeout(() => getAction('cv_get_sync_progress', handlePollingResponse), 1000);
         } else {
             showLastSyncTime();
-            setSyncInfoLogText(response.data.info_log);
+            setSyncLogEntries(response.data.logs);
             enableButton(runSyncBtn);
         }
     }
@@ -61,12 +61,19 @@ jQuery(document).ready(function($) {
         $('#sync-status p').text(text);
     }
 
-    function setSyncErrorLogText(text) {
-        $('#sync-error-log pre').text(text || '');
-    }
-
-    function setSyncInfoLogText(text) {
-        $('#sync-info-log pre').text(text || '');
+    function setSyncLogEntries(logs) {
+        const container = $('#sync-log');
+        if (!logs || logs.length === 0) {
+            container.html('<p>Geen recente sync logs.</p>');
+            return;
+        }
+        let html = '<table class="wp-list-table widefat fixed striped" style="margin-top:8px">';
+        html += '<thead><tr><th style="width:150px">Datum</th><th style="width:60px">Level</th><th>Bericht</th></tr></thead><tbody>';
+        logs.forEach(entry => {
+            html += `<tr><td>${entry.created_at}</td><td>${entry.level.toUpperCase()}</td><td>${entry.message}</td></tr>`;
+        });
+        html += '</tbody></table>';
+        container.html(html);
     }
 
     function setSyncStatusClass(className) {
@@ -83,10 +90,10 @@ jQuery(document).ready(function($) {
         setSyncStatusText('Laatste synchronisatie ' + formatted);
     }
 
-    function showSyncError(message, errorLog) {
+    function showSyncError(message, logs) {
         setSyncStatusText(message);
         setSyncStatusClass('error');
-        setSyncErrorLogText(errorLog);
+        setSyncLogEntries(logs);
         enableButton(runSyncBtn);
     }
 

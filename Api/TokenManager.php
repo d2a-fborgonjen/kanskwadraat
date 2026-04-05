@@ -1,7 +1,9 @@
 <?php
 namespace Coachview\Api;
 
-use function Coachview\Sync\log_cv_exception;
+use Coachview\Constants;
+use Coachview\Helpers\Api;
+use Coachview\Helpers\Logger;
 
 class TokenManager {
     private static ?TokenManager $instance = null;
@@ -16,27 +18,31 @@ class TokenManager {
     }
 
     public function getToken(bool $refresh = false): ?string {
-        $token = get_transient('coachview_api_token');
+        $token = get_transient(Constants::OPTION_API_TOKEN);
         if (!$token || $refresh) {
             $token = $this->authenticate();
             if ($token) {
-                set_transient('coachview_api_token', $token, 1 * HOUR_IN_SECONDS);
+                set_transient(Constants::OPTION_API_TOKEN, $token, 1 * HOUR_IN_SECONDS);
             }
         }
         return $token ?: 'not-authorized';
     }
 
     private function authenticate(): ?string {
-        $url = coachview_api_url() . '/auth/connect/token';
+        $url = Api::getBaseUrl() . '/auth/connect/token';
+
+        $client_id = Api::getClientId();
+        $client_secret = Api::getSecret();
+
         $body = [
             'grant_type' => 'client_credentials',
-            'client_id' => coachview_api_client_id(),
-            'client_secret' => coachview_api_secret()
+            'client_id' => $client_id,
+            'client_secret' => $client_secret
         ];
         $response = wp_remote_post($url, ['body' => $body]);
 
         if (is_wp_error($response)) {
-            log_cv_exception('Request[token]', new \Exception($response->get_error_message()));
+            Logger::error('Request[token]: ' . $response->get_error_message(), 'api');
             return null;
         }
 
@@ -46,7 +52,9 @@ class TokenManager {
         if ($code === 200 && isset($data['access_token'])) {
             return $data['access_token'];
         }
-        log_cv_exception('Request[token]', new \Exception('Token refresh error' . print_r($data, true)));
+        Logger::error('Request[token]: Token refresh error', 'api', [
+            'response' => $data,
+        ]);
         return null;
     }
 }

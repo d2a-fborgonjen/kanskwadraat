@@ -2,6 +2,11 @@
 
 namespace Coachview\Presentation\Components;
 
+use Coachview\Constants;
+use Coachview\Helpers\Assets;
+use Coachview\Helpers\Formatting;
+use Coachview\Helpers\MetaHelpers;
+use Coachview\Helpers\Url;
 use Coachview\Models\Enums\CourseFormat;
 use Coachview\Presentation\TemplateEngine;
 use WC_Product_Variation;
@@ -18,12 +23,12 @@ class TrainingTypeStartDates extends ShortCodeComponent
 
     public function enqueue_styles(): void
     {
-        wp_enqueue_style(self::get_shortcode(), cv_assets_url('css/training-type-start-dates.css'), [], null);
+        Assets::enqueueStyle(self::get_shortcode(), 'css/training-type-start-dates.css');
     }
 
     public function enqueue_scripts(): void
     {
-        wp_enqueue_script(self::get_shortcode(), cv_assets_url('js/training-type-start-dates.js'), ['jquery'], '1.0', true);
+        Assets::enqueueScript(self::get_shortcode(), 'js/training-type-start-dates.js', ['jquery']);
     }
 
     public function render_shortcode($atts): string
@@ -56,7 +61,7 @@ class TrainingTypeStartDates extends ShortCodeComponent
         $tomorrow = strtotime('tomorrow 00:00:00');
         foreach ( $variation_ids as $variation_id ) {
             $variation = wc_get_product($variation_id);
-            $startDate = strtotime(get_post_meta($variation_id, 'start_date', true));
+            $startDate = strtotime(MetaHelpers::get_string($variation_id, Constants::META_START_DATE));
             if ($startDate && $startDate >= $tomorrow ) {
                 $variations[] = $variation;
             }
@@ -64,8 +69,8 @@ class TrainingTypeStartDates extends ShortCodeComponent
 
         // sort by start date
         usort($variations, function($a, $b) {
-            $startDateA = strtotime(get_post_meta($a->get_id(), 'start_date', true));
-            $startDateB = strtotime(get_post_meta($b->get_id(), 'start_date', true));
+            $startDateA = strtotime(MetaHelpers::get_string($a->get_id(), Constants::META_START_DATE));
+            $startDateB = strtotime(MetaHelpers::get_string($b->get_id(), Constants::META_START_DATE));
             return $startDateA <=> $startDateB;
         });
 
@@ -77,9 +82,9 @@ class TrainingTypeStartDates extends ShortCodeComponent
         $prepared_variations = [];
         foreach ($variations as $variation) {
             $variation_id = $variation->get_id();
-            $startDate = get_post_meta($variation_id, 'start_date', true);
-            $date = get_display_date(strtotime($startDate));
-            $link = coachview_register_page_url(['woo_vid' => $variation_id]);
+            $startDate = MetaHelpers::get_string($variation_id, Constants::META_START_DATE);
+            $date = Formatting::displayDate(strtotime($startDate));
+            $link = Url::get_register_page_url(['woo_vid' => $variation_id]);
 
             $prepared_variations[] = [
                 'id' => $variation_id,
@@ -87,10 +92,10 @@ class TrainingTypeStartDates extends ShortCodeComponent
                 'link' => $link,
                 'is_in_stock' => $variation->is_in_stock(),
                 'price' => number_format_i18n($variation->get_price()),
-                'location' => get_post_meta($variation_id, 'location', true),
-                'city' => get_post_meta($variation_id, 'city', true),
-                'address' => get_post_meta($variation_id, 'address', true),
-                'zipcode' => get_post_meta($variation_id, 'zipcode', true),
+                'location' => MetaHelpers::get_string($variation_id, Constants::META_LOCATION),
+                'city'     => MetaHelpers::get_string($variation_id, Constants::META_CITY),
+                'address'  => MetaHelpers::get_string($variation_id, Constants::META_ADDRESS),
+                'zipcode'  => MetaHelpers::get_string($variation_id, Constants::META_ZIPCODE),
                 'planning' => $this->prepare_planning_data($variation)
             ];
         }
@@ -99,7 +104,7 @@ class TrainingTypeStartDates extends ShortCodeComponent
 
     private function prepare_planning_data(WC_Product_Variation $variation): array
     {
-        $planningJson = get_post_meta($variation->get_id(), 'planning', true);
+        $planningJson = MetaHelpers::get_string($variation->get_id(), Constants::META_PLANNING);
         $planningEvents = json_decode($planningJson, true) ?? [];
         $planningEvents = array_filter($planningEvents, function($event) {
             return $event['course_format'] != CourseFormat::E_LEARNING->value;

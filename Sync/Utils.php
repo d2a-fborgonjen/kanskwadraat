@@ -2,73 +2,8 @@
 
 namespace Coachview\Sync;
 
-use WC_Product;
-use WP_Query;
+use Coachview\Constants;
 
-function get_product_by_sku(string $sku): ?WC_Product
-{
-    $query = new WP_Query([
-        'post_type'  => 'product',
-        'meta_query' => [
-            [
-                'key'     => '_sku',
-                'value'   => $sku,
-            ],
-        ],
-        'posts_per_page' => 1,
-        'fields' => 'ids',
-    ]);
-    return !empty($query->posts) ? wc_get_product($query->posts[0]) : null;
-}
-
-function get_product_by_cv_id(string $cv_id): ?WC_Product
-{
-    $query = new WP_Query([
-        'post_type'  => 'product',
-        'meta_query' => [
-            [
-                'key'   => 'coachview_id',
-                'value' => $cv_id
-            ],
-        ],
-        'posts_per_page' => 1,
-        'fields' => 'ids',
-    ]);
-    return !empty($query->posts) ? wc_get_product($query->posts[0]) : null;
-}
-
-function get_product_variation_by_sku(string $sku): ?WC_Product
-{
-    $query = new WP_Query([
-        'post_type'  => 'product_variation',
-        'meta_query' => [
-            [
-                'key'     => '_sku',
-                'value'   => $sku,
-            ],
-        ],
-        'posts_per_page' => 1,
-        'fields' => 'ids',
-    ]);
-    return !empty($query->posts) ? wc_get_product($query->posts[0]) : null;
-}
-
-
-function get_item_count(string $product_type): int
-{
-    $query = new WP_Query([
-        'post_type'      => $product_type,
-        'meta_query'     => [
-            [
-                'key'     => 'coachview_id',
-                'compare' => 'EXISTS',
-            ],
-        ],
-        'fields'         => 'ids',
-        'nopaging'       => true
-    ]);
-    return count($query->posts);
-}
 
 function minutes_to_time_string(int $minutes): string
 {
@@ -103,7 +38,7 @@ function get_or_create_category(string $name, int $parentId = 0): ?int
 
 function set_category_last_sync(int $term_id): void
 {
-    update_term_meta($term_id, 'last_sync', time());
+    update_term_meta($term_id, Constants::META_LAST_SYNC, time());
 }
 
 function get_categories_by_parent_not_in(int $parent_id, $not_in): array
@@ -115,26 +50,6 @@ function get_categories_by_parent_not_in(int $parent_id, $not_in): array
         'exclude'    => $not_in,
     ]);
     return is_wp_error($terms) ? [] : $terms;
-}
-
-
-function log_cv_exception($action, $exception) {
-    $error_msg = $action . ': ' . $exception->getMessage() . "\n" . $exception->getTraceAsString();
-    error_log($error_msg);
-
-    $error_log = get_option('coachview_sync_error', '');
-    $date = date('Y-m-d H:i:s');
-    $error_log = $error_log . "[$date] $error_msg\n";
-    update_option('coachview_sync_error', $error_log);
-}
-
-function log_cv_info($info_msg) {
-    error_log($info_msg);
-
-    $logging = get_option('coachview_sync_info', '');
-    $date = date('Y-m-d H:i:s');
-    $logging = $logging . "[$date] $info_msg\n";
-    update_option('coachview_sync_info', $logging);
 }
 
 // Helper method to find the first non-empty value in a collection

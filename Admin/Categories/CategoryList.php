@@ -2,6 +2,8 @@
 
 namespace Coachview\Admin\Categories;
 
+use Coachview\Constants;
+
 class CategoryList {
     public function __construct()
     {
@@ -19,7 +21,7 @@ class CategoryList {
     public function render_column($ignore, $column, $term_id): void
     {
         if ($column === 'last_sync') {
-            $last_sync = get_term_meta($term_id, 'last_sync', true);
+            $last_sync = get_term_meta($term_id, Constants::META_LAST_SYNC, true);
             if ($last_sync) {
                 $readable_date = wp_date('j M Y H:i', intval($last_sync));
                 $days_ago = (time() - intval($last_sync)) / 86400;

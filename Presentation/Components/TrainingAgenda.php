@@ -2,6 +2,10 @@
 
 namespace Coachview\Presentation\Components;
 
+use Coachview\Helpers\Formatting;
+use Coachview\Helpers\Assets;
+use Coachview\Helpers\MetaHelpers;
+use Coachview\Helpers\Url;
 use Coachview\Presentation\TemplateEngine;
 use Coachview\Constants;
 
@@ -21,7 +25,7 @@ class TrainingAgenda extends ShortCodeComponent
 
     public function enqueue_styles(): void
     {
-        wp_enqueue_style(self::get_shortcode(), cv_assets_url('css/training-agenda.css'), [], null);
+        Assets::enqueueStyle(self::get_shortcode(), 'css/training-agenda.css');
     }
 
     public function render_shortcode($atts): string
@@ -53,7 +57,7 @@ class TrainingAgenda extends ShortCodeComponent
         $tomorrow = strtotime('tomorrow 00:00:00');
         foreach ($trainings as $training) {
             $parent_id = $training->get_parent_id();
-            $start_date = get_post_meta($training->get_id(), 'start_date', true);
+            $start_date = MetaHelpers::get_string($training->get_id(), Constants::META_START_DATE);
 
             if (strtotime($start_date) < $tomorrow || !$this->can_show_training_type($parent_id)) {
                 continue;
@@ -91,7 +95,7 @@ class TrainingAgenda extends ShortCodeComponent
      */
     private function can_show_training_type($id): bool {
         $training_type = wc_get_product($id);
-        if (!$training_type || get_post_meta($id, Constants::META_TRAINING_TYPE_HIDE_FROM_SEARCH, true) === 'yes') {
+        if (!$training_type || MetaHelpers::get_string($id, Constants::META_TRAINING_TYPE_HIDE_FROM_SEARCH) === 'yes') {
             return false;
         }
         return true;
@@ -104,12 +108,12 @@ class TrainingAgenda extends ShortCodeComponent
      */
     private function get_training_data($training): array {
         $id = $training->get_id();
-        $start_date_ts = strtotime(get_post_meta($id, 'start_date', true));
+        $start_date_ts = strtotime(MetaHelpers::get_string($id, Constants::META_START_DATE));
         return [
-            'city' => get_post_meta($id, 'city', true),
-            'start_date_ts' => $start_date_ts,
-            'start_date_display' => get_display_date($start_date_ts),
-            'register_link' => coachview_register_page_url(['woo_vid' => $id]), // woo_vid = WooCommerce Variation ID
+            'city'                => MetaHelpers::get_string($id, Constants::META_CITY),
+            'start_date_ts'       => $start_date_ts,
+            'start_date_display'  => Formatting::displayDate($start_date_ts),
+            'register_link'       => Url::get_register_page_url(['woo_vid' => $id]),
         ];
     }
 
@@ -123,7 +127,7 @@ class TrainingAgenda extends ShortCodeComponent
         $image_id = $training_type->get_image_id();
         $image_url = $image_id
             ? wp_get_attachment_image_url($image_id, 'woocommerce_thumbnail')
-            : cv_assets_url('img/example_training4.png');
+            : Assets::toPath('img/example_training4.png');
 
         return [
             'name' => $training_type->get_name(),
