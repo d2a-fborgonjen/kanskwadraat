@@ -6,11 +6,11 @@ use Coachview\Constants;
 
 class Assets
 {
-    public static function enqueueScript(string $name, string $path, array $deps = [], $version = '1.0'): void {
+    public static function enqueueScript(string $name, string $path, array $deps = [], $version = '1.1'): void {
         wp_enqueue_script($name, self::toPath($path), $deps, $version);
     }
 
-    public static function enqueueStyle(string $name, string $path, array $deps = [], $version = '1.0', string $media = 'all'): void {
+    public static function enqueueStyle(string $name, string $path, array $deps = [], $version = '1.1', string $media = 'all'): void {
         wp_enqueue_style($name, self::toPath($path), $deps, $version, $media);
     }
 
