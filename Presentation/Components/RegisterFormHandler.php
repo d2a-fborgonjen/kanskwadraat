@@ -136,7 +136,7 @@ class RegisterFormHandler
     {
         $participants = $post['deelnemer'] ?? [];
         $contactPerson = isset($post['is_contactpersoon']) ? ($post['contactpersoon'] ?? '') : '';
-        $company = !empty($post['bedrijf']['naam']) ? $post['bedrijf'] : '';
+        $company = $this->get_company_data($post);
         $debtor = collect($post['debiteur'] ?? [])
             ->put('emailType', !empty($company) ? 'Bedrijf' : 'ContactpersoonAanvraag')
             ->toArray();
@@ -154,6 +154,18 @@ class RegisterFormHandler
             'opleidingen'       => [
                 $post['opleidingen'] ?? [],
             ],
+        ];
+    }
+
+    private function get_company_data(array $post): array | string
+    {
+        if (empty($post['bedrijf']['naam'])) {
+            return '';
+        }
+        return [
+            'naam' => $post['bedrijf']['naam'],
+            'factuurAdres' => $post['deelnemer'][0]['factuurAdres'] ?? '',
+            'emailadres' => $post['debiteur']['emailadresAnders'] ?? ''
         ];
     }
 

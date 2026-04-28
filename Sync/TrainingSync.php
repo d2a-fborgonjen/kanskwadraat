@@ -191,6 +191,8 @@ class TrainingSync {
                 'parent_id' => $product->get_id(),
                 'parent_SKU' => $product->get_sku(),
             ]);
+            $variation->set_regular_price($product->get_regular_price());
+            $variation->set_stock_quantity($training->num_seats_available);
             $variation->update_meta_data(Constants::META_LAST_SYNC, time());
             $variation->update_meta_data(Constants::META_LOCATION,  firstNonEmpty($training->components->pluck('location')));
             $variation->update_meta_data(Constants::META_ADDRESS, firstNonEmpty($training->components->pluck('address')));

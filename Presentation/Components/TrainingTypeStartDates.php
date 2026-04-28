@@ -5,10 +5,10 @@ namespace Coachview\Presentation\Components;
 use Coachview\Constants;
 use Coachview\Helpers\Assets;
 use Coachview\Helpers\Formatting;
+use Coachview\Helpers\Logger;
 use Coachview\Helpers\MetaHelpers;
+use Coachview\Helpers\Training;
 use Coachview\Helpers\Url;
-use Coachview\Models\Enums\CourseFormat;
-use Coachview\Presentation\TemplateEngine;
 use WC_Product_Variation;
 
 /**
@@ -38,21 +38,29 @@ class TrainingTypeStartDates extends ShortCodeComponent
     }
 
     public function render_start_dates($product_id): string {
-        global $post;
-        $product = wc_get_product($product_id ?: $post->ID);
+        try {
+            global $post;
+            $product = wc_get_product($product_id ?: $post->ID);
 
-        if (!$product || !$product->is_type('variable')) {
-            return 'Geen startdata beschikbaar.';
+            if (!$product || !$product->is_type('variable')) {
+                return 'Geen startdata beschikbaar.';
+            }
+            $variations = $this->get_future_variations($product);
+
+            // Prepare data for template
+            $template_data = [
+                'product_id' => $product->get_id(),
+                'variations' => $this->prepare_variations_data($variations)
+            ];
+
+            return $this->render_template($template_data);
+        } catch (Exception $e) {
+            Logger::error('Render['.self::get_shortcode().']: ' . $e->getMessage(), 'sync', [
+                'exception' => get_class($e),
+                'trace'     => $e->getTraceAsString(),
+            ]);
+            return 'Er is een fout opgetreden bij het tonen van ' . self::get_shortcode();
         }
-        $variations = $this->get_future_variations($product);
-
-        // Prepare data for template
-        $template_data = [
-            'product_id' => $product->get_id(),
-            'variations' => $this->prepare_variations_data($variations)
-        ];
-
-        return $this->render_template($template_data);
     }
 
     private function get_future_variations($product): array {
@@ -91,47 +99,16 @@ class TrainingTypeStartDates extends ShortCodeComponent
                 'date' => $date,
                 'link' => $link,
                 'is_in_stock' => $variation->is_in_stock(),
-                'price' => number_format_i18n($variation->get_price()),
+                'price' => is_numeric($variation->get_price()) ? number_format_i18n($variation->get_price()) : '',
                 'location' => MetaHelpers::get_string($variation_id, Constants::META_LOCATION),
                 'city'     => MetaHelpers::get_string($variation_id, Constants::META_CITY),
                 'address'  => MetaHelpers::get_string($variation_id, Constants::META_ADDRESS),
                 'zipcode'  => MetaHelpers::get_string($variation_id, Constants::META_ZIPCODE),
-                'planning' => $this->prepare_planning_data($variation)
+                'planning' => Training::prepare_planning_data($variation)
             ];
         }
         return $prepared_variations;
     }
 
-    private function prepare_planning_data(WC_Product_Variation $variation): array
-    {
-        $planningJson = MetaHelpers::get_string($variation->get_id(), Constants::META_PLANNING);
-        $planningEvents = json_decode($planningJson, true) ?? [];
-        $planningEvents = array_filter($planningEvents, function($event) {
-            return $event['course_format'] != CourseFormat::E_LEARNING->value;
-        });
-
-        $first_date = collect($planningEvents)->pluck('date')->filter()->sort()->first();
-        return array_map(function($event) use ($first_date) {
-            $entry = [];
-            $entry['course_format'] = $event['course_format'];
-            $entry['name'] = $event['name'];
-
-            if (!empty($event['start_time'])) {
-                $entry['time'] = date_i18n('H:i', strtotime($event['start_time']));
-                if (!empty($event['end_time'])) {
-                    $entry['time'] .= ' - ' . date_i18n('H:i', strtotime($event['end_time']));
-                }
-            }
-
-            if (!empty($event['date'])) {
-                $entry['formatted_date'] = date_i18n('D. j M. Y', strtotime($event['date']));
-            } /*else if ($event['course_format'] == CourseFormat::E_LEARNING->value && !empty($first_date)) {
-                $elearning_date = date('Y-m-d', strtotime($first_date . ' -1 day'));;
-                $entry['formatted_date'] = date_i18n('D. j M. Y', strtotime($elearning_date));
-                $entry['time'] = '23:00';
-            }*/
-            return $entry;
-        }, $planningEvents);
-    }
 
 }

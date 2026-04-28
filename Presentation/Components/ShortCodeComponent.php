@@ -3,6 +3,7 @@
 namespace Coachview\Presentation\Components;
 
 use Coachview\Presentation\TemplateEngine;
+use Coachview\Helpers\Logger;
 
 abstract class ShortCodeComponent
 {
@@ -14,8 +15,16 @@ abstract class ShortCodeComponent
 
     public function do_render_shortcode($atts): string
     {
-        $this->enqueue_scripts();
-        return $this->render_shortcode($atts);
+        try {
+            $this->enqueue_scripts();
+            return $this->render_shortcode($atts);
+        } catch (Exception $e) {
+            Logger::error('Render['.self::get_shortcode().']: ' . $e->getMessage(), 'sync', [
+                'exception' => get_class($e),
+                'trace'     => $e->getTraceAsString(),
+            ]);
+            return 'Er is een fout opgetreden bij het tonen van ' . self::get_shortcode();
+        }
     }
 
     public function render_template($data, ?string $sub_template = null): string

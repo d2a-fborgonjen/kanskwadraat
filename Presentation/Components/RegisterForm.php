@@ -31,7 +31,8 @@ class RegisterForm extends ShortCodeComponent
     {
         Assets::enqueueScript(self::get_shortcode() . '-wizard', 'js/register-page-wizard.js', ['jquery']);
         Assets::enqueueScript(self::get_shortcode() . '-participants', 'js/register-page-participants.js', ['jquery']);
-        Assets::enqueueScript(self::get_shortcode(), 'js/register-page.js', [self::get_shortcode().'-wizard', self::get_shortcode().'-participants']);
+        Assets::enqueueScript(self::get_shortcode() . '-field-sync', 'js/register-page-field-sync.js', ['jquery']);
+        Assets::enqueueScript(self::get_shortcode(), 'js/register-page.js', [self::get_shortcode().'-wizard', self::get_shortcode().'-participants', self::get_shortcode().'-field-sync']);
     }
 
     public function __construct()
@@ -142,7 +143,7 @@ class RegisterForm extends ShortCodeComponent
     {
         $token = wp_generate_password(20, false); // random 20-char string
         $key = 'coachview_form_' . $token;
-        set_transient($key, true, 60 * 60); // 1 hour expiration
+        set_transient($key, true, 24 * 60 * 60); // 12 hour expiration
         return $token;
     }
 

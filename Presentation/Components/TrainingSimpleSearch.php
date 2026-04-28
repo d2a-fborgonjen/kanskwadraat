@@ -54,7 +54,6 @@ class TrainingSimpleSearch extends ShortCodeComponent
                 }
 
                 $data = [
-                    '_coachview_form_token' => $this->generate_form_token(),
                     'name' => $form_name,
                     'orientation' => $orientation,
                     'search_page_url' => $search_page_url,
@@ -82,13 +81,5 @@ class TrainingSimpleSearch extends ShortCodeComponent
             }
         }
         return $result;
-    }
-
-    private function generate_form_token()
-    {
-        $token = wp_generate_password(20, false); // random 20-char string
-        $key = 'coachview_form_' . $token;
-        set_transient($key, true, 60 * 60); // 1 hour expiration
-        return $token;
     }
 }

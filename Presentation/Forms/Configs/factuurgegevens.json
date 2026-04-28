@@ -30,7 +30,8 @@
         {
             "field": "deelnemer[0][factuurAdres][adres1]",
             "label": "Straat en huisnummer",
-            "type": "text"
+            "type": "text",
+            "required": true
         },
         {
             "fields": [

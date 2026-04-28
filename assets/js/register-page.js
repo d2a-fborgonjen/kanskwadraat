@@ -29,6 +29,8 @@ jQuery(document).ready(function($) {
     const wizard = window.RegisterPageWizard ? new window.RegisterPageWizard($form) : null;
     const participantsManager = window.RegisterPageParticipants ? new window.RegisterPageParticipants($form) : null;
 
+    const fieldSync = window.RegisterPageFieldSync ? new window.RegisterPageFieldSync($form) : null;
+
     function showFormMessage(type, message) {
         if (!$feedbackContainer.length) {
             return;

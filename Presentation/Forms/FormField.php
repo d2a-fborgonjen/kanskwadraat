@@ -44,7 +44,7 @@ class FormField extends FormElement
         $data = [
             'field' => $this->field,
             'type' => $this->type,
-            'label' => $this->label,
+            'label' => $this->get_label(),
             'placeholder' => $this->get_placeholder(),
             'required' => $this->required,
             'options' => $this->options,
@@ -55,8 +55,13 @@ class FormField extends FormElement
     }
 
 
+    private function get_label(): string
+    {
+        return esc_attr($this->label . ($this->required ? ' *' : ''));
+    }
+
     private function get_placeholder(): string
     {
-        return esc_attr($this->placeholder ?: $this->label . ($this->required ? ' *' : ''));
+        return esc_attr($this->placeholder ?: $this->label);
     }
 }
