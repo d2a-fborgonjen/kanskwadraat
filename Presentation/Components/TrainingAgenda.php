@@ -2,12 +2,12 @@
 
 namespace Coachview\Presentation\Components;
 
-use Coachview\Helpers\Formatting;
-use Coachview\Helpers\Assets;
-use Coachview\Helpers\MetaHelpers;
-use Coachview\Helpers\Url;
-use Coachview\Presentation\TemplateEngine;
 use Coachview\Constants;
+use Coachview\Helpers\Assets;
+use Coachview\Helpers\Formatting;
+use Coachview\Helpers\MetaHelpers;
+use Coachview\Helpers\Training;
+use Coachview\Helpers\Url;
 
 /**
  * Lists the available trainings (product variations) for the given training type (product)
@@ -114,6 +114,10 @@ class TrainingAgenda extends ShortCodeComponent
             'start_date_ts'       => $start_date_ts,
             'start_date_display'  => Formatting::displayDate($start_date_ts),
             'register_link'       => Url::get_register_page_url(['woo_vid' => $id]),
+            'location'            => MetaHelpers::get_string($id, Constants::META_LOCATION),
+            'address'             => MetaHelpers::get_string($id, Constants::META_ADDRESS),
+            'zipcode'             => MetaHelpers::get_string($id, Constants::META_ZIPCODE),
+            'planning'            => Training::prepare_planning_data($training),
         ];
     }
 

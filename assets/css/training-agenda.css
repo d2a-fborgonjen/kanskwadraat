@@ -1,0 +1,264 @@
+:root {
+    --agenda-gap: 20px;
+    --agenda-padding: 20px;
+    --agenda-icon-width: 20px;
+    --agenda-font-size: 16px;
+    --agenda-header-font-size: 24px;
+    --agenda-hover-bg-color: var(--bc-blue-grey-light);
+    --border-color: rgba(86, 155, 161, .25);
+}
+
+/* ── Accordion base overrides ── */
+.training-agenda .accordion-item {
+    border: none;
+    border-radius: 8px !important;
+    background-color: #fff;
+    overflow: hidden;
+    box-shadow: none;
+    transition: box-shadow .2s ease;
+}
+
+.training-agenda .fa-thin {
+    color: var(--bc-blue-grey);
+    font-size: 24px;
+}
+
+.training-agenda .accordion-item:has(.accordion-collapse.show) {
+    box-shadow: 0px 5px 15px 0px rgba(0, 0, 0, .15);
+}
+
+.training-agenda .accordion-header {
+    background-color: transparent;
+}
+
+.training-agenda .accordion-item > .accordion-header .accordion-button {
+    font-weight: 600;
+    padding: 0;
+    border-radius: 0;
+    border: 0;
+    background-color: transparent;
+    width: unset;
+    color: var(--bc-blue);
+}
+
+.training-agenda .accordion-item > .accordion-header .accordion-button:not(.collapsed) {
+    box-shadow: none;
+    background-color: #fff;
+}
+
+.training-agenda .accordion-item > .accordion-header .accordion-button:focus {
+    box-shadow: none;
+}
+
+.training-agenda .accordion-item > .accordion-header .accordion-button::after {
+    display: none;
+}
+
+/* ── Training-type header row ── */
+.training-agenda__header {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.training-agenda__header-left {
+    display: flex;
+    align-items: center;
+    gap: var(--agenda-gap);
+}
+
+.training-agenda__header-image {
+    width: 90px;
+    height: 90px;
+    flex-shrink: 0;
+    position: relative;
+    overflow: hidden;
+    clip-path: path("M0 0 H80 C90 0, 90 90, 80 90 H0 Z");
+}
+
+.training-agenda__header-image img {
+    width: 100%;
+    height: 100% !important;
+    object-fit: cover;
+    object-position: center;
+}
+
+.training-agenda__header-title a {
+    text-decoration: none;
+}
+
+.training-agenda__header-title h3 {
+    font-family: var(--title-font-bold);
+    font-size: var(--agenda-header-font-size);
+    line-height: 1.1;
+    color: var(--bc-blue);
+    margin-bottom: 0 !important;
+}
+
+.training-agenda__header-right {
+    display: flex;
+    align-items: center;
+    gap: var(--agenda-gap);
+    padding: var(--agenda-padding);
+}
+
+.training-agenda__header-next {
+    color: var(--bc-blue);
+    font-size: 14px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+}
+
+/* ── Accordion body / training list ── */
+.training-agenda .accordion-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-top: 1px solid var(--border-color);
+    padding: 0;
+}
+
+/* ── Individual training row ── */
+.training-agenda__training {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    column-gap: var(--agenda-gap);
+}
+
+.training-agenda__training,
+.training__planning {
+    padding: var(--agenda-padding);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.training-agenda__training-wrapper {
+    transition: background 0.2s ease-out;
+}
+
+.training-agenda__training-wrapper:hover {
+    background-color: var(--agenda-hover-bg-color);
+}
+
+.training-agenda__training:last-child {
+    border-bottom: none;
+}
+
+.training-agenda__training-info {
+    color: var(--bc-blue);
+    font-size: 14px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+}
+
+.training-agenda__training .accordion-button {
+    padding: 0;
+    background: none !important;
+    box-shadow: none !important;
+    width: unset;
+}
+.training-agenda__training .accordion-button:not(.collapsed)::after {
+    background-image: none;
+}
+
+/* ── Planning detail (reuse from start-dates) ── */
+.training-agenda .training__planning-header {
+    font-size: 1.25rem;
+    color: var(--bc-blue);
+    font-weight: 600;
+    margin-bottom: 0.7rem;
+}
+
+.training-agenda .training__planning-lessons li {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    column-gap: 0.5rem;
+    font-size: var(--agenda-font-size);
+}
+
+/* ── Empty state ── */
+.training-agenda__empty {
+    display: flex;
+    align-items: center;
+    gap: var(--agenda-gap);
+    padding: var(--agenda-padding);
+}
+
+.training-agenda__empty-image {
+    width: 90px;
+    height: 90px;
+    flex-shrink: 0;
+    overflow: hidden;
+    clip-path: path("M0 0 H80 C90 0, 90 90, 80 90 H0 Z");
+}
+
+.training-agenda__empty-image img {
+    width: 100%;
+    height: 100% !important;
+    object-fit: cover;
+    object-position: center;
+}
+
+.training-agenda__empty h3 {
+    margin-bottom: 0;
+    color: var(--bc-blue);
+}
+
+/* ── Responsive ── */
+
+@media (max-width: 1400px) {
+    .training-agenda .accordion-body {
+        grid-template-columns: 1fr;
+    }
+}
+@media (max-width: 1200px) {
+    .training-agenda__header {
+        grid-template-columns: 1fr;
+    }
+    .training-agenda__header-right {
+        border-top: 1px solid var(--border-color);
+    }
+}
+
+@media (max-width: 1000px) {
+    :root {
+        --agenda-padding: 12px;
+    }
+
+    .training-agenda__header-right {
+        border-top: 1px solid var(--border-color);
+        justify-content: space-between;
+    }
+}
+
+@media (max-width: 768px) {
+    :root {
+        --agenda-header-font-size: 20px;
+    }
+
+    .training-agenda__training {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .training-agenda__training .accordion-button {
+        grid-row: 2;
+    }
+
+    .training-agenda .training__planning-lessons li {
+        grid-template-columns: auto;
+    }
+
+    .training-agenda .training__planning-lessons-description {
+        grid-column: span 2;
+        font-weight: 400;
+    }
+
+    .training-agenda .training__planning-lessons-date,
+    .training-agenda .training__planning-lessons-time {
+        grid-row: 2;
+        margin-bottom: 0.5rem;
+        font-size: 0.8rem;
+    }
+}
+

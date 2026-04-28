@@ -1,106 +1,127 @@
-<section class="bc-calendar">
+<section class="training-agenda">
     <div class="accordion" id="accordion-agenda">
 
-        {%  if agenda_items|length == 0 %}
+        {% if agenda_items|length == 0 %}
             <div class="accordion-item mb-3">
                 <div class="accordion-header">
-                    <div class="accordion-button">
-                        <div class="accordion-button-inner">
-
-                            <div class="d-flex flex-row align-items-center">
-                                <div class="accordion-button-inner__image">
-                                    <img width="200" height="133" src="{{ placeholder_image_url }}"
-                                         class="attachment-post-thumbnail size-post-thumbnail wp-post-image"></div>
-                                <div class="accordion-button-inner__training px-3 d-flex justify-content-center flex-grow-1">
-                                    <h3 class="mb-0">
-                                        Er zijn momenteel geen geplande trainingen
-                                    </h3>
-                                </div>
-                            </div>
+                    <div class="training-agenda__empty">
+                        <div class="training-agenda__empty-image">
+                            <img width="200" height="133" src="{{ placeholder_image_url }}"
+                                 class="attachment-post-thumbnail size-post-thumbnail wp-post-image">
                         </div>
+                        <h3>Er zijn momenteel geen geplande trainingen</h3>
                     </div>
                 </div>
             </div>
-        {%  endif %}
+        {% endif %}
+
         {% for item in agenda_items %}
             <div class="accordion-item mb-3">
                 <div class="accordion-header" id="agenda-item-header--{{ loop.index }}">
-                    <div class="accordion-button">
-                        <div class="accordion-button-inner">
-                            <div class="row">
-                                <div class="col-xl-6">
-                                    <div class="d-flex flex-row align-items-center">
-                                        <div class="accordion-button-inner__image">
-                                            <a href="{{ item.training_type.permalink }}">
-                                            <img width="200" height="133" src="{{ item.training_type.image_url }}"
-                                                 class="attachment-post-thumbnail size-post-thumbnail wp-post-image">
-                                            </a>
-                                        </div>
-                                        <div class="accordion-button-inner__training ps-3">
-                                            <a href="{{ item.training_type.permalink }}" style="text-decoration: none;">
-                                                <h3 class="mb-0">{{ item.training_type.name }}</h3>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-xl-6 d-flex flex-row align-items-center justify-content-end">
-                                    <div class="accordion-button-inner-wrapper py-3 py-xl-0 ps-xl-0 w-100 d-lg-flex flex-row align-items-center justify-content-between">
-                                        <div class="accordion-button-inner-wrapper__next d-flex flex-row align-items-center">
-                                            <i class="fa-thin fa-circle-calendar me-2" aria-hidden="true"></i>
-                                            Volgende startdatum: {{ item.trainings[0].start_date_display }}
-                                        </div>
-
-                                        <div class="px-lg-2">
-                                            <button class="accordion-button collapsed text-nowrap"
-                                                    type="button"
-                                                    data-bs-toggle="collapse"
-                                                    data-bs-target="#agenda-item--{{ loop.index }}"
-                                                    aria-controls="agenda-item--{{ loop.index }}"
-                                                    aria-expanded="false">
-                                                    <i class="fa-thin fa-circle-calendar me-2" aria-hidden="true"></i>
-                                                    Toon data
-                                                    <i class="fa-light fa-chevron-down ms-1" aria-hidden="true"></i>
-                                            </button>
-                                        </div>
-                                        <div class="accordion-button-inner-wrapper__button mt-3 mt-lg-0">
-                                            <a href="{{ item.training_type.permalink }}" class="btn btn-secondary small text-nowrap">
-                                                Meer info
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
+                    <div class="training-agenda__header">
+                        <div class="training-agenda__header-left">
+                            <div class="training-agenda__header-image">
+                                <a href="{{ item.training_type.permalink }}">
+                                    <img width="200" height="133" src="{{ item.training_type.image_url }}"
+                                         class="attachment-post-thumbnail size-post-thumbnail wp-post-image">
+                                </a>
                             </div>
+                            <div class="training-agenda__header-title">
+                                <a href="{{ item.training_type.permalink }}">
+                                    <h3>{{ item.training_type.name }}</h3>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="training-agenda__header-right">
+                            <div class="training-agenda__header-next">
+                                <i class="fa-thin fa-circle-calendar me-2" aria-hidden="true"></i>
+                                <span>
+                                    Volgende startdatum: <span class="no-wrap">{{ item.trainings[0].start_date_display }}</span>
+                                </span>
+                            </div>
+
+                            <button class="accordion-button collapsed text-nowrap"
+                                    type="button"
+                                    data-bs-toggle="collapse"
+                                    data-bs-target="#agenda-item--{{ loop.index }}"
+                                    aria-controls="agenda-item--{{ loop.index }}"
+                                    aria-expanded="false">
+                                <i class="fa-thin fa-circle-calendar me-2" aria-hidden="true"></i>
+                                Toon data
+                                <i class="fa-light fa-chevron-down ms-1" aria-hidden="true"></i>
+                            </button>
+
+                            <a href="{{ item.training_type.permalink }}" class="btn btn-secondary small text-nowrap">
+                                Meer info
+                            </a>
                         </div>
                     </div>
                 </div>
 
+                <!-- COLLAPSE CONTENT -->
                 <div id="agenda-item--{{ loop.index }}" class="accordion-collapse collapse"
                      data-bs-parent="#accordion-agenda">
                     <div class="accordion-body">
-                        <div class="row">
-                            <div class="col-lg-6">
-                                {% for training in item.trainings %}
-                                <div class="bc-calendar__item pt-2 pb-3 pb-md-2 d-block d-md-flex align-items-center justify-content-between">
-                                    <div class="bc-calendar__item-content d-flex align-items-center">
-                                        <i class="fa-thin fa-circle-calendar me-2"
-                                           aria-hidden="true"></i> {{ training.start_date_display }} - {{ training.city }}
-                                    </div>
-                                    <div class="bc-calendar__item-btn d-flex justify-content-md-end mt-2 mt-md-0">
-                                        <a href="{{ training.register_link }}" class="btn btn-primary small">Inschrijven</a>
-                                    </div>
+                        {% for training in item.trainings %}
+                            <div class="training-agenda__training-wrapper">
+                            <div class="training-agenda__training">
+                                <div class="training-agenda__training-info">
+                                    <i class="fa-thin fa-circle-calendar me-2" aria-hidden="true"></i>
+                                    {{ training.start_date_display }} - {{ training.city }}
                                 </div>
 
-                                <!-- half way divider -->
-                                {% if loop.index == (loop.length / 2)|round %}
-                            </div>
-                            <div class="col-lg-6">
+                                {% if training.planning|length > 0 %}
+                                    <button class="accordion-button collapsed text-nowrap btn-no-after"
+                                            type="button"
+                                            data-bs-toggle="collapse"
+                                            data-bs-target="#agenda-planning--{{ loop.parent.loop.index }}-{{ loop.index }}"
+                                            aria-expanded="false"
+                                            aria-controls="agenda-planning--{{ loop.parent.loop.index }}-{{ loop.index }}">
+                                        <i class="fa-thin fa-circle-calendar me-2" aria-hidden="true"></i>
+                                        Toon planning
+                                        <i class="fa-light fa-chevron-down ms-1" aria-hidden="true"></i>
+                                    </button>
                                 {% endif %}
-                                {% endfor %}
+                                <a href="{{ training.register_link }}" class="btn btn-primary small text-nowrap">Inschrijven</a>
                             </div>
-                        </div>
+
+                            {% if training.planning|length > 0 %}
+                                <div id="agenda-planning--{{ loop.parent.loop.index }}-{{ loop.index }}" class="collapse mt-2">
+                                    <div class="training__planning">
+                                        <h5 class="training__planning-header">Lesdagen en planning</h5>
+                                        <ul class="training__planning-lessons">
+                                            {% for entry in training.planning %}
+                                                <li>
+                                                    <span class="training__planning-lessons-description">{{ entry.name }}</span>
+                                                    <span class="training__planning-lessons-date">{{ entry.formatted_date }}</span>
+                                                    {% if entry.time %}
+                                                    <span class="training__planning-lessons-time">{{ entry.time }} uur</span>
+                                                    {% endif %}
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+
+                                        <h5 class="header-color-blue">Locatiegegevens</h5>
+                                        <span class="training__planning-location-details">
+                                            {% if training.location %}
+                                                {{ training.location }}<br/>
+                                            {% endif %}
+                                            {% if training.address %}
+                                                {{ training.address }}<br/>
+                                            {% endif %}
+                                            {{ training.zipcode }} {{ training.city }}
+                                        </span>
+                                    </div>
+                                </div>
+                            {% endif %}
+
+                            </div>
+                        {% endfor %}
+
                     </div>
                 </div>
             </div>
         {% endfor %}
     </div>
 </section>
+

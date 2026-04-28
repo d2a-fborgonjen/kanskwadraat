@@ -1,5 +1,7 @@
 :root {
     --body-font: "Poppins", Roboto, Arial, sans-serif;
+    --title-font: "d-dinregular", Roboto, Arial, sans-serif;
+    --title-font-bold: "d-dindin-bold", Roboto, Arial, sans-serif;
     --bc-blue: #002352;
     --bc-blue-grey: #569BA1;
     --bc-green: #C0E337;
@@ -9,7 +11,8 @@
     --red: #dc4a31;
 }
 
-.btn.btn-no-after:after {
+.btn.btn-no-after:after,
+button.btn-no-after:after{
     display: none !important;
 }
 
@@ -78,4 +81,8 @@
 .form-field__input--textarea {
     min-height: 120px;
     resize: vertical;
+}
+
+.no-wrap {
+    white-space: nowrap;
 }
