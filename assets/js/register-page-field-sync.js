@@ -6,7 +6,7 @@
     window.RegisterPageFieldSync = function($form) {
         const syncPairs = [
             {
-                src: 'deelnemer[0][vrijeveldenPersoon][VrijeveldBedrijfsnaam]',
+                src: 'deelnemer[0][vrijeveldenPersoon][VrijveldBedrijfsnaam]',
                 dest: 'bedrijf[naam]',
             },
         ];

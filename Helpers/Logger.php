@@ -120,6 +120,10 @@ class Logger
             $where[]  = 'channel = %s';
             $values[] = $args['channel'];
         }
+        if (!empty($args['since'])) {
+            $where[]  = 'created_at >= %s';
+            $values[] = $args['since'];
+        }
 
         $sql = "SELECT * FROM {$table}";
         if ($where) {

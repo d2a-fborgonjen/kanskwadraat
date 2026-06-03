@@ -29,7 +29,8 @@ class Sync {
 
     public function __get_sync_progress(): void
     {
-        $sync_errors = Logger::query(['level' => 'error', 'channel' => 'sync', 'limit' => 20]);
+        $started = get_option(Constants::OPTION_SYNC_STARTED);
+        $sync_errors = Logger::query(['level' => 'error', 'channel' => 'sync', 'since' => $started, 'limit' => 20]);
 
         if (!empty($sync_errors)) {
             wp_send_json_error([
@@ -39,9 +40,9 @@ class Sync {
             wp_send_json_success([
                 'progress' => get_option(Constants::OPTION_SYNC_PROGRESS, 0),
                 'running'  => get_option(Constants::OPTION_SYNC_RUNNING),
-                'started'  => get_option(Constants::OPTION_SYNC_STARTED),
+                'started'  => $started,
                 'finished' => get_option(Constants::OPTION_SYNC_FINISHED),
-                'logs'     => Logger::query(['channel' => 'sync', 'limit' => 20]),
+                'logs'     => Logger::query(['channel' => 'sync', 'since' => $started, 'limit' => 20]),
             ]);
         }
     }

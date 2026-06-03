@@ -61,7 +61,7 @@
           }
         },
         {
-          "field": "deelnemer[0][vrijeveldenPersoon][VrijeveldBedrijfsnaam]",
+          "field": "deelnemer[0][vrijeveldenPersoon][VrijveldBedrijfsnaam]",
           "label": "Bedrijfsnaam",
           "type": "text",
           "required": true,
@@ -84,7 +84,7 @@
     {
       "fields": [
         {
-          "field": "deelnemer[0][vrijeveldenPersoon][VrijeveldWerkzaamoplocatie]",
+          "field": "deelnemer[0][vrijeveldenPersoon][VrijveldWerkzaamoplocatie]",
           "label": "Werkzaam op locatie",
           "type": "text",
           "required": true,
@@ -95,9 +95,18 @@
         {
           "field": "deelnemer[0][vrijeveldenPersoon][VrijveldWerkzaaminregio]",
           "label": "Werkzaam in regio",
-          "type": "text",
+          "type": "select",
           "required": true,
-          "rules": {
+          "options": [
+            { "value": "", "label": "Selecteer een regio" },
+            { "value": "Amsterdam", "label": "Amsterdam" },
+            { "value": "Den Haag - Rotterdam e.o.", "label": "Den Haag - Rotterdam e.o." },
+            { "value": "Noord Holland", "label": "Noord Holland" },
+            { "value": "Noord-Oost", "label": "Noord-Oost" },
+            { "value": "Utrecht, Amersfoort, Leiden e.o.", "label": "Utrecht, Amersfoort, Leiden e.o." },
+            { "value": "Zuid", "label": "Zuid" }
+          ],
+		  "rules": {
             "onlyForType": "in_company"
           }
         }
